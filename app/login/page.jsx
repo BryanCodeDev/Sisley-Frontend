@@ -1,11 +1,37 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import Button from '@/app/components/Button';
 import Input from '@/app/components/Input';
+import { useAuth } from '@/app/contexts/AuthContext';
 
 export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { login } = useAuth();
+  const router = useRouter();
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const result = await login(email, password);
+
+    if (result.success) {
+      router.push('/admin');
+    } else {
+      setError(result.message);
+    }
+
+    setLoading(false);
+  }
+
   return (
     <>
       <Header />
@@ -30,17 +56,21 @@ export default function Login() {
                 <p className="text-sm text-sisley-muted">Accede a tu cuenta de Sisley</p>
               </div>
 
-              <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+              <form className="space-y-5" onSubmit={handleSubmit}>
                 <Input
                   label="Correo electrónico"
                   type="email"
                   placeholder="tu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
                 <Input
                   label="Contraseña"
                   type="password"
                   placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
                 <div className="flex items-center justify-between">
@@ -52,7 +82,14 @@ export default function Login() {
                     ¿Olvidaste tu contraseña?
                   </a>
                 </div>
-                <Button size="lg" className="w-full">Iniciar sesión</Button>
+
+                {error && (
+                  <p className="text-sm text-red-600">{error}</p>
+                )}
+
+                <Button size="lg" className="w-full" type="submit" disabled={loading}>
+                  {loading ? 'Ingresando...' : 'Iniciar sesión'}
+                </Button>
               </form>
 
               <div className="mt-10 text-center">

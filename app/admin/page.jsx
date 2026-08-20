@@ -8,23 +8,14 @@ import { getProducts } from '@/app/services/products';
 import { getOrders } from '@/app/services/orders';
 import { getCustomers } from '@/app/services/customers';
 
-const dashboardStats = {
-  revenue: { label: 'Ventas', total: 28456000, change: 12.5, prefix: '$' },
-  orders: { label: 'Pedidos', total: 342, change: 8.2 },
-  customers: { label: 'Clientes', total: 1284, change: 4.1 },
-  products: { label: 'Productos', total: 89, change: -2.4 },
-};
-
-const recentOrders = [
-  { id: 'ORD-001', customer: 'María García', total: 780000, status: 'Entregado', date: 'Hace 2 horas' },
-  { id: 'ORD-002', customer: 'Carlos Rodríguez', total: 520000, status: 'En proceso', date: 'Hace 4 horas' },
-  { id: 'ORD-003', customer: 'Ana María Torres', total: 245000, status: 'Enviado', date: 'Hace 6 horas' },
-  { id: 'ORD-004', customer: 'Juan Pablo Méndez', total: 165000, status: 'Cancelado', date: 'Hace 8 horas' },
-  { id: 'ORD-005', customer: 'Laura Fernández', total: 340000, status: 'Entregado', date: 'Hace 12 horas' },
-];
-
 export default function AdminDashboard() {
-  const [stats, setStats] = useState(dashboardStats);
+  const [stats, setStats] = useState({
+    revenue: { label: 'Ventas', total: 0, change: 0, prefix: '$' },
+    orders: { label: 'Pedidos', total: 0, change: 0 },
+    customers: { label: 'Clientes', total: 0, change: 0 },
+    products: { label: 'Productos', total: 0, change: 0 },
+  });
+  const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,6 +40,16 @@ export default function AdminDashboard() {
           customers: { label: 'Clientes', total: customersCount, change: 4.1 },
           products: { label: 'Productos', total: productsCount, change: -2.4 },
         });
+
+        setRecentOrders(
+          ordersList.map((order) => ({
+            id: order.orderNumber || order.id,
+            customer: order.customerEmail || 'Cliente',
+            total: Number(order.total || 0),
+            status: order.status,
+            date: order.createdAt ? new Date(order.createdAt).toLocaleDateString('es-CO') : '',
+          }))
+        );
       } catch (err) {
         console.error('Failed to load dashboard stats:', err.message);
       } finally {
@@ -102,28 +103,32 @@ export default function AdminDashboard() {
               <div className="bg-sisley-white border border-sisley-border p-6">
                 <h2 className="text-[11px] uppercase tracking-widest text-sisley-muted mb-6">Actividad reciente</h2>
                 <div className="space-y-0">
-                  {recentOrders.map((order) => (
-                    <div key={order.id} className="flex items-center justify-between py-3 border-b border-sisley-border last:border-0">
-                      <div>
-                        <p className="text-sm text-sisley-text">{order.id}</p>
-                        <p className="text-xs text-sisley-muted">{order.customer}</p>
+                  {recentOrders.length === 0 ? (
+                    <p className="text-sm text-sisley-muted">Sin actividad reciente</p>
+                  ) : (
+                    recentOrders.map((order) => (
+                      <div key={order.id} className="flex items-center justify-between py-3 border-b border-sisley-border last:border-0">
+                        <div>
+                          <p className="text-sm text-sisley-text">{order.id}</p>
+                          <p className="text-xs text-sisley-muted">{order.customer}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm text-sisley-text">${Number(order.total).toLocaleString('es-CO')}</p>
+                          <Badge
+                            variant={
+                              order.status === 'DELIVERED' || order.status === 'Entregado' ? 'success' :
+                              order.status === 'CANCELLED' || order.status === 'Cancelado' ? 'danger' :
+                              order.status === 'SHIPPED' || order.status === 'Enviado' ? 'info' : 'warning'
+                            }
+                            size="sm"
+                            mode="admin"
+                          >
+                            {order.status.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                          </Badge>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm text-sisley-text">${Number(order.total).toLocaleString('es-CO')}</p>
-                        <Badge
-                          variant={
-                            order.status === 'Entregado' ? 'success' :
-                            order.status === 'Cancelado' ? 'danger' :
-                            order.status === 'Enviado' ? 'info' : 'warning'
-                          }
-                          size="sm"
-                          mode="admin"
-                        >
-                          {order.status}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
             </div>

@@ -1,31 +1,109 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import Button from '@/app/components/Button';
 import Input from '@/app/components/Input';
-import { products } from '@/data/products';
+import { getProduct, updateProduct } from '@/app/services/products';
+import { getCategories } from '@/app/services/categories';
+import { useAuth } from '@/app/contexts/AuthContext';
 
-export default function EditarProducto({ params }) {
-  const product = products.find((p) => p.id === parseInt(params.id));
-
+export default function EditarProducto() {
+  const params = useParams();
+  const router = useRouter();
+  const [product, setProduct] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
-    name: product?.name || '',
-    category: product?.category || '',
-    price: product?.price?.toString() || '',
-    originalPrice: product?.originalPrice?.toString() || '',
-    badge: product?.badge || '',
-    description: product?.description || '',
-    ingredients: product?.ingredients?.join(', ') || '',
+    name: '',
+    category: '',
+    price: '',
+    originalPrice: '',
+    badge: '',
+    description: '',
+    ingredients: '',
   });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+  const { hasPermission } = useAuth();
+
+  useEffect(() => {
+    async function load() {
+      try {
+        setLoading(true);
+        const [productRes, categoriesRes] = await Promise.all([
+          getProduct(params.id),
+          getCategories({ status: 'active', limit: '100' }),
+        ]);
+        setProduct(productRes.data);
+        setCategories(categoriesRes.data || []);
+        setFormData({
+          name: productRes.data?.name || '',
+          category: productRes.data?.categoryId?.toString() || '',
+          price: productRes.data?.price?.toString() || '',
+          originalPrice: productRes.data?.originalPrice?.toString() || '',
+          badge: productRes.data?.badge || '',
+          description: productRes.data?.description || '',
+          ingredients: Array.isArray(productRes.data?.ingredients) ? productRes.data.ingredients.join(', ') : '',
+        });
+      } catch (err) {
+        setError(err.message || 'Error al cargar producto');
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [params.id]);
 
   const updateField = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+
+    try {
+      const payload = {
+        name: formData.name,
+        categoryId: formData.category,
+        price: Number(formData.price),
+        originalPrice: formData.originalPrice ? Number(formData.originalPrice) : null,
+        badge: formData.badge || null,
+        description: formData.description,
+        ingredients: formData.ingredients ? formData.ingredients.split(',').map((s) => s.trim()).filter(Boolean) : [],
+      };
+
+      await updateProduct(params.id, payload);
+      router.push('/admin/productos');
+    } catch (err) {
+      setError(err.message || 'Error al actualizar producto');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="p-6 md:p-8">
+        <p className="text-sm text-sisley-muted">Cargando producto...</p>
+      </div>
+    );
+  }
+
   if (!product) {
     return (
       <div className="p-6 md:p-8">
-        <p className="text-sisley-gray-500">Producto no encontrado.</p>
+        <p className="text-sm text-red-600">Producto no encontrado.</p>
+      </div>
+    );
+  }
+
+  if (!hasPermission('products.update')) {
+    return (
+      <div className="p-6 md:p-8">
+        <p className="text-sm text-red-600">No tienes permisos para editar productos</p>
       </div>
     );
   }
@@ -37,7 +115,7 @@ export default function EditarProducto({ params }) {
         <p className="text-sm text-sisley-gray-500 mt-1">ID: {product.id}</p>
       </div>
 
-      <form className="space-y-6 max-w-3xl" onSubmit={(e) => e.preventDefault()}>
+      <form className="space-y-6 max-w-3xl" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="sm:col-span-2">
             <Input
@@ -58,14 +136,11 @@ export default function EditarProducto({ params }) {
               required
             >
               <option value="">Seleccionar</option>
-              <option value="hidratacion">Hidratación</option>
-              <option value="tratamiento">Tratamiento</option>
-              <option value="proteccion">Protección Solar</option>
-              <option value="limpieza">Limpieza</option>
-              <option value="contorno">Contorno de Ojos</option>
-              <option value="labios">Labios</option>
-              <option value="mascarillas">Mascarillas</option>
-              <option value="tonicos">Tónicos</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
             </select>
           </div>
           <div>
@@ -119,8 +194,14 @@ export default function EditarProducto({ params }) {
           />
         </div>
 
+        {error && (
+          <p className="text-sm text-red-600">{error}</p>
+        )}
+
         <div className="flex gap-4 pt-4">
-          <Button type="submit">Guardar cambios</Button>
+          <Button type="submit" disabled={saving}>
+            {saving ? 'Guardando...' : 'Guardar cambios'}
+          </Button>
           <a href="/admin/productos">
             <Button variant="secondary" type="button">Cancelar</Button>
           </a>
