@@ -5,25 +5,29 @@ export default function Button({
   variant = 'primary',
   size = 'md',
   className = '',
+  disabled = false,
+  type = 'button',
   ...props
 }) {
-  const base = 'inline-flex items-center justify-center transition-all duration-200 focus:outline-none';
-  
+  const base = 'inline-flex items-center justify-center font-sans transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-sisley-black focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+
   const variants = {
-    primary: 'bg-sisley-black text-white hover:bg-sisley-gray-800 active:scale-[0.98]',
+    primary: 'bg-sisley-black text-white hover:bg-sisley-text active:scale-[0.98]',
     secondary: 'bg-transparent border border-sisley-black text-sisley-black hover:bg-sisley-black hover:text-white',
-    ghost: 'bg-transparent text-sisley-gray-600 hover:text-sisley-black underline underline-offset-4',
-    danger: 'bg-red-600 text-white hover:bg-red-700 active:scale-[0.98]',
+    ghost: 'bg-transparent text-sisley-text hover:bg-sisley-gray-100 underline underline-offset-4 decoration-sisley-border-strong hover:decoration-sisley-black',
+    text: 'bg-transparent text-sisley-text hover:text-sisley-black underline underline-offset-4 decoration-sisley-border-strong hover:decoration-sisley-black',
   };
-  
+
   const sizes = {
-    sm: 'px-4 py-2 text-xs uppercase tracking-widest',
+    sm: 'px-5 py-2.5 text-[11px] uppercase tracking-widest',
     md: 'px-6 py-3 text-xs uppercase tracking-widest',
-    lg: 'px-8 py-4 text-sm uppercase tracking-widest',
+    lg: 'px-8 py-4 text-xs uppercase tracking-widest',
   };
 
   return (
     <button
+      type={type}
+      disabled={disabled}
       className={`${base} ${variants[variant]} ${sizes[size]} ${className}`}
       {...props}
     >

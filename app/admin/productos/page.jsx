@@ -11,13 +11,14 @@ export default function AdminProductos() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     async function load() {
       try {
         setLoading(true);
         setError(null);
-        const data = await getProducts({ status: 'active', limit: '100' });
+        const data = await getProducts({ status: 'active', limit: '100', search });
         setProducts(data.data || []);
       } catch (err) {
         setError(err.message);
@@ -26,12 +27,15 @@ export default function AdminProductos() {
       }
     }
     load();
-  }, []);
+  }, [search]);
 
   const columns = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Producto' },
-    { key: 'sku', label: 'SKU' },
+    { key: 'name', label: 'Producto', render: (val, row) => (
+      <div>
+        <p className="text-sm text-sisley-text font-medium">{val}</p>
+        <p className="text-xs text-sisley-muted">{row.sku || row.id}</p>
+      </div>
+    )},
     { key: 'categoryName', label: 'Categoría' },
     { key: 'price', label: 'Precio', render: (val) => `$${Number(val).toLocaleString('es-CO')}` },
     {
@@ -39,15 +43,15 @@ export default function AdminProductos() {
       label: 'Estado',
       render: (val) => {
         const variant = val === 'active' ? 'success' : val === 'draft' ? 'default' : 'danger';
-        return <Badge variant={variant} size="sm">{val}</Badge>;
+        return <Badge variant={variant} size="sm" mode="admin">{val}</Badge>;
       },
     },
     {
       key: 'actions',
       label: 'Acciones',
       render: (_, row) => (
-        <div className="flex gap-2">
-          <Link href={`/admin/productos/editar/${row.id}`} className="text-xs text-sisley-gray-600 hover:text-sisley-black underline">
+        <div className="flex items-center gap-3">
+          <Link href={`/admin/productos/editar/${row.id}`} className="text-xs text-sisley-text-secondary hover:text-sisley-text underline">
             Editar
           </Link>
           <button className="text-xs text-red-600 hover:text-red-700">Eliminar</button>
@@ -57,24 +61,30 @@ export default function AdminProductos() {
   ];
 
   return (
-    <div className="p-6 md:p-8">
+    <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-light text-sisley-black">Productos</h1>
-          <p className="text-sm text-sisley-gray-500 mt-1">{products.length} productos registrados</p>
+          <h1 className="text-2xl font-light text-sisley-text">Productos</h1>
+          <p className="text-sm text-sisley-text-secondary mt-1">{products.length} productos registrados</p>
         </div>
         <Link href="/admin/productos/nuevo">
-          <Button>Nuevo producto</Button>
+          <Button>+ Nuevo producto</Button>
         </Link>
       </div>
 
-      {loading && <p className="text-sm text-sisley-gray-500">Cargando productos...</p>}
-      {error && <p className="text-sm text-red-600">Error: {error}</p>}
-      {!loading && !error && (
-        <div className="bg-sisley-white border border-sisley-gray-200">
-          <Table columns={columns} data={products} />
+      <div className="bg-sisley-white border border-sisley-border mb-6">
+        <div className="p-4 border-b border-sisley-border flex items-center gap-4">
+          <input
+            type="text"
+            placeholder="Buscar productos..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 text-sm bg-transparent border border-sisley-border px-3 py-2 focus:outline-none focus:border-sisley-text"
+          />
+          <Button variant="secondary" size="sm">Filtrar</Button>
         </div>
-      )}
+        <Table columns={columns} data={products} />
+      </div>
     </div>
   );
 }

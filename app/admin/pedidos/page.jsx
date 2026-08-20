@@ -27,7 +27,6 @@ export default function AdminPedidos() {
   }, []);
 
   const columns = [
-    { key: 'id', label: 'ID' },
     { key: 'orderNumber', label: 'Pedido' },
     { key: 'customerEmail', label: 'Cliente' },
     { key: 'createdAt', label: 'Fecha', render: (val) => new Date(val).toLocaleDateString('es-CO') },
@@ -43,14 +42,14 @@ export default function AdminPedidos() {
           val === 'PROCESSING' ? 'default' :
           'warning';
         const label = val.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
-        return <Badge variant={variant} size="sm">{label}</Badge>;
+        return <Badge variant={variant} size="sm" mode="admin">{label}</Badge>;
       },
     },
     {
       key: 'actions',
       label: 'Acciones',
       render: () => (
-        <button className="text-xs text-sisley-gray-600 hover:text-sisley-black underline">
+        <button className="text-xs text-sisley-text-secondary hover:text-sisley-text underline">
           Ver detalle
         </button>
       ),
@@ -58,19 +57,15 @@ export default function AdminPedidos() {
   ];
 
   return (
-    <div className="p-6 md:p-8">
+    <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-light text-sisley-black">Pedidos</h1>
-        <p className="text-sm text-sisley-gray-500 mt-1">{orders.length} pedidos registrados</p>
+        <h1 className="text-2xl font-light text-sisley-text">Pedidos</h1>
+        <p className="text-sm text-sisley-text-secondary mt-1">{orders.length} pedidos registrados</p>
       </div>
 
-      {loading && <p className="text-sm text-sisley-gray-500">Cargando pedidos...</p>}
-      {error && <p className="text-sm text-red-600">Error: {error}</p>}
-      {!loading && !error && (
-        <div className="bg-sisley-white border border-sisley-gray-200">
-          <Table columns={columns} data={orders} />
-        </div>
-      )}
+      <div className="bg-sisley-white border border-sisley-border">
+        <Table columns={columns} data={orders} />
+      </div>
     </div>
   );
 }

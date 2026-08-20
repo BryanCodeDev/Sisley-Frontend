@@ -18,14 +18,14 @@ export default function AdminFacturacion() {
       label: 'Estado',
       render: (val) => {
         const variant = val === 'Pagada' ? 'success' : val === 'Reembolsada' ? 'danger' : 'warning';
-        return <Badge variant={variant} size="sm">{val}</Badge>;
+        return <Badge variant={variant} size="sm" mode="admin">{val}</Badge>;
       },
     },
     {
       key: 'actions',
       label: 'Acciones',
       render: () => (
-        <button className="text-xs text-sisley-gray-600 hover:text-sisley-black underline">
+        <button className="text-xs text-sisley-text-secondary hover:text-sisley-text underline">
           Descargar PDF
         </button>
       ),
@@ -33,13 +33,13 @@ export default function AdminFacturacion() {
   ];
 
   return (
-    <div className="p-6 md:p-8">
+    <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-light text-sisley-black">Facturación</h1>
-        <p className="text-sm text-sisley-gray-500 mt-1">{invoices.length} facturas generadas</p>
+        <h1 className="text-2xl font-light text-sisley-text">Facturación</h1>
+        <p className="text-sm text-sisley-text-secondary mt-1">{invoices.length} facturas generadas</p>
       </div>
 
-      <div className="bg-sisley-white border border-sisley-gray-200">
+      <div className="bg-sisley-white border border-sisley-border">
         <Table columns={columns} data={invoices} />
       </div>
     </div>

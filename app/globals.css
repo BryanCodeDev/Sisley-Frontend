@@ -2,24 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 255, 255, 255;
-  --background-end-rgb: 255, 255, 255;
+::selection {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: rgb(var(--background-start-rgb));
+}
+
+@layer base {
+  * {
+    @apply border-sisley-border;
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #D4D4D4 transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #D4D4D4;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  .focus-ring {
+    @apply outline-none focus:ring-2 focus:ring-sisley-black focus:ring-offset-2 focus:ring-offset-sisley-white;
+  }
+  
+  .transition-base {
+    @apply transition-all duration-200 ease-out;
   }
 }

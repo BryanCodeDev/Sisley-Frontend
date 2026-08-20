@@ -2,45 +2,60 @@
 
 import Link from 'next/link';
 
-export default function Footer() {
-  const footerLinks = {
-    tienda: [
-      { href: '/catalogo', label: 'Todos los productos' },
-      { href: '/catalogo?categoria=hidratacion', label: 'Hidratación' },
-      { href: '/catalogo?categoria=tratamiento', label: 'Tratamiento' },
-      { href: '/catalogo?categoria=proteccion', label: 'Protección solar' },
-    ],
-    cuenta: [
-      { href: '/mi-cuenta', label: 'Mi cuenta' },
-      { href: '/mis-pedidos', label: 'Mis pedidos' },
-      { href: '/carrito', label: 'Carrito' },
-      { href: '/checkout', label: 'Checkout' },
-    ],
-    empresa: [
-      { href: '/', label: 'Sobre nosotros' },
-      { href: '/', label: 'Contacto' },
-      { href: '/', label: 'Política de privacidad' },
-      { href: '/', label: 'Términos y condiciones' },
-    ],
-  };
+const footerLinks = {
+  shop: [
+    { href: '/catalogo', label: 'Todos los productos' },
+    { href: '/catalogo?genero=mujer', label: 'Mujer' },
+    { href: '/catalogo?genero=hombre', label: 'Hombre' },
+    { href: '/catalogo?coleccion=nueva', label: 'Nueva colección' },
+    { href: '/catalogo?ofertas=true', label: 'Ofertas' },
+  ],
+  help: [
+    { href: '/', label: 'Contacto' },
+    { href: '/', label: 'Envíos y entregas' },
+    { href: '/', label: 'Cambios y devoluciones' },
+    { href: '/', label: 'Guía de tallas' },
+    { href: '/', label: 'Preguntas frecuentes' },
+  ],
+  company: [
+    { href: '/', label: 'Sobre Sisley' },
+    { href: '/', label: 'Sostenibilidad' },
+    { href: '/', label: 'Privacidad' },
+    { href: '/', label: 'Términos' },
+  ],
+};
 
+export default function Footer() {
   return (
-    <footer className="bg-sisley-gray-50 border-t border-sisley-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-          <div>
-            <h3 className="text-lg font-light tracking-widest text-sisley-black mb-4">SISLEY</h3>
-            <p className="text-sm text-sisley-gray-500 leading-relaxed">
-              Belleza inteligente. Productos formulados con ingredientes de origen natural para una piel radiante.
+    <footer className="bg-sisley-bg border-t border-sisley-border">
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
+        <div className="py-16 md:py-24 grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8">
+          <div className="col-span-2 md:col-span-1">
+            <Link href="/" className="text-lg font-light tracking-[0.2em] text-sisley-black uppercase">
+              Sisley
+            </Link>
+            <p className="mt-4 text-sm text-sisley-text-secondary leading-relaxed max-w-xs">
+              Moda premium colombiana. Elegancia contemporánea y estilo atemporal.
             </p>
+            <div className="flex items-center gap-4 mt-6">
+              <a href="/" aria-label="Instagram" className="text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                <span className="text-xs uppercase tracking-widest">Ig</span>
+              </a>
+              <a href="/" aria-label="Facebook" className="text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                <span className="text-xs uppercase tracking-widest">Fb</span>
+              </a>
+              <a href="/" aria-label="Twitter" className="text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                <span className="text-xs uppercase tracking-widest">X</span>
+              </a>
+            </div>
           </div>
 
           <div>
-            <h4 className="text-xs uppercase tracking-widest text-sisley-gray-400 mb-4">Tienda</h4>
-            <ul className="space-y-2">
-              {footerLinks.tienda.map((link) => (
+            <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-5">Tienda</p>
+            <ul className="space-y-3">
+              {footerLinks.shop.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-sisley-gray-600 hover:text-sisley-black transition-colors">
+                  <Link href={link.href} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -49,11 +64,24 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-xs uppercase tracking-widest text-sisley-gray-400 mb-4">Cuenta</h4>
-            <ul className="space-y-2">
-              {footerLinks.cuenta.map((link) => (
+            <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-5">Ayuda</p>
+            <ul className="space-y-3">
+              {footerLinks.help.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-sisley-gray-600 hover:text-sisley-black transition-colors">
+                  <Link href={link.href} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-5">Empresa</p>
+            <ul className="space-y-3">
+              {footerLinks.company.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -62,18 +90,18 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-sisley-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-sisley-gray-400">
-            Sisley Colombia. Todos los derechos reservados.
+        <div className="py-6 border-t border-sisley-border flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-sisley-muted">
+            © {new Date().getFullYear()} Sisley Colombia. Todos los derechos reservados.
           </p>
-          <div className="flex gap-6">
-            <Link href="/" className="text-xs text-sisley-gray-400 hover:text-sisley-black transition-colors">
+          <div className="flex items-center gap-6">
+            <Link href="/" className="text-xs text-sisley-muted hover:text-sisley-black transition-colors">
               Privacidad
             </Link>
-            <Link href="/" className="text-xs text-sisley-gray-400 hover:text-sisley-black transition-colors">
+            <Link href="/" className="text-xs text-sisley-muted hover:text-sisley-black transition-colors">
               Términos
             </Link>
-            <Link href="/" className="text-xs text-sisley-gray-400 hover:text-sisley-black transition-colors">
+            <Link href="/" className="text-xs text-sisley-muted hover:text-sisley-black transition-colors">
               Cookies
             </Link>
           </div>

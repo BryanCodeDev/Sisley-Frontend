@@ -27,7 +27,6 @@ export default function AdminClientes() {
   }, []);
 
   const columns = [
-    { key: 'id', label: 'ID' },
     { key: 'firstName', label: 'Nombre', render: (val, row) => `${val} ${row.lastName}` },
     { key: 'email', label: 'Correo' },
     { key: 'phone', label: 'Teléfono' },
@@ -36,14 +35,14 @@ export default function AdminClientes() {
       label: 'Estado',
       render: (val) => {
         const variant = val === 'active' ? 'success' : val === 'blocked' ? 'danger' : 'default';
-        return <Badge variant={variant} size="sm">{val}</Badge>;
+        return <Badge variant={variant} size="sm" mode="admin">{val}</Badge>;
       },
     },
     {
       key: 'actions',
       label: 'Acciones',
       render: () => (
-        <button className="text-xs text-sisley-gray-600 hover:text-sisley-black underline">
+        <button className="text-xs text-sisley-text-secondary hover:text-sisley-text underline">
           Ver detalle
         </button>
       ),
@@ -51,16 +50,16 @@ export default function AdminClientes() {
   ];
 
   return (
-    <div className="p-6 md:p-8">
+    <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-light text-sisley-black">Clientes</h1>
-        <p className="text-sm text-sisley-gray-500 mt-1">{customers.length} clientes registrados</p>
+        <h1 className="text-2xl font-light text-sisley-text">Clientes</h1>
+        <p className="text-sm text-sisley-text-secondary mt-1">{customers.length} clientes registrados</p>
       </div>
 
-      {loading && <p className="text-sm text-sisley-gray-500">Cargando clientes...</p>}
+      {loading && <p className="text-sm text-sisley-muted">Cargando clientes...</p>}
       {error && <p className="text-sm text-red-600">Error: {error}</p>}
       {!loading && !error && (
-        <div className="bg-sisley-white border border-sisley-gray-200">
+        <div className="bg-sisley-white border border-sisley-border">
           <Table columns={columns} data={customers} />
         </div>
       )}

@@ -54,9 +54,9 @@ export default function AdminInventario() {
       key: 'status',
       label: 'Estado',
       render: (val, row) => {
-        if (row.stock === 0) return <Badge variant="danger" size="sm">Agotado</Badge>;
-        if (row.stock <= row.minStock) return <Badge variant="warning" size="sm">Bajo</Badge>;
-        return <Badge variant="success" size="sm">Normal</Badge>;
+        if (row.stock === 0) return <Badge variant="danger" size="sm" mode="admin">Agotado</Badge>;
+        if (row.stock <= row.minStock) return <Badge variant="warning" size="sm" mode="admin">Bajo</Badge>;
+        return <Badge variant="success" size="sm" mode="admin">Normal</Badge>;
       },
     },
     {
@@ -69,22 +69,22 @@ export default function AdminInventario() {
   ];
 
   return (
-    <div className="p-6 md:p-8">
+    <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-light text-sisley-black">Inventario</h1>
-          <p className="text-sm text-sisley-gray-500 mt-1">{inventory.length} variantes en bodega</p>
+          <h1 className="text-2xl font-light text-sisley-text">Inventario</h1>
+          <p className="text-sm text-sisley-text-secondary mt-1">{inventory.length} variantes en bodega</p>
         </div>
         <div className="flex gap-3">
-          <Badge variant="danger" size="md">{outOfStock} agotados</Badge>
-          <Badge variant="warning" size="md">{lowStock} stock bajo</Badge>
+          <Badge variant="danger" size="md" mode="admin">{outOfStock} agotados</Badge>
+          <Badge variant="warning" size="md" mode="admin">{lowStock} stock bajo</Badge>
         </div>
       </div>
 
-      {loading && <p className="text-sm text-sisley-gray-500">Cargando inventario...</p>}
+      {loading && <p className="text-sm text-sisley-muted">Cargando inventario...</p>}
       {error && <p className="text-sm text-red-600">Error: {error}</p>}
       {!loading && !error && (
-        <div className="bg-sisley-white border border-sisley-gray-200">
+        <div className="bg-sisley-white border border-sisley-border">
           <Table columns={columns} data={inventory} />
         </div>
       )}
