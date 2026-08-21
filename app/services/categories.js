@@ -16,9 +16,8 @@ export async function getCategory(id) {
 }
 
 export async function getCategoryBySlug(slug) {
-  const data = await api.get(`/api/categories?search=${encodeURIComponent(slug)}`);
-  const item = data.data?.find((c) => c.slug === slug);
-  if (item) return item;
+  const data = await api.get(`/api/categories?slug=${encodeURIComponent(slug)}`);
+  if (data.data) return data.data;
   return api.get(`/api/categories/${slug}`);
 }
 

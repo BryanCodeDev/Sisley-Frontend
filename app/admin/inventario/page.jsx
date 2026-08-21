@@ -3,52 +3,161 @@
 import { useEffect, useState } from 'react';
 import Badge from '@/app/components/Badge';
 import Button from '@/app/components/Button';
+import Input from '@/app/components/Input';
 import Table from '@/app/components/Table';
-import { getProducts } from '@/app/services/products';
+import { getInventoryFromProducts, adjustInventory } from '@/app/services/inventory';
+
+function AdjustStockModal({ item, onClose, onAdjusted }) {
+  const [quantity, setQuantity] = useState('');
+  const [type, setType] = useState('adjustment');
+  const [reason, setReason] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  if (!item) return null;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      await adjustInventory(item.id, {
+        quantity: Number(quantity),
+        type,
+        reason,
+      });
+      onAdjusted();
+      onClose();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative bg-sisley-white border border-sisley-border w-full max-w-md">
+        <div className="p-6 border-b border-sisley-border flex items-center justify-between">
+          <h3 className="text-lg font-light text-sisley-text">Ajustar stock</h3>
+          <button onClick={onClose} className="p-2 text-sisley-text-secondary hover:text-sisley-text transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div className="bg-sisley-bg border border-sisley-border p-3">
+            <p className="text-sm font-medium text-sisley-text">{item.name}</p>
+            <p className="text-xs text-sisley-muted">SKU: {item.sku} | Stock actual: {item.stock}</p>
+          </div>
+
+          <Input
+            label="Cantidad"
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            placeholder="Ingrese cantidad (+ o -)"
+            required
+          />
+
+          <div>
+            <label className="block text-[11px] uppercase tracking-widest text-sisley-text-secondary mb-2">
+              Tipo de movimiento
+            </label>
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className="w-full px-4 py-3 text-sm bg-sisley-white border border-sisley-border focus:outline-none focus:border-sisley-black focus:ring-1 focus:ring-sisley-black"
+            >
+              <option value="in">Entrada (in)</option>
+              <option value="out">Salida (out)</option>
+              <option value="adjustment">Ajuste (adjustment)</option>
+            </select>
+          </div>
+
+          <Input
+            label="Motivo"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="Motivo del ajuste"
+          />
+
+          {error && <p className="text-sm text-red-600">{error}</p>}
+
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <Button variant="secondary" type="button" onClick={onClose}>Cancelar</Button>
+            <Button type="submit" disabled={loading || !quantity}>
+              {loading ? 'Guardando...' : 'Guardar ajuste'}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function InventoryRowSkeleton() {
+  return (
+    <tr className="border-b border-sisley-gray-100">
+      <td className="py-3 px-4"><div className="h-4 w-20 bg-sisley-border rounded animate-pulse" /></td>
+      <td className="py-3 px-4"><div className="h-4 w-32 bg-sisley-border rounded animate-pulse" /></td>
+      <td className="py-3 px-4"><div className="h-4 w-16 bg-sisley-border rounded animate-pulse" /></td>
+      <td className="py-3 px-4"><div className="h-4 w-12 bg-sisley-border rounded animate-pulse" /></td>
+      <td className="py-3 px-4"><div className="h-4 w-10 bg-sisley-border rounded animate-pulse" /></td>
+      <td className="py-3 px-4"><div className="h-4 w-10 bg-sisley-border rounded animate-pulse" /></td>
+      <td className="py-3 px-4"><div className="h-6 w-16 bg-sisley-border rounded animate-pulse" /></td>
+      <td className="py-3 px-4"><div className="h-6 w-20 bg-sisley-border rounded animate-pulse" /></td>
+    </tr>
+  );
+}
 
 export default function AdminInventario() {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [lowStock, setLowStock] = useState(0);
+  const [outOfStock, setOutOfStock] = useState(0);
+
+  const loadInventory = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await getInventoryFromProducts({ limit: '100' });
+      const items = (data.data || []).map((item) => ({
+        ...item,
+        minStock: item.minStock || 10,
+      }));
+      setInventory(items);
+      setLowStock(items.filter((item) => item.stock > 0 && item.stock <= item.minStock).length);
+      setOutOfStock(items.filter((item) => item.stock === 0).length);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function load() {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await getProducts({ status: 'active', limit: '100' });
-        const items = (data.data || []).flatMap((product) =>
-          (product.variants || []).map((variant) => ({
-            id: variant.id,
-            sku: variant.sku,
-            name: product.name,
-            stock: variant.stock,
-            minStock: 1,
-            maxStock: 100,
-            status: variant.status,
-          }))
-        );
-        setInventory(items);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
+    loadInventory();
   }, []);
-
-  const lowStock = inventory.filter((item) => item.stock > 0 && item.stock <= item.minStock).length;
-  const outOfStock = inventory.filter((item) => item.stock === 0).length;
 
   const columns = [
     { key: 'sku', label: 'SKU' },
     { key: 'name', label: 'Producto' },
-    { key: 'stock', label: 'Stock', render: (val, row) => (
-      <span className={val === 0 ? 'text-red-600 font-medium' : val <= row.minStock ? 'text-yellow-600 font-medium' : ''}>
-        {val}
-      </span>
-    )},
+    { key: 'color', label: 'Color', render: (val) => val || '—' },
+    { key: 'size', label: 'Talla', render: (val) => val || '—' },
+    {
+      key: 'stock',
+      label: 'Stock',
+      render: (val, row) => (
+        <span className={val === 0 ? 'text-red-600 font-medium' : val <= row.minStock ? 'text-yellow-600 font-medium' : ''}>
+          {val}
+        </span>
+      ),
+    },
     { key: 'minStock', label: 'Mínimo' },
     {
       key: 'status',
@@ -62,8 +171,10 @@ export default function AdminInventario() {
     {
       key: 'actions',
       label: 'Acciones',
-      render: () => (
-        <Button variant="ghost" size="sm">Actualizar</Button>
+      render: (_, row) => (
+        <Button variant="ghost" size="sm" onClick={() => setSelectedItem(row)}>
+          Ajustar stock
+        </Button>
       ),
     },
   ];
@@ -81,12 +192,36 @@ export default function AdminInventario() {
         </div>
       </div>
 
-      {loading && <p className="text-sm text-sisley-muted">Cargando inventario...</p>}
-      {error && <p className="text-sm text-red-600">Error: {error}</p>}
-      {!loading && !error && (
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 mb-6">
+          {error}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="bg-sisley-white border border-sisley-border">
+          <div className="p-4">
+            <div className="space-y-0">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => <InventoryRowSkeleton key={i} />)}
+            </div>
+          </div>
+        </div>
+      ) : inventory.length === 0 ? (
+        <div className="bg-sisley-white border border-sisley-border py-12 text-center text-sisley-muted">
+          <p className="text-sm">No hay variantes de inventario para mostrar</p>
+        </div>
+      ) : (
         <div className="bg-sisley-white border border-sisley-border">
           <Table columns={columns} data={inventory} />
         </div>
+      )}
+
+      {selectedItem && (
+        <AdjustStockModal
+          item={selectedItem}
+          onClose={() => setSelectedItem(null)}
+          onAdjusted={loadInventory}
+        />
       )}
     </div>
   );

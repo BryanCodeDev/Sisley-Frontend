@@ -7,6 +7,36 @@ import ActivityList from '@/app/components/ActivityList';
 import { getProducts } from '@/app/services/products';
 import { getOrders } from '@/app/services/orders';
 import { getCustomers } from '@/app/services/customers';
+import { getInventoryFromProducts } from '@/app/services/inventory';
+
+function SkeletonCard() {
+  return (
+    <div className="bg-sisley-white border border-sisley-border p-6 animate-pulse">
+      <div className="flex items-start justify-between mb-4">
+        <div className="h-3 w-20 bg-sisley-border rounded" />
+        <div className="h-8 w-8 bg-sisley-border rounded" />
+      </div>
+      <div className="h-8 w-24 bg-sisley-border rounded mb-2" />
+      <div className="h-3 w-16 bg-sisley-border rounded" />
+    </div>
+  );
+}
+
+function SkeletonActivity() {
+  return (
+    <div className="space-y-0">
+      {[1, 2, 3, 4].map((i) => (
+        <div key={i} className="flex items-start gap-4 py-3 border-b border-sisley-border last:border-0 animate-pulse">
+          <div className="w-8 h-8 bg-sisley-border rounded flex-shrink-0" />
+          <div className="flex-1 space-y-2">
+            <div className="h-4 w-3/4 bg-sisley-border rounded" />
+            <div className="h-3 w-1/2 bg-sisley-border rounded" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -16,16 +46,20 @@ export default function AdminDashboard() {
     products: { label: 'Productos', total: 0, change: 0 },
   });
   const [recentOrders, setRecentOrders] = useState([]);
+  const [stockAlerts, setStockAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function load() {
       try {
         setLoading(true);
-        const [productsRes, ordersRes, customersRes] = await Promise.all([
+        setError(null);
+        const [productsRes, ordersRes, customersRes, inventoryRes] = await Promise.all([
           getProducts({ status: 'active', limit: '1' }),
           getOrders({ limit: '5' }),
           getCustomers({ status: 'active', limit: '1' }),
+          getInventoryFromProducts({ limit: '100' }),
         ]);
 
         const productsCount = productsRes.pagination?.total || 0;
@@ -50,8 +84,21 @@ export default function AdminDashboard() {
             date: order.createdAt ? new Date(order.createdAt).toLocaleDateString('es-CO') : '',
           }))
         );
+
+        const inventoryItems = inventoryRes.data || [];
+        const alerts = inventoryItems
+          .filter((item) => item.stock === 0 || item.stock <= item.minStock)
+          .map((item) => ({
+            title: item.stock === 0
+              ? `${item.name} — Agotado`
+              : `${item.name} — Stock bajo (${item.stock})`,
+            time: 'Revisar ahora',
+          }))
+          .slice(0, 5);
+        setStockAlerts(alerts);
       } catch (err) {
         console.error('Failed to load dashboard stats:', err.message);
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -66,8 +113,35 @@ export default function AdminDashboard() {
         <p className="text-sm text-sisley-text-secondary mt-1">Vista general del negocio</p>
       </div>
 
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 mb-6">
+          {error}
+        </div>
+      )}
+
       {loading ? (
-        <p className="text-sm text-sisley-muted">Cargando...</p>
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+            <div className="lg:col-span-2">
+              <div className="bg-sisley-white border border-sisley-border p-6">
+                <div className="h-3 w-32 bg-sisley-border rounded mb-6 animate-pulse" />
+                <SkeletonActivity />
+              </div>
+            </div>
+            <div>
+              <div className="bg-sisley-white border border-sisley-border p-6">
+                <div className="h-3 w-32 bg-sisley-border rounded mb-6 animate-pulse" />
+                <SkeletonActivity />
+              </div>
+            </div>
+          </div>
+        </>
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
@@ -137,12 +211,7 @@ export default function AdminDashboard() {
               <div className="bg-sisley-white border border-sisley-border p-6">
                 <h2 className="text-[11px] uppercase tracking-widest text-sisley-muted mb-6">Alertas de stock</h2>
                 <ActivityList
-                  items={[
-                    { title: 'Mascarilla de Arcilla Purificante — Agotado', time: 'Hace 1 hora' },
-                    { title: 'Bálsamo Labial Reparador — Stock bajo (3)', time: 'Hace 3 horas' },
-                    { title: 'Sérum Iluminador Éclat — Stock bajo (8)', time: 'Hace 5 horas' },
-                    { title: 'Contorno de Ojos Antioxidante — Stock normal', time: 'Hace 8 horas' },
-                  ]}
+                  items={stockAlerts.length === 0 ? [{ title: 'Sin alertas de stock', time: 'Todo en orden' }] : stockAlerts}
                 />
               </div>
             </div>

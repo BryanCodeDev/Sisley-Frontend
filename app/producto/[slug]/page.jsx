@@ -12,6 +12,7 @@ import ImageWithPlaceholder from '@/app/components/ImageWithPlaceholder';
 import Link from 'next/link';
 import { useParams, notFound } from 'next/navigation';
 import { getProductBySlug, getProducts } from '@/app/services/products';
+import { addToCart } from '@/app/services/cart';
 
 export default function ProductoPage() {
   const params = useParams();
@@ -47,9 +48,15 @@ export default function ProductoPage() {
     load();
   }, [params.slug]);
 
-  const handleAddToCart = () => {
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({ variantId: selectedVariant?.id || product.id, quantity });
+      setAdded(true);
+      setTimeout(() => setAdded(false), 2000);
+    } catch (err) {
+      console.error('Error adding to cart:', err.message);
+      alert('Error al agregar al carrito');
+    }
   };
 
   if (loading) {

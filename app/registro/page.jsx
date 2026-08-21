@@ -1,11 +1,72 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import Button from '@/app/components/Button';
 import Input from '@/app/components/Input';
+import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 
 export default function Registro() {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    password: '',
+    confirmPassword: '',
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const { register } = useCustomerAuth();
+  const router = useRouter();
+
+  const updateField = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Las contraseñas no coinciden');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError('La contraseña debe tener al menos 8 caracteres');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const result = await register({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+      });
+
+      if (result.success) {
+        setSuccess(true);
+        router.push('/');
+      } else {
+        setError(result.message || 'Error al crear la cuenta');
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -30,22 +91,36 @@ export default function Registro() {
                 <p className="text-sm text-sisley-muted">Únete a Sisley Colombia</p>
               </div>
 
-              <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Input label="Nombre" required />
-                  <Input label="Apellido" required />
+              {error && (
+                <div className="mb-6">
+                  <p className="text-sm text-red-600">{error}</p>
                 </div>
-                <Input label="Correo electrónico" type="email" placeholder="tu@email.com" required />
-                <Input label="Teléfono" type="tel" placeholder="+57 300 000 0000" />
-                <Input label="Contraseña" type="password" placeholder="Mínimo 8 caracteres" required />
-                <Input label="Confirmar contraseña" type="password" required />
+              )}
+
+              {success && (
+                <div className="mb-6">
+                  <p className="text-sm text-green-600">Cuenta creada exitosamente. Redirigiendo...</p>
+                </div>
+              )}
+
+              <form className="space-y-5" onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Input label="Nombre" value={formData.firstName} onChange={(e) => updateField('firstName', e.target.value)} required />
+                  <Input label="Apellido" value={formData.lastName} onChange={(e) => updateField('lastName', e.target.value)} required />
+                </div>
+                <Input label="Correo electrónico" type="email" placeholder="tu@email.com" value={formData.email} onChange={(e) => updateField('email', e.target.value)} required />
+                <Input label="Teléfono" type="tel" placeholder="+57 300 000 0000" value={formData.phone} onChange={(e) => updateField('phone', e.target.value)} />
+                <Input label="Contraseña" type="password" placeholder="Mínimo 8 caracteres" value={formData.password} onChange={(e) => updateField('password', e.target.value)} required />
+                <Input label="Confirmar contraseña" type="password" value={formData.confirmPassword} onChange={(e) => updateField('confirmPassword', e.target.value)} required />
                 <label className="flex items-start gap-2">
                   <input type="checkbox" className="accent-sisley-black mt-1" required />
                   <span className="text-xs text-sisley-text-secondary leading-relaxed">
                     Acepto los términos y condiciones y la política de privacidad de Sisley Colombia.
                   </span>
                 </label>
-                <Button size="lg" className="w-full">Crear cuenta</Button>
+                <Button size="lg" className="w-full" type="submit" disabled={loading || success}>
+                  {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+                </Button>
               </form>
 
               <div className="mt-10 text-center">

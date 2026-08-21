@@ -1,36 +1,110 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import ProductCard from '@/app/components/ProductCard';
 import Button from '@/app/components/Button';
 import SectionHeader from '@/app/components/SectionHeader';
-import { products } from '@/data/products';
-import { getCategoryBySlug, categories } from '@/data/categories';
+import Skeleton from '@/app/components/Skeleton';
+import { getCategoryBySlug } from '@/app/services/categories';
+import { getProducts } from '@/app/services/products';
 import { useParams, notFound } from 'next/navigation';
 import Link from 'next/link';
 
 export default function CategoriaPage() {
   const params = useParams();
-  const slug = params.slug;
-  const category = getCategoryBySlug(slug);
-
+  const [category, setCategory] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [sort, setSort] = useState('destacados');
 
-  let categoryProducts = category ? products.filter((p) => p.category === category.id) : [];
+  useEffect(() => {
+    async function load() {
+      try {
+        setLoading(true);
+        setError(null);
+        const catData = await getCategoryBySlug(params.slug);
+        if (!catData) {
+          notFound();
+          return;
+        }
+        setCategory(catData);
+
+        const prodData = await getProducts({ category: catData.id, status: 'active' });
+        setProducts(prodData.data || []);
+      } catch (err) {
+        if (err.message?.includes('404')) {
+          notFound();
+          return;
+        }
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [params.slug]);
+
+  let sortedProducts = [...products];
 
   if (sort === 'precio-asc') {
-    categoryProducts.sort((a, b) => a.price - b.price);
+    sortedProducts.sort((a, b) => Number(a.price) - Number(b.price));
   } else if (sort === 'precio-desc') {
-    categoryProducts.sort((a, b) => b.price - a.price);
+    sortedProducts.sort((a, b) => Number(b.price) - Number(a.price));
   } else if (sort === 'nombre') {
-    categoryProducts.sort((a, b) => a.name.localeCompare(b.name));
+    sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
   } else {
-    categoryProducts.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+    sortedProducts.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
   }
 
-  if (!category) {
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen bg-sisley-white">
+          <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
+            <Skeleton className="h-8 w-48 mb-10" />
+            <Skeleton className="h-10 w-full mb-8" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i}>
+                  <Skeleton className="aspect-[3/4] w-full mb-4" />
+                  <Skeleton className="h-4 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-1/4" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen bg-sisley-white">
+          <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-20 text-center">
+            <p className="text-sm text-red-600 mb-4">Error: {error}</p>
+            <Button onClick={() => window.location.reload()}>Reintentar</Button>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  let categoryNotFound = false;
+
+  if (!loading && !category && !error) {
+    categoryNotFound = true;
+  }
+
+  if (categoryNotFound) {
     notFound();
   }
 
@@ -42,15 +116,15 @@ export default function CategoriaPage() {
           <div className="mb-10">
             <SectionHeader
               eyebrow="Categoría"
-              title={category.name}
-              subtitle={category.description}
+              title={category?.name || 'Categoría'}
+              subtitle={category?.description}
               align="left"
             />
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-sisley-border">
             <p className="text-sm text-sisley-text-secondary">
-              {categoryProducts.length} {categoryProducts.length === 1 ? 'producto' : 'productos'}
+              {sortedProducts.length} {sortedProducts.length === 1 ? 'producto' : 'productos'}
             </p>
             <select
               value={sort}
@@ -64,7 +138,7 @@ export default function CategoriaPage() {
             </select>
           </div>
 
-          {categoryProducts.length === 0 ? (
+          {sortedProducts.length === 0 ? (
             <div className="py-20 text-center">
               <p className="text-sisley-muted mb-4">No hay productos en esta categoría</p>
               <Link href="/catalogo">
@@ -73,7 +147,7 @@ export default function CategoriaPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-              {categoryProducts.map((product) => (
+              {sortedProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>

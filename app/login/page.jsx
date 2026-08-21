@@ -7,13 +7,16 @@ import Footer from '@/app/components/Footer';
 import Button from '@/app/components/Button';
 import Input from '@/app/components/Input';
 import { useAuth } from '@/app/contexts/AuthContext';
+import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { login } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const adminLogin = useAuth().login;
+  const customerLogin = useCustomerAuth().login;
   const router = useRouter();
 
   async function handleSubmit(e) {
@@ -21,10 +24,15 @@ export default function Login() {
     setLoading(true);
     setError(null);
 
-    const result = await login(email, password);
+    let result;
+    if (isAdmin) {
+      result = await adminLogin(email, password);
+    } else {
+      result = await customerLogin(email, password);
+    }
 
     if (result.success) {
-      router.push('/admin');
+      router.push(isAdmin ? '/admin' : '/');
     } else {
       setError(result.message);
     }
@@ -53,7 +61,16 @@ export default function Login() {
             <div className="w-full max-w-md">
               <div className="mb-10">
                 <h1 className="font-serif text-2xl md:text-3xl font-light text-sisley-text tracking-tight mb-2">Iniciar sesión</h1>
-                <p className="text-sm text-sisley-muted">Accede a tu cuenta de Sisley</p>
+                <p className="text-sm text-sisley-muted">
+                  {isAdmin ? 'Acceso administrativo' : 'Accede a tu cuenta de Sisley'}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsAdmin(!isAdmin)}
+                  className="text-xs text-sisley-text underline underline-offset-4 mt-2 hover:opacity-70"
+                >
+                  {isAdmin ? '¿Eres cliente? Inicia sesión aquí' : '¿Eres administrador? Acceder aquí'}
+                </button>
               </div>
 
               <form className="space-y-5" onSubmit={handleSubmit}>

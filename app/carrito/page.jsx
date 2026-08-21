@@ -1,33 +1,112 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import Button from '@/app/components/Button';
+import Skeleton from '@/app/components/Skeleton';
 import Link from 'next/link';
+import { getCart, updateCartItem, removeCartItem } from '@/app/services/cart';
 
 export default function Carrito() {
-  const [cartItems, setCartItems] = useState([
-    { id: 1, name: 'Crema Hidratante Velours', variant: '100ml', price: 420000, quantity: 1 },
-    { id: 3, name: 'Protector Solar Matifiante', variant: '50ml', price: 195000, quantity: 2 },
-  ]);
+  const [cartItems, setCartItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [updating, setUpdating] = useState({});
 
-  const updateQuantity = (id, delta) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item
-      )
-    );
+  useEffect(() => {
+    async function load() {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await getCart();
+        const items = data.data?.items || [];
+        setCartItems(items);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
+
+  const handleUpdateQuantity = async (itemId, newQuantity) => {
+    if (newQuantity < 1) return;
+    setUpdating((prev) => ({ ...prev, [itemId]: true }));
+    try {
+      await updateCartItem(itemId, newQuantity);
+      setCartItems((items) =>
+        items.map((item) => (item.id === itemId ? { ...item, quantity: newQuantity } : item))
+      );
+    } catch (err) {
+      console.error('Error updating quantity:', err.message);
+    } finally {
+      setUpdating((prev) => ({ ...prev, [itemId]: false }));
+    }
   };
 
-  const removeItem = (id) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
+  const handleRemoveItem = async (itemId) => {
+    setUpdating((prev) => ({ ...prev, [itemId]: true }));
+    try {
+      await removeCartItem(itemId);
+      setCartItems((items) => items.filter((item) => item.id !== itemId));
+    } catch (err) {
+      console.error('Error removing item:', err.message);
+      setUpdating((prev) => ({ ...prev, [itemId]: false }));
+    }
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = cartItems.reduce((sum, item) => sum + Number(item.unitPrice) * item.quantity, 0);
   const shipping = subtotal > 500000 ? 0 : 25000;
   const tax = Math.round(subtotal * 0.19);
   const total = subtotal + shipping + tax;
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen bg-sisley-white">
+          <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
+            <Skeleton className="h-8 w-48 mb-10" />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 md:gap-16">
+              <div className="lg:col-span-2 space-y-4">
+                {[1, 2].map((i) => (
+                  <div key={i} className="py-8 flex gap-6 border-b border-sisley-border">
+                    <Skeleton className="w-24 h-32 flex-shrink-0" />
+                    <div className="flex-1 space-y-3">
+                      <Skeleton className="h-5 w-3/4" />
+                      <Skeleton className="h-4 w-1/4" />
+                      <Skeleton className="h-8 w-32" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="lg:sticky lg:top-24 lg:self-start">
+                <Skeleton className="h-80 w-full" />
+              </div>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen bg-sisley-white">
+          <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-20 text-center">
+            <p className="text-sm text-red-600 mb-4">Error: {error}</p>
+            <Button onClick={() => window.location.reload()}>Reintentar</Button>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   if (cartItems.length === 0) {
     return (
@@ -74,10 +153,11 @@ export default function Carrito() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start mb-1">
-                        <h3 className="text-sm font-medium text-sisley-text truncate pr-4">{item.name}</h3>
+                        <h3 className="text-sm font-medium text-sisley-text truncate pr-4">{item.productName}</h3>
                         <button
-                          onClick={() => removeItem(item.id)}
-                          className="text-sisley-muted hover:text-sisley-black transition-colors flex-shrink-0"
+                          onClick={() => handleRemoveItem(item.id)}
+                          disabled={updating[item.id]}
+                          className="text-sisley-muted hover:text-sisley-black transition-colors flex-shrink-0 disabled:opacity-50"
                           aria-label="Eliminar"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -85,12 +165,13 @@ export default function Carrito() {
                           </svg>
                         </button>
                       </div>
-                      <p className="text-xs text-sisley-muted mb-4">{item.variant}</p>
+                      <p className="text-xs text-sisley-muted mb-4">{item.color && item.size ? `${item.color} / ${item.size}` : item.productName}</p>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <button
-                            onClick={() => updateQuantity(item.id, -1)}
-                            className="w-8 h-8 flex items-center justify-center border border-sisley-border hover:border-sisley-black transition-colors"
+                            onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                            disabled={updating[item.id] || item.quantity <= 1}
+                            className="w-8 h-8 flex items-center justify-center border border-sisley-border hover:border-sisley-black transition-colors disabled:opacity-50"
                           >
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M18 12H6" />
@@ -98,16 +179,17 @@ export default function Carrito() {
                           </button>
                           <span className="text-sm w-6 text-center">{item.quantity}</span>
                           <button
-                            onClick={() => updateQuantity(item.id, 1)}
-                            className="w-8 h-8 flex items-center justify-center border border-sisley-border hover:border-sisley-black transition-colors"
+                            onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                            disabled={updating[item.id]}
+                            className="w-8 h-8 flex items-center justify-center border border-sisley-border hover:border-sisley-black transition-colors disabled:opacity-50"
                           >
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
                             </svg>
                           </button>
                         </div>
-                        <p className="text-sm text-sisley-text">
-                          ${(item.price * item.quantity).toLocaleString('es-CO')}
+                         <p className="text-sm text-sisley-text">
+                          ${(Number(item.unitPrice) * item.quantity).toLocaleString('es-CO')}
                         </p>
                       </div>
                     </div>
