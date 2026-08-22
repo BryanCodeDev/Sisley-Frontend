@@ -17,7 +17,7 @@ export async function getCart() {
 }
 
 export async function addToCart({ variantId, quantity = 1 }) {
-  return api.post('/api/cart/items', { variantId, quantity }, {
+  return api.post('/api/cart', { variantId, quantity }, {
     headers: { 'x-session-id': getSessionId() },
   });
 }
