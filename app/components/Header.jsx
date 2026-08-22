@@ -3,21 +3,21 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import UserDropdown from './UserDropdown';
+import { usePathname } from 'next/navigation';
 import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
+import { useAuth } from '@/app/contexts/AuthContext';
+import UserDropdown from './UserDropdown';
 
-const navLinks = [
-  { href: '/catalogo?categoria=mujer', label: 'Mujer', prefetch: false },
-  { href: '/catalogo?categoria=hombre', label: 'Hombre', prefetch: false },
-  { href: '/catalogo?categoria=nueva-coleccion', label: 'Nueva Colección', prefetch: false },
-  { href: '/catalogo?categoria=ofertas', label: 'Ofertas', prefetch: false },
-];
-
-export default function Header() {
+export default function Header({ variant = 'public' }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const { customer, loading: authLoading, isAuthenticated, logout } = useCustomerAuth();
+  const pathname = usePathname();
+  const { customer, loading: customerLoading, isAuthenticated: isCustomerAuth, logout: customerLogout } = useCustomerAuth();
+  const { user, loading: adminLoading, isAuthenticated: isAdminAuth, logout: adminLogout } = useAuth();
+
+  const isAdmin = variant === 'admin';
+  const adminUser = isAdminAuth ? user : null;
 
   useEffect(() => {
     function handleScroll() {
@@ -43,75 +43,68 @@ export default function Header() {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
-          scrolled
-            ? 'bg-sisley-white/90 backdrop-blur-md border-b border-sisley-border'
-            : 'bg-transparent'
+          isAdmin
+            ? 'bg-sisley-white border-b border-sisley-border'
+            : scrolled
+              ? 'bg-sisley-white/90 backdrop-blur-md border-b border-sisley-border'
+              : 'bg-transparent'
         }`}
       >
         <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
-          <div className="flex items-center justify-between h-16 md:h-20 lg:h-24">
-            <div className="flex items-center gap-8 lg:gap-12">
-              <Link href="/" className="flex items-center relative w-24 h-8 md:h-10">
-                <Image
-                  src="/assets/logo.webp"
-                  alt="Sisley"
-                  fill
-                  sizes="(max-width: 768px) 6rem, 10rem"
-                  className="object-contain"
-                  priority
-                />
-              </Link>
-
-              <nav className="hidden lg:flex items-center gap-8">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    prefetch={link.prefetch ?? true}
-                    className="nav-link"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </nav>
-            </div>
+          <div className="flex items-center justify-between h-14 md:h-16 lg:h-20">
+            <Link href={isAdmin ? '/admin' : '/'} className="flex items-center relative w-24 h-8 md:h-10">
+              <Image
+                src="/assets/logo.webp"
+                alt="Sisley"
+                fill
+                sizes="(max-width: 768px) 6rem, 10rem"
+                className="object-contain"
+                priority
+              />
+            </Link>
 
             <div className="flex items-center gap-1 md:gap-2">
-              <button
-                onClick={() => setSearchOpen(true)}
-                className="p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
-                aria-label="Buscar"
-              >
-                <span className="sr-only">Buscar</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
+              {!isAdmin && (
+                <button
+                  onClick={() => setSearchOpen(true)}
+                  className="p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
+                  aria-label="Buscar"
+                >
+                  <span className="sr-only">Buscar</span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
+              )}
 
-              <UserDropdown />
+              <UserDropdown variant={variant} />
 
-              <Link
-                href="/mis-pedidos"
-                className="hidden md:flex p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
-                aria-label="Favoritos"
-              >
-                <span className="sr-only">Favoritos</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-              </Link>
+              {!isAdmin && (
+                <>
+                  <Link
+                    href="/mis-pedidos"
+                    className="hidden md:flex p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
+                    aria-label="Favoritos"
+                  >
+                    <span className="sr-only">Favoritos</span>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </Link>
 
-              <Link
-                href="/carrito"
-                className="relative p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
-                aria-label="Carrito"
-              >
-                <span className="sr-only">Carrito</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-sisley-black rounded-full" />
-              </Link>
+                  <Link
+                    href="/carrito"
+                    className="relative p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
+                    aria-label="Carrito"
+                  >
+                    <span className="sr-only">Carrito</span>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-sisley-black rounded-full" />
+                  </Link>
+                </>
+              )}
 
               <button
                 onClick={() => setMobileOpen(true)}
@@ -151,63 +144,71 @@ export default function Header() {
 
             <nav className="flex-1 overflow-y-auto p-6">
               <div className="space-y-1">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border last:border-0"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                {isAdmin ? (
+                  <div className="space-y-1">
+                    <Link href="/admin" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Dashboard</Link>
+                    <Link href="/admin/productos" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Productos</Link>
+                    <Link href="/admin/pedidos" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Pedidos</Link>
+                    <Link href="/admin/clientes" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Clientes</Link>
+                    <Link href="/admin/inventario" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Inventario</Link>
+                    <Link href="/admin/facturacion" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Facturación</Link>
+                    <Link href="/admin/reportes" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Reportes</Link>
+                  </div>
+                ) : (
+                  <>
+                    <Link href="/catalogo?categoria=mujer" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Mujer</Link>
+                    <Link href="/catalogo?categoria=hombre" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Hombre</Link>
+                    <Link href="/catalogo?categoria=nueva-coleccion" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Nueva Colección</Link>
+                    <Link href="/catalogo?categoria=ofertas" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Ofertas</Link>
+                  </>
+                )}
               </div>
 
-              <div className="mt-8 pt-8 border-t border-sisley-border">
-                <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-4">Cuenta</p>
-                <div className="space-y-3">
-                  {authLoading ? (
-                    <p className="text-sm text-sisley-muted">Cargando...</p>
-                  ) : isAuthenticated && customer ? (
-                    <>
-                      <div className="mb-3">
-                        <p className="text-sm font-medium text-sisley-text">Hola, {customer.firstName || customer.name?.split(' ')[0] || 'Cliente'}</p>
-                        <p className="text-xs text-sisley-muted">{customer.email}</p>
-                      </div>
-                      <Link href="/mi-cuenta" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
-                        Mi cuenta
-                      </Link>
-                      <Link href="/mis-pedidos" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
-                        Mis pedidos
-                      </Link>
-                      <button
-                        onClick={async () => {
-                          setMobileOpen(false);
-                          await logout();
-                        }}
-                        className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors"
-                      >
-                        Cerrar sesión
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <Link href="/login" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
-                        Iniciar sesión
-                      </Link>
-                      <Link href="/registro" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
-                        Crear cuenta
-                      </Link>
-                    </>
-                  )}
+              {!isAdmin && (
+                <div className="mt-8 pt-8 border-t border-sisley-border">
+                  <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-4">Cuenta</p>
+                  <div className="space-y-3">
+                    {customer ? (
+                      <>
+                        <div className="mb-3">
+                          <p className="text-sm font-medium text-sisley-text">Hola, {customer.firstName || customer.name?.split(' ')[0] || 'Cliente'}</p>
+                          <p className="text-xs text-sisley-muted">{customer.email}</p>
+                        </div>
+                        <Link href="/mi-cuenta" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                          Mi cuenta
+                        </Link>
+                        <Link href="/mis-pedidos" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                          Mis pedidos
+                        </Link>
+                        <button
+                          onClick={async () => {
+                            setMobileOpen(false);
+                            await customerLogout();
+                          }}
+                          className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors"
+                        >
+                          Cerrar sesión
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link href="/login" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                          Iniciar sesión
+                        </Link>
+                        <Link href="/registro" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                          Crear cuenta
+                        </Link>
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </nav>
           </div>
         </div>
       )}
 
-      {searchOpen && (
+      {!isAdmin && searchOpen && (
         <div className="fixed inset-0 z-[60]">
           <div
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"

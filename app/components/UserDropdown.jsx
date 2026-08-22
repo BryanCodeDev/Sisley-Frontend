@@ -3,13 +3,27 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
-import { User, UserCheck, LogOut, Package, ChevronDown } from 'lucide-react';
+import { useAuth } from '@/app/contexts/AuthContext';
+import { User, UserCheck, LogOut, Settings, ChevronDown } from 'lucide-react';
 
-export default function UserDropdown() {
-  const { customer, loading, logout, isAuthenticated } = useCustomerAuth();
+export default function UserDropdown({ variant = 'public' }) {
+  const { customer, loading: customerLoading, logout: customerLogout, isAuthenticated: isCustomerAuth } = useCustomerAuth();
+  const { user, loading: adminLoading, logout: adminLogout, isAuthenticated: isAdminAuth } = useAuth();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
+
+  const isAdmin = variant === 'admin';
+  const adminUser = isAdminAuth ? user : null;
+  const displayName = isAdmin
+    ? adminUser?.firstName || adminUser?.lastName
+      ? `${adminUser.firstName || ''} ${adminUser.lastName || ''}`.trim()
+      : 'Administrador'
+    : customer?.firstName || customer?.name?.split(' ')[0] || 'Cliente';
+  const displayEmail = isAdmin ? adminUser?.email || '' : customer?.email || '';
+  const loading = isAdmin ? adminLoading : customerLoading;
+  const isAuthenticated = isAdmin ? isAdminAuth : isCustomerAuth;
+  const logout = isAdmin ? adminLogout : customerLogout;
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -41,10 +55,6 @@ export default function UserDropdown() {
     };
   }, [open]);
 
-  const displayName = customer?.firstName || customer?.name?.split(' ')[0] || 'Cliente';
-  const displayEmail = customer?.email || '';
-  const firstName = customer?.firstName || '';
-
   return (
     <div className="relative">
       <button
@@ -68,7 +78,7 @@ export default function UserDropdown() {
           <User className="w-5 h-5" strokeWidth={1.5} />
         )}
         <span className="hidden xl:inline text-xs uppercase tracking-widest">
-          {loading ? '' : isAuthenticated ? `Hola, ${firstName}` : 'Cuenta'}
+          {loading ? '' : isAuthenticated ? displayName : 'Cuenta'}
         </span>
         {!loading && (
           <ChevronDown
@@ -92,28 +102,28 @@ export default function UserDropdown() {
             {isAuthenticated ? (
               <>
                 <div className="mb-4">
-                  <p className="text-sm font-medium text-sisley-text">Hola, {displayName}</p>
+                  <p className="text-sm font-medium text-sisley-text">{displayName}</p>
                   <p className="text-xs text-sisley-muted mt-0.5">{displayEmail}</p>
                 </div>
                 <div className="h-px bg-sisley-border mb-4" />
                 <div className="space-y-1">
                   <Link
-                    href="/mi-cuenta"
+                    href={isAdmin ? '/admin' : '/mi-cuenta'}
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 px-2 py-2.5 text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
                     role="menuitem"
                   >
                     <User className="w-4 h-4" strokeWidth={1.5} />
-                    Mi cuenta
+                    Perfil
                   </Link>
                   <Link
-                    href="/mis-pedidos"
+                    href={isAdmin ? '/admin' : '/mi-cuenta'}
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 px-2 py-2.5 text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
                     role="menuitem"
                   >
-                    <Package className="w-4 h-4" strokeWidth={1.5} />
-                    Mis pedidos
+                    <Settings className="w-4 h-4" strokeWidth={1.5} />
+                    Configuración
                   </Link>
                 </div>
                 <div className="h-px bg-sisley-border my-4" />
@@ -134,27 +144,31 @@ export default function UserDropdown() {
                 <div className="mb-4">
                   <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-1">Cuenta</p>
                   <p className="text-xs text-sisley-muted leading-relaxed">
-                    Accede a tu cuenta para consultar tus pedidos y gestionar tus datos.
+                    {isAdmin
+                      ? 'Accede al panel administrativo.'
+                      : 'Accede a tu cuenta para consultar tus pedidos y gestionar tus datos.'}
                   </p>
                 </div>
                 <div className="h-px bg-sisley-border mb-4" />
                 <div className="space-y-2">
                   <Link
-                    href="/login"
+                    href={isAdmin ? '/admin' : '/login'}
                     onClick={() => setOpen(false)}
                     className="block w-full text-center px-4 py-2.5 text-xs uppercase tracking-widest border border-sisley-black text-sisley-black hover:bg-sisley-black hover:text-sisley-white transition-colors duration-200"
                     role="menuitem"
                   >
-                    Iniciar sesión
+                    {isAdmin ? 'Iniciar sesión admin' : 'Iniciar sesión'}
                   </Link>
-                  <Link
-                    href="/registro"
-                    onClick={() => setOpen(false)}
-                    className="block w-full text-center px-4 py-2.5 text-xs uppercase tracking-widest text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
-                    role="menuitem"
-                  >
-                    Crear cuenta
-                  </Link>
+                  {!isAdmin && (
+                    <Link
+                      href="/registro"
+                      onClick={() => setOpen(false)}
+                      className="block w-full text-center px-4 py-2.5 text-xs uppercase tracking-widest text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
+                      role="menuitem"
+                    >
+                      Crear cuenta
+                    </Link>
+                  )}
                 </div>
               </>
             )}
