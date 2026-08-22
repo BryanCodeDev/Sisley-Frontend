@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
       try {
         setLoading(true);
         const response = await api.get('/api/auth/me', { ignore401: true });
-        if (response.success && response.data) {
+        if (response && response.success && response.data) {
           setUser(response.data);
         } else {
           setUser(null);

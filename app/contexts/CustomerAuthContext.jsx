@@ -16,7 +16,7 @@ export function CustomerAuthProvider({ children }) {
       try {
         setLoading(true);
         const response = await api.get('/api/auth/customer/me', { ignore401: true });
-        if (response.success && response.data) {
+        if (response && response.success && response.data) {
           setCustomer(response.data);
         } else {
           setCustomer(null);

@@ -9,9 +9,15 @@ const LOCAL_IMAGES = {
 
 function resolveImage(src) {
   if (!src) return null;
-  if (src.startsWith('/assets/')) return src;
-  if (src.startsWith('http')) return src;
-  return src;
+  if (typeof src === 'string') {
+    if (src.startsWith('/assets/')) return src;
+    if (src.startsWith('http')) return src;
+    return src;
+  }
+  if (typeof src === 'object' && src.url) {
+    return resolveImage(src.url);
+  }
+  return null;
 }
 
 export default function ImageWithPlaceholder({

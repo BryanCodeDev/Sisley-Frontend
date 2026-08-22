@@ -48,13 +48,13 @@ export default function Header() {
         <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between h-16 md:h-20 lg:h-24">
             <div className="flex items-center gap-8 lg:gap-12">
-              <Link href="/" className="flex items-center">
+              <Link href="/" className="flex items-center relative w-24 h-8 md:h-10">
                 <Image
                   src="/assets/logo.webp"
                   alt="Sisley"
-                  width={120}
-                  height={40}
-                  className="h-8 md:h-10 w-auto"
+                  fill
+                  sizes="(max-width: 768px) 6rem, 10rem"
+                  className="object-contain"
                   priority
                 />
               </Link>
