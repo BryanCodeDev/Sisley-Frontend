@@ -5,10 +5,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const navLinks = [
-  { href: '/catalogo?genero=mujer', label: 'Mujer', prefetch: false },
-  { href: '/catalogo?genero=hombre', label: 'Hombre', prefetch: false },
-  { href: '/catalogo?coleccion=nueva', label: 'Nueva Colección', prefetch: false },
-  { href: '/catalogo?ofertas=true', label: 'Ofertas', prefetch: false },
+  { href: '/catalogo?categoria=mujer', label: 'Mujer', prefetch: false },
+  { href: '/catalogo?categoria=hombre', label: 'Hombre', prefetch: false },
+  { href: '/catalogo?categoria=nueva-coleccion', label: 'Nueva Colección', prefetch: false },
+  { href: '/catalogo?categoria=ofertas', label: 'Ofertas', prefetch: false },
 ];
 
 export default function Header() {
