@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import UserDropdown from './UserDropdown';
+import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 
 const navLinks = [
   { href: '/catalogo?categoria=mujer', label: 'Mujer', prefetch: false },
@@ -15,6 +17,7 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const { customer, loading: authLoading, isAuthenticated, logout } = useCustomerAuth();
 
   useEffect(() => {
     function handleScroll() {
@@ -85,16 +88,7 @@ export default function Header() {
                 </svg>
               </button>
 
-              <Link
-                href="/mi-cuenta"
-                className="hidden md:flex p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
-                aria-label="Mi cuenta"
-              >
-                <span className="sr-only">Mi cuenta</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </Link>
+              <UserDropdown />
 
               <Link
                 href="/mis-pedidos"
@@ -172,15 +166,40 @@ export default function Header() {
               <div className="mt-8 pt-8 border-t border-sisley-border">
                 <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-4">Cuenta</p>
                 <div className="space-y-3">
-                  <Link href="/mi-cuenta" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
-                    Mi cuenta
-                  </Link>
-                  <Link href="/mis-pedidos" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
-                    Mis pedidos
-                  </Link>
-                  <Link href="/carrito" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
-                    Carrito
-                  </Link>
+                  {authLoading ? (
+                    <p className="text-sm text-sisley-muted">Cargando...</p>
+                  ) : isAuthenticated && customer ? (
+                    <>
+                      <div className="mb-3">
+                        <p className="text-sm font-medium text-sisley-text">Hola, {customer.firstName || customer.name?.split(' ')[0] || 'Cliente'}</p>
+                        <p className="text-xs text-sisley-muted">{customer.email}</p>
+                      </div>
+                      <Link href="/mi-cuenta" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                        Mi cuenta
+                      </Link>
+                      <Link href="/mis-pedidos" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                        Mis pedidos
+                      </Link>
+                      <button
+                        onClick={async () => {
+                          setMobileOpen(false);
+                          await logout();
+                        }}
+                        className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors"
+                      >
+                        Cerrar sesión
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/login" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                        Iniciar sesión
+                      </Link>
+                      <Link href="/registro" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                        Crear cuenta
+                      </Link>
+                    </>
+                  )}
                 </div>
               </div>
             </nav>
