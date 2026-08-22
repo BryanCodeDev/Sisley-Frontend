@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 async function getFeaturedProducts() {
   try {
-    const data = await getProducts({ status: 'active', limit: '12', orderBy: 'featured' });
+    const data = await getProducts({ status: 'active', limit: '12', orderBy: 'featured', inStock: 'true' });
     return data.data || [];
   } catch (error) {
     console.error('Failed to load featured products:', error.message);

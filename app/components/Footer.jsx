@@ -4,24 +4,24 @@ import Link from 'next/link';
 
 const footerLinks = {
   shop: [
-    { href: '/catalogo', label: 'Todos los productos' },
-    { href: '/catalogo?genero=mujer', label: 'Mujer' },
-    { href: '/catalogo?genero=hombre', label: 'Hombre' },
-    { href: '/catalogo?coleccion=nueva', label: 'Nueva colección' },
-    { href: '/catalogo?ofertas=true', label: 'Ofertas' },
+    { id: 'shop-1', href: '/catalogo', label: 'Todos los productos' },
+    { id: 'shop-2', href: '/catalogo?genero=mujer', label: 'Mujer' },
+    { id: 'shop-3', href: '/catalogo?genero=hombre', label: 'Hombre' },
+    { id: 'shop-4', href: '/catalogo?coleccion=nueva', label: 'Nueva colección' },
+    { id: 'shop-5', href: '/catalogo?ofertas=true', label: 'Ofertas' },
   ],
   help: [
-    { href: '/', label: 'Contacto' },
-    { href: '/', label: 'Envíos y entregas' },
-    { href: '/', label: 'Cambios y devoluciones' },
-    { href: '/', label: 'Guía de tallas' },
-    { href: '/', label: 'Preguntas frecuentes' },
+    { id: 'help-1', href: '/', label: 'Contacto' },
+    { id: 'help-2', href: '/', label: 'Envíos y entregas' },
+    { id: 'help-3', href: '/', label: 'Cambios y devoluciones' },
+    { id: 'help-4', href: '/', label: 'Guía de tallas' },
+    { id: 'help-5', href: '/', label: 'Preguntas frecuentes' },
   ],
   company: [
-    { href: '/', label: 'Sobre Sisley' },
-    { href: '/', label: 'Sostenibilidad' },
-    { href: '/', label: 'Privacidad' },
-    { href: '/', label: 'Términos' },
+    { id: 'company-1', href: '/', label: 'Sobre Sisley' },
+    { id: 'company-2', href: '/', label: 'Sostenibilidad' },
+    { id: 'company-3', href: '/', label: 'Privacidad' },
+    { id: 'company-4', href: '/', label: 'Términos' },
   ],
 };
 
@@ -54,7 +54,7 @@ export default function Footer() {
             <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-5">Tienda</p>
             <ul className="space-y-3">
               {footerLinks.shop.map((link) => (
-                <li key={link.href}>
+                <li key={link.id}>
                   <Link href={link.href} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
                     {link.label}
                   </Link>
@@ -67,7 +67,7 @@ export default function Footer() {
             <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-5">Ayuda</p>
             <ul className="space-y-3">
               {footerLinks.help.map((link) => (
-                <li key={link.href}>
+                <li key={link.id}>
                   <Link href={link.href} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
                     {link.label}
                   </Link>
@@ -80,7 +80,7 @@ export default function Footer() {
             <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-5">Empresa</p>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
-                <li key={link.href}>
+                <li key={link.id}>
                   <Link href={link.href} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
                     {link.label}
                   </Link>
