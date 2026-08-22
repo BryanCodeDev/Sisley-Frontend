@@ -1,6 +1,12 @@
 import { api } from './api';
 
-const LOCAL_IMAGES = [
+const SLUG_IMAGE_MAP = {
+  'blusa-satinada-elegante': '/assets/catalog/blusa-satinada.webp',
+  'pantalon-wide-leg': '/assets/catalog/pantalon-wide-leg.webp',
+  'vestido-midi-plisado': '/assets/catalog/vestido-midi-plisado.webp',
+};
+
+const FALLBACK_IMAGES = [
   '/assets/catalog/1.webp',
   '/assets/catalog/2.webp',
   '/assets/catalog/3.webp',
@@ -11,6 +17,17 @@ const LOCAL_IMAGES = [
   '/assets/catalog/8.webp',
   '/assets/catalog/9.webp',
 ];
+
+function cleanApiImages(images) {
+  if (!images || !Array.isArray(images)) return [];
+  return images.filter((img) => {
+    const url = typeof img === 'string' ? img : img?.url;
+    if (!url || typeof url !== 'string') return false;
+    if (url.startsWith('/assets/')) return true;
+    if (url.startsWith('http')) return false;
+    return true;
+  });
+}
 
 export async function getProducts(params = {}) {
   const query = new URLSearchParams();
@@ -25,18 +42,37 @@ export async function getProducts(params = {}) {
   const data = await api.get(`/api/products${qs ? `?${qs}` : ''}`);
 
   if (data.data) {
-    data.data = data.data.map((product, index) => {
-      const localImage = LOCAL_IMAGES[index % LOCAL_IMAGES.length];
-      const currentImages = product.images || [];
-      const hasLocalImage = currentImages.some((img) => img.url && img.url.startsWith('/assets/'));
-      
-      if (!hasLocalImage) {
+    let fallbackIndex = 0;
+    data.data = data.data.map((product) => {
+      const slug = product.slug || '';
+      const apiImages = cleanApiImages(product.images || []);
+      const mappedImage = SLUG_IMAGE_MAP[slug];
+
+      if (mappedImage) {
         return {
           ...product,
-          images: [{ id: 0, url: localImage, altText: product.name, position: 1, variantId: null }, ...currentImages],
+          images: [
+            { id: 0, url: mappedImage, altText: product.name, position: 1, variantId: null },
+            ...apiImages,
+          ],
         };
       }
-      return product;
+
+      if (apiImages.length === 0) {
+        const fallback = FALLBACK_IMAGES[fallbackIndex % FALLBACK_IMAGES.length];
+        fallbackIndex += 1;
+        return {
+          ...product,
+          images: [
+            { id: 0, url: fallback, altText: product.name, position: 1, variantId: null },
+          ],
+        };
+      }
+
+      return {
+        ...product,
+        images: apiImages,
+      };
     });
   }
 

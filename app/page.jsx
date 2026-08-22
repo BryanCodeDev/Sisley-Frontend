@@ -4,6 +4,7 @@ import ProductCard from '@/app/components/ProductCard';
 import Button from '@/app/components/Button';
 import SectionHeader from '@/app/components/SectionHeader';
 import ImageWithPlaceholder from '@/app/components/ImageWithPlaceholder';
+import EditorialPlaceholder from '@/app/components/EditorialPlaceholder';
 import { getProducts } from '@/app/services/products';
 import { getCategories } from '@/app/services/categories';
 import Link from 'next/link';
@@ -40,10 +41,13 @@ export default async function Home() {
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent z-10" />
-            <ImageWithPlaceholder
-              alt="Nueva colección Sisley"
-              className="w-full h-full object-cover"
-              style={{ aspectRatio: 'banner' }}
+            <EditorialPlaceholder
+              title="New Collection"
+              subtitle="Nueva Colección"
+              categorySlug="nueva-coleccion"
+              index={0}
+              aspectRatio="banner"
+              className="w-full h-full"
             />
           </div>
 
@@ -89,11 +93,13 @@ export default async function Home() {
                       isLarge ? 'md:col-span-7 aspect-[4/5] md:aspect-auto md:row-span-2' : 'md:col-span-5 aspect-[4/3]'
                     }`}
                   >
-                    <div className="absolute inset-0 bg-sisley-bg flex items-center justify-center">
-                      <svg className="w-16 h-16 text-sisley-border-strong" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                      </svg>
-                    </div>
+                    <ImageWithPlaceholder
+                      src={category.imageUrl || category.image || null}
+                      alt={category.name}
+                      categorySlug={category.slug}
+                      index={index}
+                      className="w-full h-full"
+                    />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500" />
                     <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                       <p className="text-[10px] uppercase tracking-widest text-sisley-muted mb-1">
@@ -138,13 +144,14 @@ export default async function Home() {
         <section className="py-20 md:py-32 bg-sisley-white">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
-              <div className="aspect-[4/5] bg-sisley-bg overflow-hidden">
-                <div className="w-full h-full flex items-center justify-center">
-                  <svg className="w-24 h-24 text-sisley-border-strong" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-              </div>
+              <EditorialPlaceholder
+                title="La nueva temporada"
+                subtitle="Editorial"
+                categorySlug="nueva-coleccion"
+                index={1}
+                aspectRatio="editorial"
+                className="w-full"
+              />
               <div className="max-w-lg">
                 <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-4">Editorial</p>
                 <h2 className="font-serif text-3xl md:text-4xl font-light text-sisley-black tracking-tight leading-tight mb-6">

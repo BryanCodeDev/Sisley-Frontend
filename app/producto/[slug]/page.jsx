@@ -36,6 +36,7 @@ export default function ProductoPage() {
         }
         setProduct(data);
         setSelectedVariant(data.variants?.[0] || null);
+        setActiveImage(0);
 
         const relatedData = await getProducts({ category: data.categoryId, limit: '4' });
         setRelated((relatedData.data || []).filter((p) => p.id !== data.id).slice(0, 4));
@@ -105,6 +106,8 @@ export default function ProductoPage() {
                 <ImageWithPlaceholder
                   src={images[activeImage] || null}
                   alt={product.name}
+                  categorySlug={product.categorySlug || product.category || ''}
+                  index={(product.id ? product.id - 1 : 0) % 3}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -118,7 +121,13 @@ export default function ProductoPage() {
                         activeImage === index ? 'border-sisley-black' : 'border-transparent'
                       }`}
                     >
-                      <ImageWithPlaceholder src={img} alt="" className="w-full h-full object-cover" />
+                      <ImageWithPlaceholder
+                        src={img}
+                        alt=""
+                        categorySlug={product.categorySlug || product.category || ''}
+                        index={index % 3}
+                        className="w-full h-full object-cover"
+                      />
                     </button>
                   ))}
                 </div>

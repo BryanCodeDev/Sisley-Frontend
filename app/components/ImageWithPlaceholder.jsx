@@ -1,5 +1,7 @@
 'use client';
 
+import EditorialPlaceholder from './EditorialPlaceholder';
+
 const LOCAL_IMAGES = {
   '/assets/catalog/blusa-satinada.webp': '/assets/catalog/blusa-satinada.webp',
   '/assets/catalog/pantalon-wide-leg.webp': '/assets/catalog/pantalon-wide-leg.webp',
@@ -25,6 +27,10 @@ export default function ImageWithPlaceholder({
   alt = '',
   className = '',
   aspectRatio = 'product',
+  categorySlug = '',
+  index = 0,
+  title = '',
+  subtitle = '',
   ...props
 }) {
   const resolvedSrc = resolveImage(src);
@@ -41,10 +47,14 @@ export default function ImageWithPlaceholder({
   }
 
   return (
-    <div className={`bg-sisley-bg flex items-center justify-center ${className}`} {...props}>
-      <svg className="w-12 h-12 text-sisley-border-strong" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-    </div>
+    <EditorialPlaceholder
+      title={title}
+      subtitle={subtitle}
+      categorySlug={categorySlug}
+      index={index}
+      aspectRatio={aspectRatio}
+      className={className}
+      {...props}
+    />
   );
 }
