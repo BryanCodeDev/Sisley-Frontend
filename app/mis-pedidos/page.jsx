@@ -11,6 +11,30 @@ import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 import { getOrders } from '@/app/services/orders';
 import Link from 'next/link';
 
+const STATUS_MAP = {
+  PENDING: 'Pendiente',
+  PAYMENT_PENDING: 'Pago pendiente',
+  PAID: 'Pagado',
+  PROCESSING: 'Procesando',
+  READY_TO_SHIP: 'Listo para enviar',
+  SHIPPED: 'Enviado',
+  DELIVERED: 'Entregado',
+  CANCELLED: 'Cancelado',
+  REFUNDED: 'Reembolsado',
+};
+
+function statusLabel(status) {
+  return STATUS_MAP[status] || status;
+}
+
+function statusVariant(status) {
+  if (status === 'DELIVERED') return 'success';
+  if (status === 'CANCELLED' || status === 'REFUNDED') return 'danger';
+  if (status === 'SHIPPED' || status === 'READY_TO_SHIP') return 'info';
+  if (status === 'PAID' || status === 'PROCESSING') return 'default';
+  return 'warning';
+}
+
 export default function MisPedidos() {
   const router = useRouter();
   const { customer, loading: authLoading, isAuthenticated } = useCustomerAuth();
@@ -96,47 +120,42 @@ export default function MisPedidos() {
             </div>
           ) : (
             <div className="border border-sisley-border divide-y divide-sisley-border">
-              {orders.map((order) => (
-                <div key={order.id} className="p-6 hover:bg-sisley-bg transition-colors">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                    <div>
-                      <p className="text-sm font-medium text-sisley-text">{order.id}</p>
-                      <p className="text-xs text-sisley-muted">{order.date}</p>
-                    </div>
-                    <div className="text-left sm:text-right">
-                      <p className="text-sm font-medium text-sisley-text">${Number(order.total).toLocaleString('es-CO')}</p>
-                      <Badge
-                        variant={
-                          order.status === 'Entregado'
-                            ? 'success'
-                            : order.status === 'Cancelado'
-                            ? 'danger'
-                            : order.status === 'Enviado'
-                            ? 'info'
-                            : 'warning'
-                        }
-                        size="sm"
-                      >
-                        {order.status}
-                      </Badge>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    {order.items?.map((item, index) => (
-                      <div key={index} className="flex justify-between text-sm">
-                        <span className="text-sisley-text-secondary">
-                           {item.productName || item.name || 'Producto'} x{item.quantity || item.qty || 1}
-                        </span>
-                        <span className="text-sisley-text">${Number(item.unitPrice || item.price || 0).toLocaleString('es-CO')}</span>
+              {orders.map((order) => {
+                const orderNumber = order.orderNumber || `#${order.id}`;
+                const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString('es-CO') : '—';
+                const orderStatus = statusLabel(order.status);
+                const shippingLabel = [order.shippingAddress, order.shippingCity, order.shippingDepartment].filter(Boolean).join(', ') || '—';
+                return (
+                  <div key={order.id} className="p-6 hover:bg-sisley-bg transition-colors">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                      <div>
+                        <p className="text-sm font-medium text-sisley-text">{orderNumber}</p>
+                        <p className="text-xs text-sisley-muted">{orderDate}</p>
                       </div>
-                    ))}
+                      <div className="text-left sm:text-right">
+                        <p className="text-sm font-medium text-sisley-text">${Number(order.total).toLocaleString('es-CO')}</p>
+                        <Badge variant={statusVariant(order.status)} size="sm">
+                          {orderStatus}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      {(order.items || []).map((item, index) => (
+                        <div key={index} className="flex justify-between text-sm">
+                          <span className="text-sisley-text-secondary">
+                            {item.productName || item.variantSku || 'Producto'} x{item.quantity || 1}
+                          </span>
+                          <span className="text-sisley-text">${Number(item.unitPrice || 0).toLocaleString('es-CO')}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-sisley-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                      <p className="text-xs text-sisley-muted">{shippingLabel}</p>
+                      <p className="text-xs text-sisley-muted capitalize">{(order.paymentMethod || '—').replace(/_/g, ' ')}</p>
+                    </div>
                   </div>
-                  <div className="mt-4 pt-4 border-t border-sisley-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <p className="text-xs text-sisley-muted">{order.shipping || ''} · {order.address || ''}</p>
-                    <Button variant="ghost" size="sm">Ver detalles</Button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

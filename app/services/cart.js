@@ -1,6 +1,6 @@
 import { api } from './api';
 
-function getSessionId() {
+export function getSessionId() {
   if (typeof window === 'undefined') return 'default-session';
   let sessionId = localStorage.getItem('sisley_session_id');
   if (!sessionId) {

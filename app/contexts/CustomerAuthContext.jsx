@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '@/app/services/api';
+import { getSessionId } from '@/app/services/cart';
 
 const CustomerAuthContext = createContext(null);
 
@@ -32,7 +33,9 @@ export function CustomerAuthProvider({ children }) {
   async function login(email, password) {
     try {
       setError(null);
-      const response = await api.post('/api/auth/customer/login', { email, password });
+      const response = await api.post('/api/auth/customer/login', { email, password }, {
+        headers: { 'x-session-id': getSessionId() },
+      });
       if (response.success && response.data) {
         setCustomer(response.data.customer);
         return { success: true };
@@ -48,7 +51,9 @@ export function CustomerAuthProvider({ children }) {
   async function register(data) {
     try {
       setError(null);
-      const response = await api.post('/api/auth/customer/register', data);
+      const response = await api.post('/api/auth/customer/register', data, {
+        headers: { 'x-session-id': getSessionId() },
+      });
       if (response.success && response.data) {
         setCustomer(response.data.customer);
         return { success: true };

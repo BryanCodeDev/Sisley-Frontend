@@ -51,7 +51,8 @@ function OrderDetailModal({ order, onClose, onStatusChange }) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-1">Cliente</p>
-              <p className="text-sm text-sisley-text">{order.customerEmail || 'N/A'}</p>
+              <p className="text-sm text-sisley-text">{order.customerEmail || order.customerFirstName ? `${order.customerFirstName || ''} ${order.customerLastName || ''}`.trim() || order.customerEmail || 'N/A' : 'N/A'}</p>
+              {order.customerPhone && <p className="text-xs text-sisley-muted">{order.customerPhone}</p>}
             </div>
             <div>
               <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-1">Fecha</p>
@@ -60,6 +61,16 @@ function OrderDetailModal({ order, onClose, onStatusChange }) {
             <div>
               <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-1">Total</p>
               <p className="text-sm text-sisley-text">${Number(order.total || 0).toLocaleString('es-CO')}</p>
+            </div>
+            <div>
+              <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-1">Método de pago</p>
+              <p className="text-sm text-sisley-text capitalize">{(order.paymentMethod || '—').replace(/_/g, ' ')}</p>
+            </div>
+            <div className="col-span-2">
+              <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-1">Dirección de envío</p>
+              <p className="text-sm text-sisley-text">
+                {[order.shippingAddress, order.shippingCity, order.shippingDepartment].filter(Boolean).join(', ') || '—'}
+              </p>
             </div>
             <div>
               <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-1">Estado actual</p>
@@ -85,8 +96,25 @@ function OrderDetailModal({ order, onClose, onStatusChange }) {
               <div className="border border-sisley-border divide-y divide-sisley-border">
                 {order.items.map((item, idx) => (
                   <div key={idx} className="flex items-center justify-between py-2 px-3">
-                    <p className="text-sm text-sisley-text">{item.productName || item.name || `Item ${idx + 1}`}</p>
-                    <p className="text-sm text-sisley-text">x{item.quantity || 1} — ${Number(item.price || item.total || 0).toLocaleString('es-CO')}</p>
+                    <p className="text-sm text-sisley-text">{item.productName || item.variantSku || `Item ${idx + 1}`}</p>
+                    <p className="text-sm text-sisley-text">x{item.quantity || 1} — ${Number(item.unitPrice || item.total || 0).toLocaleString('es-CO')}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {(order.statusHistory || []).length > 0 && (
+            <div>
+              <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-2">Historial de estados</p>
+              <div className="border border-sisley-border divide-y divide-sisley-border">
+                {order.statusHistory.slice(0, 10).map((h) => (
+                  <div key={h.id} className="flex items-center justify-between py-2 px-3">
+                    <div>
+                      <p className="text-sm text-sisley-text">{h.status.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}</p>
+                      {h.notes && <p className="text-xs text-sisley-muted">{h.notes}</p>}
+                    </div>
+                    <p className="text-xs text-sisley-muted">{h.createdAt ? new Date(h.createdAt).toLocaleString('es-CO') : ''}</p>
                   </div>
                 ))}
               </div>
