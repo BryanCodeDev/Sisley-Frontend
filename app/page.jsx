@@ -6,6 +6,7 @@ import SectionHeader from '@/app/components/SectionHeader';
 import ScrollReveal from '@/app/components/ScrollReveal';
 import EditorialLabel from '@/app/components/EditorialLabel';
 import HeroSection from '@/app/components/HeroSection';
+import ErrorBoundary from '@/app/components/ErrorBoundary';
 import ImageWithPlaceholder from '@/app/components/ImageWithPlaceholder';
 import { getProducts } from '@/app/services/products';
 import Image from 'next/image';
@@ -134,13 +135,18 @@ export default async function Home() {
               </div>
             </ScrollReveal>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              {destacados.slice(0, 4).map((product, index) => (
-                <ScrollReveal key={product.id} delay={100 * (index + 1)}>
-                  <ProductCard product={product} />
-                </ScrollReveal>
-              ))}
-            </div>
+            <ErrorBoundary
+              title="No pudimos cargar los destacados"
+              message="Intenta de nuevo o explora el catálogo completo."
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                {destacados.slice(0, 4).map((product, index) => (
+                  <ScrollReveal key={product.id} delay={100 * (index + 1)}>
+                    <ProductCard product={product} />
+                  </ScrollReveal>
+                ))}
+              </div>
+            </ErrorBoundary>
           </div>
         </section>
 
@@ -196,13 +202,18 @@ export default async function Home() {
               </div>
             </ScrollReveal>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              {destacados.slice(4, 8).map((product, index) => (
-                <ScrollReveal key={product.id} delay={100 * (index + 1)}>
-                  <ProductCard key={product.id} product={product} />
-                </ScrollReveal>
-              ))}
-            </div>
+            <ErrorBoundary
+              title="No pudimos cargar las novedades"
+              message="Intenta de nuevo o explora el catálogo completo."
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                {destacados.slice(4, 8).map((product, index) => (
+                  <ScrollReveal key={product.id} delay={100 * (index + 1)}>
+                    <ProductCard key={product.id} product={product} />
+                  </ScrollReveal>
+                ))}
+              </div>
+            </ErrorBoundary>
           </div>
         </section>
 
