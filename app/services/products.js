@@ -1,10 +1,16 @@
 import { api } from './api';
 
-const LOCAL_IMAGES = {
-  blusa: '/assets/catalog/1.webp',
-  pantalon: '/assets/catalog/2.webp',
-  vestido: '/assets/catalog/3.webp',
-};
+const LOCAL_IMAGES = [
+  '/assets/catalog/1.webp',
+  '/assets/catalog/2.webp',
+  '/assets/catalog/3.webp',
+  '/assets/catalog/4.webp',
+  '/assets/catalog/5.webp',
+  '/assets/catalog/6.webp',
+  '/assets/catalog/7.webp',
+  '/assets/catalog/8.webp',
+  '/assets/catalog/9.webp',
+];
 
 export async function getProducts(params = {}) {
   const query = new URLSearchParams();
@@ -17,39 +23,23 @@ export async function getProducts(params = {}) {
 
   const qs = query.toString();
   const data = await api.get(`/api/products${qs ? `?${qs}` : ''}`);
-  
+
   if (data.data) {
-    data.data = data.data.map((product) => {
-      let localImage = null;
-      const slug = product.slug || '';
-      if (slug.includes('blusa')) localImage = LOCAL_IMAGES.blusa;
-      else if (slug.includes('pantalon')) localImage = LOCAL_IMAGES.pantalon;
-      else if (slug.includes('vestido')) localImage = LOCAL_IMAGES.vestido;
+    data.data = data.data.map((product, index) => {
+      const localImage = LOCAL_IMAGES[index % LOCAL_IMAGES.length];
+      const currentImages = product.images || [];
+      const hasLocalImage = currentImages.some((img) => img.url && img.url.startsWith('/assets/'));
       
-      const hasLocalImage = localImage && (!product.images || product.images.length === 0);
-      const hasRemoteImage = product.images && product.images.length > 0 && product.images[0].url && !product.images[0].url.startsWith('/assets/');
-      
-      if (hasLocalImage) {
+      if (!hasLocalImage) {
         return {
           ...product,
-          images: [{ id: 0, url: localImage, altText: product.name, position: 1, variantId: null }],
+          images: [{ id: 0, url: localImage, altText: product.name, position: 1, variantId: null }, ...currentImages],
         };
       }
-      
-      if (hasRemoteImage && localImage) {
-        return {
-          ...product,
-          images: [
-            { id: 0, url: localImage, altText: product.name, position: 1, variantId: null },
-            ...product.images,
-          ],
-        };
-      }
-      
       return product;
     });
   }
-  
+
   return data;
 }
 
