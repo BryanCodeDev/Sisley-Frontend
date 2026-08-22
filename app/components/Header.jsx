@@ -15,10 +15,26 @@ const publicNavLinks = [
   { href: '/catalogo?categoria=ofertas', label: 'Ofertas', prefetch: false },
 ];
 
+/** Nav link with a left-to-right underline sweep on hover (spec item 9). Self-contained, no external CSS needed. */
+function NavLink({ href, prefetch, children }) {
+  return (
+    <Link
+      href={href}
+      prefetch={prefetch}
+      className="group relative text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
+    >
+      {children}
+      <span className="pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-sisley-black transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
+    </Link>
+  );
+}
+
 export default function Header({ variant = 'public' }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileVisible, setMobileVisible] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchVisible, setSearchVisible] = useState(false);
   const pathname = usePathname();
   const { customer, loading: customerLoading, isAuthenticated: isCustomerAuth, logout: customerLogout } = useCustomerAuth();
   const { user, loading: adminLoading, isAuthenticated: isAdminAuth, logout: adminLogout } = useAuth();
@@ -46,6 +62,26 @@ export default function Header({ variant = 'public' }) {
     };
   }, [mobileOpen, searchOpen]);
 
+  // Drives the slide/fade-in transitions for the mobile drawer once it mounts, so the
+  // panel animates in from off-screen rather than appearing instantly (spec item 21/23).
+  useEffect(() => {
+    if (mobileOpen) {
+      const raf = requestAnimationFrame(() => setMobileVisible(true));
+      return () => cancelAnimationFrame(raf);
+    }
+    setMobileVisible(false);
+    return undefined;
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    if (searchOpen) {
+      const raf = requestAnimationFrame(() => setSearchVisible(true));
+      return () => cancelAnimationFrame(raf);
+    }
+    setSearchVisible(false);
+    return undefined;
+  }, [searchOpen]);
+
   return (
     <>
       <header
@@ -53,7 +89,7 @@ export default function Header({ variant = 'public' }) {
           isAdmin
             ? 'bg-sisley-white border-b border-sisley-border'
             : scrolled
-              ? 'bg-sisley-white/90 backdrop-blur-md border-b border-sisley-border'
+              ? 'bg-sisley-white/90 backdrop-blur-md border-b border-sisley-border shadow-[0_1px_24px_rgba(0,0,0,0.04)]'
               : 'bg-transparent'
         }`}
       >
@@ -74,14 +110,9 @@ export default function Header({ variant = 'public' }) {
               {!isAdmin && (
                 <nav className="hidden lg:flex items-center gap-8">
                   {publicNavLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      prefetch={link.prefetch ?? true}
-                      className="nav-link"
-                    >
+                    <NavLink key={link.href} href={link.href} prefetch={link.prefetch ?? true}>
                       {link.label}
-                    </Link>
+                    </NavLink>
                   ))}
                 </nav>
               )}
@@ -91,7 +122,7 @@ export default function Header({ variant = 'public' }) {
               {!isAdmin && (
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
+                  className="p-2 text-sisley-text-secondary hover:text-sisley-black transition-all duration-200 hover:scale-105 motion-reduce:hover:scale-100"
                   aria-label="Buscar"
                 >
                   <span className="sr-only">Buscar</span>
@@ -107,7 +138,7 @@ export default function Header({ variant = 'public' }) {
                 <>
                   <Link
                     href="/mis-pedidos"
-                    className="hidden md:flex p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
+                    className="hidden md:flex p-2 text-sisley-text-secondary hover:text-sisley-black transition-all duration-200 hover:scale-105 motion-reduce:hover:scale-100"
                     aria-label="Favoritos"
                   >
                     <span className="sr-only">Favoritos</span>
@@ -118,7 +149,7 @@ export default function Header({ variant = 'public' }) {
 
                   <Link
                     href="/carrito"
-                    className="relative p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
+                    className="relative p-2 text-sisley-text-secondary hover:text-sisley-black transition-all duration-200 hover:scale-105 motion-reduce:hover:scale-100"
                     aria-label="Carrito"
                   >
                     <span className="sr-only">Carrito</span>
@@ -148,10 +179,16 @@ export default function Header({ variant = 'public' }) {
       {mobileOpen && (
         <div className="fixed inset-0 z-[60]">
           <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-out motion-reduce:transition-none ${
+              mobileVisible ? 'opacity-100' : 'opacity-0'
+            }`}
             onClick={() => setMobileOpen(false)}
           />
-          <div className="absolute inset-y-0 right-0 w-full max-w-md bg-sisley-white shadow-2xl flex flex-col">
+          <div
+            className={`absolute inset-y-0 right-0 w-full max-w-md bg-sisley-white shadow-2xl flex flex-col transition-transform duration-500 ease-out motion-reduce:!translate-x-0 ${
+              mobileVisible ? 'translate-x-0' : 'translate-x-full'
+            }`}
+          >
             <div className="flex items-center justify-between p-6 border-b border-sisley-border">
               <span className="text-lg font-light tracking-[0.2em] text-sisley-black uppercase">Menú</span>
               <button
@@ -235,10 +272,16 @@ export default function Header({ variant = 'public' }) {
       {!isAdmin && searchOpen && (
         <div className="fixed inset-0 z-[60]">
           <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-out motion-reduce:transition-none ${
+              searchVisible ? 'opacity-100' : 'opacity-0'
+            }`}
             onClick={() => setSearchOpen(false)}
           />
-          <div className="absolute inset-x-0 top-0 bg-sisley-white border-b border-sisley-border p-6 md:p-10">
+          <div
+            className={`absolute inset-x-0 top-0 bg-sisley-white border-b border-sisley-border p-6 md:p-10 transition-transform duration-500 ease-out motion-reduce:!translate-y-0 ${
+              searchVisible ? 'translate-y-0' : '-translate-y-full'
+            }`}
+          >
             <div className="max-w-3xl mx-auto">
               <div className="flex items-center justify-between mb-6">
                 <p className="text-[11px] uppercase tracking-widest text-sisley-muted">Buscar</p>
@@ -256,14 +299,14 @@ export default function Header({ variant = 'public' }) {
               <input
                 type="text"
                 placeholder="¿Qué estás buscando?"
-                className="w-full text-2xl md:text-3xl font-light bg-transparent border-b-2 border-sisley-border focus:border-sisley-black focus:outline-none py-3 placeholder:text-sisley-muted-strong"
+                className="w-full text-2xl md:text-3xl font-light bg-transparent border-b-2 border-sisley-border focus:border-sisley-black focus:outline-none py-3 placeholder:text-sisley-muted-strong transition-colors duration-300"
                 autoFocus
               />
               <div className="mt-6 flex flex-wrap gap-2">
                 {['Vestidos', 'Blazers', 'Camisas', 'Pantalones'].map((term) => (
                   <span
                     key={term}
-                    className="px-4 py-2 text-xs uppercase tracking-widest border border-sisley-border text-sisley-text-secondary hover:border-sisley-black hover:text-sisley-black transition-colors cursor-pointer"
+                    className="px-4 py-2 text-xs uppercase tracking-widest border border-sisley-border text-sisley-text-secondary hover:border-sisley-black hover:text-sisley-black transition-colors duration-200 cursor-pointer"
                   >
                     {term}
                   </span>
