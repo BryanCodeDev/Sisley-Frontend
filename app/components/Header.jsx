@@ -8,6 +8,13 @@ import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 import { useAuth } from '@/app/contexts/AuthContext';
 import UserDropdown from './UserDropdown';
 
+const publicNavLinks = [
+  { href: '/catalogo?categoria=mujer', label: 'Mujer', prefetch: false },
+  { href: '/catalogo?categoria=hombre', label: 'Hombre', prefetch: false },
+  { href: '/catalogo?categoria=nueva-coleccion', label: 'Nueva Colección', prefetch: false },
+  { href: '/catalogo?categoria=ofertas', label: 'Ofertas', prefetch: false },
+];
+
 export default function Header({ variant = 'public' }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -52,16 +59,33 @@ export default function Header({ variant = 'public' }) {
       >
         <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between h-14 md:h-16 lg:h-20">
-            <Link href={isAdmin ? '/admin' : '/'} className="flex items-center relative w-24 h-8 md:h-10">
-              <Image
-                src="/assets/logo.webp"
-                alt="Sisley"
-                fill
-                sizes="(max-width: 768px) 6rem, 10rem"
-                className="object-contain"
-                priority
-              />
-            </Link>
+            <div className="flex items-center gap-8 lg:gap-12">
+              <Link href={isAdmin ? '/admin' : '/'} className="flex items-center relative w-24 h-8 md:h-10">
+                <Image
+                  src="/assets/logo.webp"
+                  alt="Sisley"
+                  fill
+                  sizes="(max-width: 768px) 6rem, 10rem"
+                  className="object-contain"
+                  priority
+                />
+              </Link>
+
+              {!isAdmin && (
+                <nav className="hidden lg:flex items-center gap-8">
+                  {publicNavLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      prefetch={link.prefetch ?? true}
+                      className="nav-link"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </nav>
+              )}
+            </div>
 
             <div className="flex items-center gap-1 md:gap-2">
               {!isAdmin && (
@@ -108,7 +132,7 @@ export default function Header({ variant = 'public' }) {
 
               <button
                 onClick={() => setMobileOpen(true)}
-                className="lg:hidden p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
+                className={`${isAdmin ? 'hidden lg:flex' : 'lg:hidden'} p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200`}
                 aria-label="Menú"
               >
                 <span className="sr-only">Menú</span>

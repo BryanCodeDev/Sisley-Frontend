@@ -33,11 +33,10 @@ export default function Sidebar({ isOpen, onClose }) {
 
       <aside
         className={`
-          fixed inset-y-0 left-0 z-50 w-64 bg-sisley-white border-r border-sisley-border transform transition-transform duration-300 ease-out lg:translate-x-0 lg:static lg:z-auto
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          hidden lg:flex fixed inset-y-0 left-0 z-50 w-64 bg-sisley-white border-r border-sisley-border flex-col
         `}
       >
-        <div className="flex items-center justify-between p-6 lg:hidden">
+        <div className="flex items-center justify-between p-6 flex-shrink-0">
           <span className="text-lg font-light tracking-[0.2em] text-sisley-text uppercase">Menú</span>
           <button onClick={onClose} className="p-2 text-sisley-text-secondary hover:text-sisley-text transition-colors" aria-label="Cerrar menú">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -46,11 +45,11 @@ export default function Sidebar({ isOpen, onClose }) {
           </button>
         </div>
 
-        <div className="p-4 hidden lg:block">
+        <div className="p-4 flex-shrink-0">
           <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-4">Administración</p>
         </div>
 
-        <nav className="p-4 space-y-1">
+        <nav className="flex-1 overflow-y-auto p-4 space-y-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
             return (
