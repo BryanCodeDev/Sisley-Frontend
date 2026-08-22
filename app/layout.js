@@ -20,6 +20,9 @@ export const metadata = {
   title: 'Sisley Colombia — Moda Premium',
   description: 'Descubre la nueva colección de Sisley Colombia. Moda premium, elegancia contemporánea y estilo atemporal.',
   keywords: ['Sisley', 'Colombia', 'moda', 'premium', 'elegancia', 'colección'],
+  icons: {
+    icon: '/assets/logo.webp',
+  },
   openGraph: {
     title: 'Sisley Colombia — Moda Premium',
     description: 'Descubre la nueva colección de Sisley Colombia. Moda premium, elegancia contemporánea y estilo atemporal.',

@@ -14,6 +14,9 @@ async function request(path, options = {}) {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
+    if (response.status === 401 && options.ignore401) {
+      return null;
+    }
     throw new Error(data.message || `Error ${response.status}`);
   }
 
@@ -24,5 +27,5 @@ export const api = {
   get: (path, options = {}) => request(path, { ...options, method: 'GET' }),
   post: (path, body, options = {}) => request(path, { ...options, method: 'POST', body: JSON.stringify(body) }),
   put: (path, body, options = {}) => request(path, { ...options, method: 'PUT', body: JSON.stringify(body) }),
-  delete: (path, options = {}) => request(path, { ...options, method: 'DELETE' }),
+  delete: (path, body, options = {}) => request(path, { ...options, method: 'DELETE', body: JSON.stringify(body) }),
 };

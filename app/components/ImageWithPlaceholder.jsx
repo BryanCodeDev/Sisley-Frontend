@@ -1,5 +1,19 @@
 'use client';
 
+const LOCAL_IMAGES = {
+  '/assets/catalog/blusa-satinada.webp': '/assets/catalog/blusa-satinada.webp',
+  '/assets/catalog/pantalon-wide-leg.webp': '/assets/catalog/pantalon-wide-leg.webp',
+  '/assets/catalog/vestido-midi-plisado.webp': '/assets/catalog/vestido-midi-plisado.webp',
+  '/assets/logo.webp': '/assets/logo.webp',
+};
+
+function resolveImage(src) {
+  if (!src) return null;
+  if (src.startsWith('/assets/')) return src;
+  if (src.startsWith('http')) return src;
+  return src;
+}
+
 export default function ImageWithPlaceholder({
   src,
   alt = '',
@@ -7,10 +21,12 @@ export default function ImageWithPlaceholder({
   aspectRatio = 'product',
   ...props
 }) {
-  if (src) {
+  const resolvedSrc = resolveImage(src);
+
+  if (resolvedSrc) {
     return (
       <img
-        src={src}
+        src={resolvedSrc}
         alt={alt}
         className={`object-cover ${className}`}
         {...props}

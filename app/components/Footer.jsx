@@ -1,27 +1,28 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 const footerLinks = {
   shop: [
-    { id: 'shop-1', href: '/catalogo', label: 'Todos los productos' },
-    { id: 'shop-2', href: '/catalogo?genero=mujer', label: 'Mujer' },
-    { id: 'shop-3', href: '/catalogo?genero=hombre', label: 'Hombre' },
-    { id: 'shop-4', href: '/catalogo?coleccion=nueva', label: 'Nueva colección' },
-    { id: 'shop-5', href: '/catalogo?ofertas=true', label: 'Ofertas' },
+    { id: 'shop-1', href: '/catalogo', label: 'Todos los productos', prefetch: false },
+    { id: 'shop-2', href: '/catalogo?genero=mujer', label: 'Mujer', prefetch: false },
+    { id: 'shop-3', href: '/catalogo?genero=hombre', label: 'Hombre', prefetch: false },
+    { id: 'shop-4', href: '/catalogo?coleccion=nueva', label: 'Nueva colección', prefetch: false },
+    { id: 'shop-5', href: '/catalogo?ofertas=true', label: 'Ofertas', prefetch: false },
   ],
   help: [
-    { id: 'help-1', href: '/', label: 'Contacto' },
-    { id: 'help-2', href: '/', label: 'Envíos y entregas' },
-    { id: 'help-3', href: '/', label: 'Cambios y devoluciones' },
-    { id: 'help-4', href: '/', label: 'Guía de tallas' },
-    { id: 'help-5', href: '/', label: 'Preguntas frecuentes' },
+    { id: 'help-1', href: '/', label: 'Contacto', prefetch: false },
+    { id: 'help-2', href: '/', label: 'Envíos y entregas', prefetch: false },
+    { id: 'help-3', href: '/', label: 'Cambios y devoluciones', prefetch: false },
+    { id: 'help-4', href: '/', label: 'Guía de tallas', prefetch: false },
+    { id: 'help-5', href: '/', label: 'Preguntas frecuentes', prefetch: false },
   ],
   company: [
-    { id: 'company-1', href: '/', label: 'Sobre Sisley' },
-    { id: 'company-2', href: '/', label: 'Sostenibilidad' },
-    { id: 'company-3', href: '/', label: 'Privacidad' },
-    { id: 'company-4', href: '/', label: 'Términos' },
+    { id: 'company-1', href: '/', label: 'Sobre Sisley', prefetch: false },
+    { id: 'company-2', href: '/', label: 'Sostenibilidad', prefetch: false },
+    { id: 'company-3', href: '/', label: 'Privacidad', prefetch: false },
+    { id: 'company-4', href: '/', label: 'Términos', prefetch: false },
   ],
 };
 
@@ -31,10 +32,16 @@ export default function Footer() {
       <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
         <div className="py-16 md:py-24 grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8">
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="text-lg font-light tracking-[0.2em] text-sisley-black uppercase">
-              Sisley
+            <Link href="/" className="flex items-center mb-4">
+              <Image
+                src="/assets/logo.webp"
+                alt="Sisley"
+                width={120}
+                height={40}
+                className="h-10 w-auto"
+              />
             </Link>
-            <p className="mt-4 text-sm text-sisley-text-secondary leading-relaxed max-w-xs">
+            <p className="text-sm text-sisley-text-secondary leading-relaxed max-w-xs">
               Moda premium colombiana. Elegancia contemporánea y estilo atemporal.
             </p>
             <div className="flex items-center gap-4 mt-6">
@@ -55,7 +62,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.shop.map((link) => (
                 <li key={link.id}>
-                  <Link href={link.href} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                  <Link href={link.href} prefetch={link.prefetch ?? true} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -68,7 +75,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.help.map((link) => (
                 <li key={link.id}>
-                  <Link href={link.href} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                  <Link href={link.href} prefetch={link.prefetch ?? true} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -81,7 +88,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.id}>
-                  <Link href={link.href} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                  <Link href={link.href} prefetch={link.prefetch ?? true} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
                     {link.label}
                   </Link>
                 </li>

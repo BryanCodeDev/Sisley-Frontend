@@ -54,8 +54,13 @@ export default function MisPedidos() {
     );
   }
 
+  useEffect(() => {
+    if (!isAuthenticated && !authLoading) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, authLoading, router]);
+
   if (!isAuthenticated) {
-    router.push('/login');
     return null;
   }
 

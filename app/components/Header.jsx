@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const navLinks = [
-  { href: '/catalogo?genero=mujer', label: 'Mujer' },
-  { href: '/catalogo?genero=hombre', label: 'Hombre' },
-  { href: '/catalogo?coleccion=nueva', label: 'Nueva Colección' },
-  { href: '/catalogo?ofertas=true', label: 'Ofertas' },
+  { href: '/catalogo?genero=mujer', label: 'Mujer', prefetch: false },
+  { href: '/catalogo?genero=hombre', label: 'Hombre', prefetch: false },
+  { href: '/catalogo?coleccion=nueva', label: 'Nueva Colección', prefetch: false },
+  { href: '/catalogo?ofertas=true', label: 'Ofertas', prefetch: false },
 ];
 
 export default function Header() {
@@ -47,11 +48,15 @@ export default function Header() {
         <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between h-16 md:h-20 lg:h-24">
             <div className="flex items-center gap-8 lg:gap-12">
-              <Link
-                href="/"
-                className="text-lg md:text-xl font-light tracking-[0.2em] text-sisley-black uppercase"
-              >
-                Sisley
+              <Link href="/" className="flex items-center">
+                <Image
+                  src="/assets/logo.webp"
+                  alt="Sisley"
+                  width={120}
+                  height={40}
+                  className="h-8 md:h-10 w-auto"
+                  priority
+                />
               </Link>
 
               <nav className="hidden lg:flex items-center gap-8">
@@ -59,6 +64,7 @@ export default function Header() {
                   <Link
                     key={link.href}
                     href={link.href}
+                    prefetch={link.prefetch ?? true}
                     className="text-[11px] uppercase tracking-widest text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
                   >
                     {link.label}

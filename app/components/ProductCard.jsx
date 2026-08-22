@@ -2,9 +2,27 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+
+const LOCAL_IMAGES = {
+  blusa: '/assets/catalog/1.webp',
+  pantalon: '/assets/catalog/2.webp',
+  vestido: '/assets/catalog/3.webp',
+};
+
+function getLocalImage(product) {
+  const slug = product.slug || '';
+  if (slug.includes('blusa')) return LOCAL_IMAGES.blusa;
+  if (slug.includes('pantalon')) return LOCAL_IMAGES.pantalon;
+  if (slug.includes('vestido')) return LOCAL_IMAGES.vestido;
+  return null;
+}
 
 export default function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
+  const localImage = getLocalImage(product);
+  const remoteImage = product.images?.[0]?.url || product.image || null;
+  const imageSrc = localImage || remoteImage;
 
   return (
     <Link
@@ -14,11 +32,12 @@ export default function ProductCard({ product }) {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative aspect-[3/4] bg-sisley-bg overflow-hidden mb-4">
-        {product.image ? (
-          <img
-            src={product.image}
+        {imageSrc ? (
+          <Image
+            src={imageSrc}
             alt={product.name}
-            className={`w-full h-full object-cover transition-all duration-700 ease-out ${
+            fill
+            className={`object-cover transition-all duration-700 ease-out ${
               isHovered ? 'scale-105 opacity-90' : 'scale-100 opacity-100'
             }`}
           />
