@@ -28,7 +28,7 @@ const footerLinks = {
 
 export default function Footer() {
   return (
-    <footer className="bg-sisley-bg border-t border-sisley-border">
+    <footer className="bg-sisley-dark text-white">
       <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
         <div className="py-16 md:py-24 grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8">
           <div className="col-span-2 md:col-span-1">
@@ -41,28 +41,28 @@ export default function Footer() {
                 className="h-10 w-auto"
               />
             </Link>
-            <p className="text-sm text-sisley-text-secondary leading-relaxed max-w-xs">
+            <p className="text-sm text-sisley-dark-muted leading-relaxed max-w-xs">
               Moda premium colombiana. Elegancia contemporánea y estilo atemporal.
             </p>
             <div className="flex items-center gap-4 mt-6">
-              <a href="/" aria-label="Instagram" className="text-sisley-text-secondary hover:text-sisley-black transition-colors">
+              <a href="/" aria-label="Instagram" className="text-sisley-dark-muted hover:text-white transition-colors duration-200">
                 <span className="text-xs uppercase tracking-widest">Ig</span>
               </a>
-              <a href="/" aria-label="Facebook" className="text-sisley-text-secondary hover:text-sisley-black transition-colors">
+              <a href="/" aria-label="Facebook" className="text-sisley-dark-muted hover:text-white transition-colors duration-200">
                 <span className="text-xs uppercase tracking-widest">Fb</span>
               </a>
-              <a href="/" aria-label="Twitter" className="text-sisley-text-secondary hover:text-sisley-black transition-colors">
+              <a href="/" aria-label="Twitter" className="text-sisley-dark-muted hover:text-white transition-colors duration-200">
                 <span className="text-xs uppercase tracking-widest">X</span>
               </a>
             </div>
           </div>
 
           <div>
-            <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-5">Tienda</p>
+            <p className="text-[11px] uppercase tracking-widest text-sisley-dark-muted mb-5">Tienda</p>
             <ul className="space-y-3">
               {footerLinks.shop.map((link) => (
                 <li key={link.id}>
-                  <Link href={link.href} prefetch={link.prefetch ?? true} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                  <Link href={link.href} prefetch={link.prefetch ?? true} className="text-sm text-sisley-dark-muted hover:text-white transition-colors duration-200">
                     {link.label}
                   </Link>
                 </li>
@@ -71,11 +71,11 @@ export default function Footer() {
           </div>
 
           <div>
-            <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-5">Ayuda</p>
+            <p className="text-[11px] uppercase tracking-widest text-sisley-dark-muted mb-5">Ayuda</p>
             <ul className="space-y-3">
               {footerLinks.help.map((link) => (
                 <li key={link.id}>
-                  <Link href={link.href} prefetch={link.prefetch ?? true} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                  <Link href={link.href} prefetch={link.prefetch ?? true} className="text-sm text-sisley-dark-muted hover:text-white transition-colors duration-200">
                     {link.label}
                   </Link>
                 </li>
@@ -84,11 +84,11 @@ export default function Footer() {
           </div>
 
           <div>
-            <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-5">Empresa</p>
+            <p className="text-[11px] uppercase tracking-widest text-sisley-dark-muted mb-5">Empresa</p>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.id}>
-                  <Link href={link.href} prefetch={link.prefetch ?? true} className="text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                  <Link href={link.href} prefetch={link.prefetch ?? true} className="text-sm text-sisley-dark-muted hover:text-white transition-colors duration-200">
                     {link.label}
                   </Link>
                 </li>
@@ -97,18 +97,18 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="py-6 border-t border-sisley-border flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-sisley-muted">
+        <div className="py-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-sisley-dark-muted">
             © {new Date().getFullYear()} Sisley Colombia. Todos los derechos reservados.
           </p>
           <div className="flex items-center gap-6">
-            <Link href="/" className="text-xs text-sisley-muted hover:text-sisley-black transition-colors">
+            <Link href="/" className="text-xs text-sisley-dark-muted hover:text-white transition-colors duration-200">
               Privacidad
             </Link>
-            <Link href="/" className="text-xs text-sisley-muted hover:text-sisley-black transition-colors">
+            <Link href="/" className="text-xs text-sisley-dark-muted hover:text-white transition-colors duration-200">
               Términos
             </Link>
-            <Link href="/" className="text-xs text-sisley-muted hover:text-sisley-black transition-colors">
+            <Link href="/" className="text-xs text-sisley-dark-muted hover:text-white transition-colors duration-200">
               Cookies
             </Link>
           </div>

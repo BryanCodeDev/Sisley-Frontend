@@ -39,7 +39,7 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
           scrolled
             ? 'bg-sisley-white/90 backdrop-blur-md border-b border-sisley-border'
             : 'bg-transparent'
@@ -65,7 +65,7 @@ export default function Header() {
                     key={link.href}
                     href={link.href}
                     prefetch={link.prefetch ?? true}
-                    className="text-[11px] uppercase tracking-widest text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
+                    className="nav-link"
                   >
                     {link.label}
                   </Link>

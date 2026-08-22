@@ -5,6 +5,7 @@ import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import Button from '@/app/components/Button';
 import Skeleton from '@/app/components/Skeleton';
+import ImageWithPlaceholder from '@/app/components/ImageWithPlaceholder';
 import Link from 'next/link';
 import { getCart, updateCartItem, removeCartItem } from '@/app/services/cart';
 
@@ -145,11 +146,13 @@ export default function Carrito() {
             <div className="lg:col-span-2">
               <div className="border-b border-sisley-border">
                 {cartItems.map((item, index) => (
-                  <div key={item.id} className={`py-8 flex gap-6 ${index !== cartItems.length - 1 ? 'border-b border-sisley-border' : ''}`}>
-                    <div className="w-24 h-32 bg-sisley-bg flex-shrink-0 flex items-center justify-center">
-                      <svg className="w-8 h-8 text-sisley-border-strong" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
+                  <div key={item.id} className={`py-8 flex gap-6 transition-colors duration-200 hover:bg-sisley-bg/50 ${index !== cartItems.length - 1 ? 'border-b border-sisley-border' : ''}`}>
+                    <div className="w-24 h-32 bg-sisley-bg flex-shrink-0 overflow-hidden">
+                      <ImageWithPlaceholder
+                        src={item.productId ? `/assets/catalog/${(item.productId % 9) + 1}.webp` : null}
+                        alt={item.productName}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start mb-1">
@@ -189,8 +192,8 @@ export default function Carrito() {
                           </button>
                         </div>
                          <p className="text-sm text-sisley-text">
-                          ${(Number(item.unitPrice) * item.quantity).toLocaleString('es-CO')}
-                        </p>
+                           ${(Number(item.unitPrice) * item.quantity).toLocaleString('es-CO')}
+                         </p>
                       </div>
                     </div>
                   </div>

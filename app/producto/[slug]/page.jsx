@@ -24,6 +24,7 @@ export default function ProductoPage() {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
+  const [imageKey, setImageKey] = useState(0);
 
   useEffect(() => {
     async function load() {
@@ -37,6 +38,7 @@ export default function ProductoPage() {
         setProduct(data);
         setSelectedVariant(data.variants?.[0] || null);
         setActiveImage(0);
+        setImageKey(0);
 
         const relatedData = await getProducts({ category: data.categoryId, limit: '4' });
         setRelated((relatedData.data || []).filter((p) => p.id !== data.id).slice(0, 4));
@@ -58,6 +60,11 @@ export default function ProductoPage() {
       console.error('Error adding to cart:', err.message);
       alert('Error al agregar al carrito');
     }
+  };
+
+  const handleImageChange = (index) => {
+    setActiveImage(index);
+    setImageKey((k) => k + 1);
   };
 
   if (loading) {
@@ -104,11 +111,13 @@ export default function ProductoPage() {
             <div className="space-y-4">
               <div className="aspect-[3/4] bg-sisley-bg overflow-hidden">
                 <ImageWithPlaceholder
+                  key={imageKey}
                   src={images[activeImage] || null}
                   alt={product.name}
                   categorySlug={product.categorySlug || product.category || ''}
                   index={(product.id ? product.id - 1 : 0) % 3}
                   className="w-full h-full object-cover"
+                  style={{ animation: 'fade-in 400ms ease-out' }}
                 />
               </div>
               {images.length > 1 && (
@@ -116,9 +125,9 @@ export default function ProductoPage() {
                   {images.map((img, index) => (
                     <button
                       key={index}
-                      onClick={() => setActiveImage(index)}
-                      className={`flex-shrink-0 w-16 h-20 bg-sisley-bg overflow-hidden border-2 transition-colors ${
-                        activeImage === index ? 'border-sisley-black' : 'border-transparent'
+                      onClick={() => handleImageChange(index)}
+                      className={`flex-shrink-0 w-16 h-20 bg-sisley-bg overflow-hidden border-2 transition-all duration-300 ${
+                        activeImage === index ? 'border-sisley-black opacity-100' : 'border-transparent opacity-60 hover:opacity-100'
                       }`}
                     >
                       <ImageWithPlaceholder
@@ -190,7 +199,7 @@ export default function ProductoPage() {
                 <div className="flex items-center gap-4">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-10 h-10 flex items-center justify-center border border-sisley-border hover:border-sisley-black transition-colors"
+                    className="w-10 h-10 flex items-center justify-center border border-sisley-border hover:border-sisley-black transition-colors duration-200"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M18 12H6" />
@@ -199,7 +208,7 @@ export default function ProductoPage() {
                   <span className="text-sm w-8 text-center">{quantity}</span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="w-10 h-10 flex items-center justify-center border border-sisley-border hover:border-sisley-black transition-colors"
+                    className="w-10 h-10 flex items-center justify-center border border-sisley-border hover:border-sisley-black transition-colors duration-200"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
@@ -214,7 +223,13 @@ export default function ProductoPage() {
               </div>
 
               <div className="flex flex-wrap gap-4 mb-8">
-                <Button size="lg" onClick={handleAddToCart} className="flex-1">
+                <Button
+                  size="lg"
+                  onClick={handleAddToCart}
+                  className={`flex-1 transition-all duration-300 ${
+                    added ? 'bg-sisley-text border-sisley-text' : ''
+                  }`}
+                >
                   {added ? 'Agregado al carrito' : 'Agregar al carrito'}
                 </Button>
                 <Button variant="ghost" size="lg">
