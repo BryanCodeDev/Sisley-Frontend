@@ -33,13 +33,13 @@ export default function AdminLayout({ children, requiredPermission }) {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4">
+                 <div className="flex items-center gap-4">
                   <div className="text-right">
                     <p className="text-xs font-medium text-sisley-text">
-                      {user ? `${user.firstName} ${user.lastName}` : 'Admin Sisley'}
+                      {user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Administrador' : 'Admin Sisley'}
                     </p>
                     <p className="text-[10px] text-sisley-muted">
-                      {user ? user.email : 'admin@sisley.co'}
+                      {user?.email || 'admin@sisley.co'}
                     </p>
                   </div>
                    <div className="w-8 h-8 bg-sisley-border rounded-full flex items-center justify-center">
