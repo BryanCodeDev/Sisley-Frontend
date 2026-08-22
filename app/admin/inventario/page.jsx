@@ -5,6 +5,7 @@ import Badge from '@/app/components/Badge';
 import Button from '@/app/components/Button';
 import Input from '@/app/components/Input';
 import Table from '@/app/components/Table';
+import TableSkeleton from '@/app/components/TableSkeleton';
 import { getInventoryFromProducts, adjustInventory } from '@/app/services/inventory';
 
 function AdjustStockModal({ item, onClose, onAdjusted }) {
@@ -199,13 +200,7 @@ export default function AdminInventario() {
       )}
 
       {loading ? (
-        <div className="bg-sisley-white border border-sisley-border">
-          <div className="p-4">
-            <div className="space-y-0">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => <InventoryRowSkeleton key={i} />)}
-            </div>
-          </div>
-        </div>
+        <TableSkeleton columns={8} rows={8} />
       ) : inventory.length === 0 ? (
         <div className="bg-sisley-white border border-sisley-border py-12 text-center text-sisley-muted">
           <p className="text-sm">No hay variantes de inventario para mostrar</p>

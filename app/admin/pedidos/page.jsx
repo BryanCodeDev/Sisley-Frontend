@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Badge from '@/app/components/Badge';
 import Button from '@/app/components/Button';
 import Table from '@/app/components/Table';
+import TableSkeleton from '@/app/components/TableSkeleton';
 import { getOrders, getOrder, updateOrderStatus } from '@/app/services/orders';
 
 function OrderDetailModal({ order, onClose, onStatusChange }) {
@@ -298,11 +299,7 @@ export default function AdminPedidos() {
         </div>
 
         {loading ? (
-          <div className="p-4">
-            <div className="space-y-0">
-              {[1, 2, 3, 4, 5].map((i) => <OrderRowSkeleton key={i} />)}
-            </div>
-          </div>
+          <TableSkeleton columns={6} rows={5} />
         ) : error ? (
           <div className="p-8 text-center">
             <p className="text-sm text-red-600 mb-4">Error: {error}</p>

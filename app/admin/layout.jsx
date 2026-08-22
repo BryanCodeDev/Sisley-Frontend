@@ -42,11 +42,11 @@ export default function AdminLayout({ children, requiredPermission }) {
                       {user ? user.email : 'admin@sisley.co'}
                     </p>
                   </div>
-                  <div className="w-8 h-8 bg-sisley-border rounded-full flex items-center justify-center">
-                    <span className="text-[10px] font-medium text-sisley-text">
-                      {user ? `${user.firstName[0]}${user.lastName[0]}` : 'A'}
-                    </span>
-                  </div>
+                   <div className="w-8 h-8 bg-sisley-border rounded-full flex items-center justify-center">
+                     <span className="text-[10px] font-medium text-sisley-text">
+                       {user ? `${(user.firstName || '')[0] || ''}${(user.lastName || '')[0] || ''}` : 'A'}
+                     </span>
+                   </div>
                 </div>
               </div>
             </header>

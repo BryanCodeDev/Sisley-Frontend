@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Badge from '@/app/components/Badge';
 import Button from '@/app/components/Button';
 import Table from '@/app/components/Table';
+import TableSkeleton from '@/app/components/TableSkeleton';
 import { getProducts, deleteProduct } from '@/app/services/products';
 import { getCategories } from '@/app/services/categories';
 import Link from 'next/link';
@@ -161,11 +162,7 @@ export default function AdminProductos() {
         </div>
 
         {loading ? (
-          <div className="p-4">
-            <div className="space-y-0">
-              {[1, 2, 3, 4, 5].map((i) => <ProductRowSkeleton key={i} />)}
-            </div>
-          </div>
+          <TableSkeleton columns={columns.length} rows={5} />
         ) : error ? (
           <div className="p-8 text-center">
             <p className="text-sm text-red-600 mb-4">Error: {error}</p>

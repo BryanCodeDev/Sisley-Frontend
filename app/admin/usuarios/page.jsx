@@ -5,6 +5,7 @@ import Badge from '@/app/components/Badge';
 import Button from '@/app/components/Button';
 import Input from '@/app/components/Input';
 import Table from '@/app/components/Table';
+import TableSkeleton from '@/app/components/TableSkeleton';
 import { getUsers, getUser, createUser } from '@/app/services/users';
 import { getRoles } from '@/app/services/auth';
 
@@ -226,13 +227,7 @@ export default function AdminUsuarios() {
       </div>
 
       {loading ? (
-        <div className="bg-sisley-white border border-sisley-border">
-          <div className="p-4">
-            <div className="space-y-0">
-              {[1, 2, 3, 4, 5].map((i) => <UserRowSkeleton key={i} />)}
-            </div>
-          </div>
-        </div>
+        <TableSkeleton columns={5} rows={5} />
       ) : error ? (
         <div className="bg-sisley-white border border-sisley-border p-8 text-center">
           <p className="text-sm text-red-600 mb-4">Error: {error}</p>
