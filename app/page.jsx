@@ -12,6 +12,8 @@ import { getProducts } from '@/app/services/products';
 import { getCategories } from '@/app/services/categories';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 async function getFeaturedProducts() {
   try {
     const data = await getProducts({ status: 'active', limit: '12', orderBy: 'featured', inStock: 'true' });
