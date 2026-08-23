@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 export default function Button({
   children,
   variant = 'primary',
@@ -29,9 +31,9 @@ export default function Button({
 
   if (href) {
     return (
-      <a href={href} className={classes} {...props}>
+      <Link href={href} className={classes} {...props}>
         {children}
-      </a>
+      </Link>
     );
   }
 

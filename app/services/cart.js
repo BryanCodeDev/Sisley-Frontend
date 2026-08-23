@@ -16,26 +16,40 @@ export async function getCart() {
   });
 }
 
+async function notifyCartUpdate() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
+  }
+}
+
 export async function addToCart({ variantId, quantity = 1 }) {
-  return api.post('/api/cart', { variantId, quantity }, {
+  const result = await api.post('/api/cart', { variantId, quantity }, {
     headers: { 'x-session-id': getSessionId() },
   });
+  notifyCartUpdate();
+  return result;
 }
 
 export async function updateCartItem(itemId, quantity) {
-  return api.put(`/api/cart/items/${itemId}`, { quantity }, {
+  const result = await api.put(`/api/cart/items/${itemId}`, { quantity }, {
     headers: { 'x-session-id': getSessionId() },
   });
+  notifyCartUpdate();
+  return result;
 }
 
 export async function removeCartItem(itemId) {
-  return api.delete(`/api/cart/items/${itemId}`, {
+  const result = await api.delete(`/api/cart/items/${itemId}`, {
     headers: { 'x-session-id': getSessionId() },
   });
+  notifyCartUpdate();
+  return result;
 }
 
 export async function clearCart() {
-  return api.post('/api/cart/clear', {}, {
+  const result = await api.post('/api/cart/clear', {}, {
     headers: { 'x-session-id': getSessionId() },
   });
+  notifyCartUpdate();
+  return result;
 }

@@ -5,6 +5,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 const FavoritesContext = createContext(null);
 
 const STORAGE_KEY = 'sisley_favorites';
+const MAX_FAVORITES = 100;
 
 export function FavoritesProvider({ children }) {
   const [favorites, setFavorites] = useState([]);
@@ -31,6 +32,9 @@ export function FavoritesProvider({ children }) {
 
   const addFavorite = (product) => {
     if (!product || favorites.some((p) => p.id === product.id)) return;
+    if (favorites.length >= MAX_FAVORITES) {
+      return;
+    }
     saveFavorites([...favorites, product]);
   };
 
@@ -55,6 +59,7 @@ export function FavoritesProvider({ children }) {
     isFavorite,
     toggleFavorite,
     favoritesCount: favorites.length,
+    maxFavorites: MAX_FAVORITES,
   };
 
   return (

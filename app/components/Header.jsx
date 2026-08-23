@@ -8,8 +8,9 @@ import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 import { useAuth } from '@/app/contexts/AuthContext';
 import UserDropdown from './UserDropdown';
 import { getCart } from '@/app/services/cart';
+import { getCategories } from '@/app/services/categories';
 
-const publicNavLinks = [
+const defaultNavLinks = [
   { href: '/catalogo?categoria=mujer', label: 'Mujer', prefetch: false },
   { href: '/catalogo?categoria=hombre', label: 'Hombre', prefetch: false },
   { href: '/catalogo?categoria=nueva-coleccion', label: 'Nueva Colección', prefetch: false },
@@ -38,6 +39,7 @@ export default function Header({ variant = 'public' }) {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [cartCount, setCartCount] = useState(0);
+  const [navLinks, setNavLinks] = useState(defaultNavLinks);
   const pathname = usePathname();
   const { customer, loading: customerLoading, isAuthenticated: isCustomerAuth, logout: customerLogout } = useCustomerAuth();
   const { user, loading: adminLoading, isAuthenticated: isAdminAuth, logout: adminLogout } = useAuth();
@@ -61,6 +63,26 @@ export default function Header({ variant = 'public' }) {
     window.addEventListener('cartUpdated', loadCartCount);
     return () => window.removeEventListener('cartUpdated', loadCartCount);
   }, [loadCartCount]);
+
+  useEffect(() => {
+    async function loadNavCategories() {
+      try {
+        const data = await getCategories({ status: 'active', limit: '4' });
+        if (data.data && data.data.length > 0) {
+          setNavLinks(data.data.map((cat) => ({
+            href: `/catalogo?categoria=${cat.slug}`,
+            label: cat.name,
+            prefetch: false,
+          })));
+        }
+      } catch {
+        setNavLinks(defaultNavLinks);
+      }
+    }
+    if (!isAdmin) {
+      loadNavCategories();
+    }
+  }, [isAdmin]);
 
   useEffect(() => {
     function handleScroll() {
@@ -129,7 +151,7 @@ export default function Header({ variant = 'public' }) {
 
               {!isAdmin && (
                 <nav className="hidden lg:flex items-center gap-8">
-                  {publicNavLinks.map((link) => (
+                  {navLinks.map((link) => (
                     <NavLink key={link.href} href={link.href} prefetch={link.prefetch ?? true}>
                       {link.label}
                     </NavLink>
@@ -241,10 +263,11 @@ export default function Header({ variant = 'public' }) {
                   </div>
                 ) : (
                   <>
-                    <Link href="/catalogo?categoria=mujer" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Mujer</Link>
-                    <Link href="/catalogo?categoria=hombre" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Hombre</Link>
-                    <Link href="/catalogo?categoria=nueva-coleccion" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Nueva Colección</Link>
-                    <Link href="/catalogo?categoria=ofertas" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Ofertas</Link>
+                    {navLinks.map((link) => (
+                      <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">
+                        {link.label}
+                      </Link>
+                    ))}
                   </>
                 )}
               </div>
