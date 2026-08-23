@@ -84,28 +84,33 @@ export default async function Home() {
                   <ScrollReveal key={category.id} delay={100 * (index + 1)}>
                     <Link
                       href={`/catalogo?categoria=${category.slug}`}
-                      className={`group relative overflow-hidden bg-sisley-bg ${
-                        isLarge ? 'md:col-span-7 aspect-[4/5] md:aspect-auto md:row-span-2' : 'md:col-span-5 aspect-[4/3]'
-                      }`}
+                      className={`group relative overflow-hidden block ${isLarge ? 'md:col-span-7 md:row-span-2' : 'md:col-span-5'}`}
                     >
-                      <ImageWithPlaceholder
-                        src={category.imageUrl || category.image || null}
-                        alt={category.name}
-                        categorySlug={category.slug}
-                        index={index}
-                        className="w-full h-full"
-                      />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500" />
-                      <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-                        <p className="text-[10px] uppercase tracking-widest text-sisley-muted mb-1">
-                          {category.count ? `${category.count} piezas` : 'Colección'}
-                        </p>
-                        <h3 className="font-serif text-xl md:text-2xl font-light text-sisley-black group-hover:translate-x-1 transition-transform duration-300">
-                          {category.name}
-                        </h3>
-                        <span className="mt-2 inline-flex items-center gap-1 text-[11px] uppercase tracking-widest text-sisley-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          Ver colección →
-                        </span>
+                      <div className={`relative w-full ${isLarge ? 'aspect-[4/5] md:aspect-auto md:h-full min-h-[400px]' : 'aspect-[4/3]'}`}>
+                        <ImageWithPlaceholder
+                          src={category.imageUrl || category.image || null}
+                          alt={category.name}
+                          categorySlug={category.slug}
+                          index={index}
+                          className="w-full h-full"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
+                        <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
+                          <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                            <p className="text-[10px] uppercase tracking-[0.2em] text-white/70 mb-1.5">
+                              {category.count ? `${category.count} piezas` : 'Colección'}
+                            </p>
+                            <h3 className={`font-serif font-light text-white tracking-tight ${isLarge ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}`}>
+                              {category.name}
+                            </h3>
+                            <span className="mt-3 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.15em] text-white/80 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                              Explorar
+                              <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                              </svg>
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </Link>
                   </ScrollReveal>

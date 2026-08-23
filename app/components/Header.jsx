@@ -151,7 +151,14 @@ export default function Header({ variant = 'public' }) {
 
               {!isAdmin && (
                 <nav className="hidden lg:flex items-center gap-8">
-                  {navLinks.map((link) => (
+                  <Link
+                    href="/catalogo"
+                    className="group relative text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
+                  >
+                    Catálogo
+                    <span className="pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-sisley-black transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
+                  </Link>
+                  {navLinks.slice(0, 3).map((link) => (
                     <NavLink key={link.href} href={link.href} prefetch={link.prefetch ?? true}>
                       {link.label}
                     </NavLink>
@@ -263,7 +270,10 @@ export default function Header({ variant = 'public' }) {
                   </div>
                 ) : (
                   <>
-                    {navLinks.map((link) => (
+                    <Link href="/catalogo" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">
+                      Catálogo
+                    </Link>
+                    {navLinks.slice(0, 3).map((link) => (
                       <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">
                         {link.label}
                       </Link>

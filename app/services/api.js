@@ -17,7 +17,10 @@ async function request(path, options = {}) {
     if (response.status === 401 && options.ignore401) {
       return null;
     }
-    throw new Error(data.message || `Error ${response.status}`);
+    const error = new Error(data.message || `Error ${response.status}`);
+    error.status = response.status;
+    error.data = data;
+    throw error;
   }
 
   return data;
