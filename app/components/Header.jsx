@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 import { useAuth } from '@/app/contexts/AuthContext';
 import UserDropdown from './UserDropdown';
@@ -16,6 +16,8 @@ const defaultNavLinks = [
   { href: '/catalogo?categoria=nueva-coleccion', label: 'Nueva Colección', prefetch: false },
   { href: '/catalogo?categoria=ofertas', label: 'Ofertas', prefetch: false },
 ];
+
+const SEARCH_SUGGESTIONS = ['Vestidos', 'Blazers', 'Camisas', 'Pantalones'];
 
 /** Nav link with a left-to-right underline sweep on hover (spec item 9). Self-contained, no external CSS needed. */
 function NavLink({ href, prefetch, children }) {
@@ -31,6 +33,25 @@ function NavLink({ href, prefetch, children }) {
   );
 }
 
+/**
+ * Closes an overlay on Escape and returns focus to whatever triggered it,
+ * so keyboard users aren't stranded inside the drawer/search panel.
+ */
+function useEscapeToClose(isOpen, onClose, triggerRef) {
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') {
+        onClose();
+        triggerRef.current?.focus();
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose, triggerRef]);
+}
+
 export default function Header({ variant = 'public' }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -41,6 +62,9 @@ export default function Header({ variant = 'public' }) {
   const [cartCount, setCartCount] = useState(0);
   const [navLinks, setNavLinks] = useState(defaultNavLinks);
   const pathname = usePathname();
+  const router = useRouter();
+  const searchTriggerRef = useRef(null);
+  const menuTriggerRef = useRef(null);
   const { customer, loading: customerLoading, isAuthenticated: isCustomerAuth, logout: customerLogout } = useCustomerAuth();
   const { user, loading: adminLoading, isAuthenticated: isAdminAuth, logout: adminLogout } = useAuth();
 
@@ -104,6 +128,13 @@ export default function Header({ variant = 'public' }) {
     };
   }, [mobileOpen, searchOpen]);
 
+  // Cierra el menú/búsqueda si cambia la ruta (ej. tras hacer clic en un link),
+  // en vez de depender únicamente de cada onClick individual.
+  useEffect(() => {
+    setMobileOpen(false);
+    setSearchOpen(false);
+  }, [pathname]);
+
   // Drives the slide/fade-in transitions for the mobile drawer once it mounts, so the
   // panel animates in from off-screen rather than appearing instantly (spec item 21/23).
   useEffect(() => {
@@ -123,6 +154,18 @@ export default function Header({ variant = 'public' }) {
     setSearchVisible(false);
     return undefined;
   }, [searchOpen]);
+
+  const closeMobile = useCallback(() => setMobileOpen(false), []);
+  const closeSearch = useCallback(() => setSearchOpen(false), []);
+  useEscapeToClose(mobileOpen, closeMobile, menuTriggerRef);
+  useEscapeToClose(searchOpen, closeSearch, searchTriggerRef);
+
+  function goToSearch(term) {
+    const query = term.trim();
+    if (!query) return;
+    setSearchOpen(false);
+    router.push(`/catalogo?search=${encodeURIComponent(query)}`);
+  }
 
   return (
     <>
@@ -150,14 +193,10 @@ export default function Header({ variant = 'public' }) {
               </Link>
 
               {!isAdmin && (
-                <nav className="hidden lg:flex items-center gap-8">
-                  <Link
-                    href="/catalogo"
-                    className="group relative text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
-                  >
+                <nav aria-label="Navegación principal" className="hidden lg:flex items-center gap-8">
+                  <NavLink href="/catalogo" prefetch>
                     Catálogo
-                    <span className="pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-sisley-black transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
-                  </Link>
+                  </NavLink>
                   {navLinks.slice(0, 3).map((link) => (
                     <NavLink key={link.href} href={link.href} prefetch={link.prefetch ?? true}>
                       {link.label}
@@ -170,9 +209,12 @@ export default function Header({ variant = 'public' }) {
             <div className="flex items-center gap-1 md:gap-2">
               {!isAdmin && (
                 <button
+                  ref={searchTriggerRef}
                   onClick={() => setSearchOpen(true)}
                   className="p-2 text-sisley-text-secondary hover:text-sisley-black transition-all duration-200 hover:scale-105 motion-reduce:hover:scale-100"
                   aria-label="Buscar"
+                  aria-haspopup="dialog"
+                  aria-expanded={searchOpen}
                 >
                   <span className="sr-only">Buscar</span>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -199,14 +241,17 @@ export default function Header({ variant = 'public' }) {
                   <Link
                     href="/carrito"
                     className="relative p-2 text-sisley-text-secondary hover:text-sisley-black transition-all duration-200 hover:scale-105 motion-reduce:hover:scale-100"
-                    aria-label="Carrito"
+                    aria-label={`Carrito${cartCount > 0 ? `, ${cartCount} artículo${cartCount === 1 ? '' : 's'}` : ''}`}
                   >
                     <span className="sr-only">Carrito</span>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
                     {cartCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center bg-sisley-black text-white text-[10px] font-medium rounded-full px-1">
+                      <span
+                        aria-hidden="true"
+                        className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center bg-sisley-black text-white text-[10px] font-medium rounded-full px-1"
+                      >
                         {cartCount > 99 ? '99+' : cartCount}
                       </span>
                     )}
@@ -215,9 +260,12 @@ export default function Header({ variant = 'public' }) {
               )}
 
               <button
+                ref={menuTriggerRef}
                 onClick={() => setMobileOpen(true)}
                 className={`${isAdmin ? 'hidden lg:flex' : 'lg:hidden'} p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200`}
                 aria-label="Menú"
+                aria-haspopup="dialog"
+                aria-expanded={mobileOpen}
               >
                 <span className="sr-only">Menú</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -235,7 +283,7 @@ export default function Header({ variant = 'public' }) {
             className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-out motion-reduce:transition-none ${
               mobileVisible ? 'opacity-100' : 'opacity-0'
             }`}
-            onClick={() => setMobileOpen(false)}
+            onClick={closeMobile}
           />
           <div
             className={`absolute inset-y-0 right-0 w-full max-w-md bg-sisley-white shadow-2xl flex flex-col transition-transform duration-500 ease-out motion-reduce:!translate-x-0 ${
@@ -245,7 +293,7 @@ export default function Header({ variant = 'public' }) {
             <div className="flex items-center justify-between p-6 border-b border-sisley-border">
               <span id="mobile-menu-title" className="text-lg font-light tracking-[0.2em] text-sisley-black uppercase">Menú</span>
               <button
-                onClick={() => setMobileOpen(false)}
+                onClick={closeMobile}
                 className="p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors"
                 aria-label="Cerrar menú"
               >
@@ -256,25 +304,25 @@ export default function Header({ variant = 'public' }) {
               </button>
             </div>
 
-            <nav className="flex-1 overflow-y-auto p-6">
+            <nav className="flex-1 overflow-y-auto p-6" aria-label="Menú móvil">
               <div className="space-y-1">
                 {isAdmin ? (
                   <div className="space-y-1">
-                    <Link href="/admin" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Dashboard</Link>
-                    <Link href="/admin/productos" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Productos</Link>
-                    <Link href="/admin/pedidos" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Pedidos</Link>
-                    <Link href="/admin/clientes" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Clientes</Link>
-                    <Link href="/admin/inventario" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Inventario</Link>
-                    <Link href="/admin/facturacion" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Facturación</Link>
-                    <Link href="/admin/reportes" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Reportes</Link>
+                    <Link href="/admin" onClick={closeMobile} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Dashboard</Link>
+                    <Link href="/admin/productos" onClick={closeMobile} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Productos</Link>
+                    <Link href="/admin/pedidos" onClick={closeMobile} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Pedidos</Link>
+                    <Link href="/admin/clientes" onClick={closeMobile} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Clientes</Link>
+                    <Link href="/admin/inventario" onClick={closeMobile} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Inventario</Link>
+                    <Link href="/admin/facturacion" onClick={closeMobile} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Facturación</Link>
+                    <Link href="/admin/reportes" onClick={closeMobile} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">Reportes</Link>
                   </div>
                 ) : (
                   <>
-                    <Link href="/catalogo" onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">
+                    <Link href="/catalogo" onClick={closeMobile} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">
                       Catálogo
                     </Link>
                     {navLinks.slice(0, 3).map((link) => (
-                      <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">
+                      <Link key={link.href} href={link.href} onClick={closeMobile} className="block py-4 text-2xl font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border">
                         {link.label}
                       </Link>
                     ))}
@@ -292,15 +340,15 @@ export default function Header({ variant = 'public' }) {
                           <p className="text-sm font-medium text-sisley-text">Hola, {customer.firstName || customer.name?.split(' ')[0] || 'Cliente'}</p>
                           <p className="text-xs text-sisley-muted">{customer.email}</p>
                         </div>
-                        <Link href="/mi-cuenta" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                        <Link href="/mi-cuenta" onClick={closeMobile} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
                           Mi cuenta
                         </Link>
-                        <Link href="/mis-pedidos" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                        <Link href="/mis-pedidos" onClick={closeMobile} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
                           Mis pedidos
                         </Link>
                         <button
                           onClick={async () => {
-                            setMobileOpen(false);
+                            closeMobile();
                             await customerLogout();
                           }}
                           className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors"
@@ -310,10 +358,10 @@ export default function Header({ variant = 'public' }) {
                       </>
                     ) : (
                       <>
-                        <Link href="/login" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                        <Link href="/login" onClick={closeMobile} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
                           Iniciar sesión
                         </Link>
-                        <Link href="/registro" onClick={() => setMobileOpen(false)} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                        <Link href="/registro" onClick={closeMobile} className="block text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors">
                           Crear cuenta
                         </Link>
                       </>
@@ -332,7 +380,7 @@ export default function Header({ variant = 'public' }) {
             className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-out motion-reduce:transition-none ${
               searchVisible ? 'opacity-100' : 'opacity-0'
             }`}
-            onClick={() => setSearchOpen(false)}
+            onClick={closeSearch}
           />
           <div
             className={`absolute inset-x-0 top-0 bg-sisley-white border-b border-sisley-border p-6 md:p-10 transition-transform duration-500 ease-out motion-reduce:!translate-y-0 ${
@@ -343,7 +391,7 @@ export default function Header({ variant = 'public' }) {
               <div className="flex items-center justify-between mb-6">
                 <p id="search-title" className="text-[11px] uppercase tracking-widest text-sisley-muted">Buscar</p>
                 <button
-                  onClick={() => setSearchOpen(false)}
+                  onClick={closeSearch}
                   className="p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors"
                   aria-label="Cerrar búsqueda"
                 >
@@ -353,13 +401,17 @@ export default function Header({ variant = 'public' }) {
                   </svg>
                 </button>
               </div>
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                if (searchQuery.trim()) {
-                  window.location.href = `/catalogo?search=${encodeURIComponent(searchQuery.trim())}`;
-                }
-              }}>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  goToSearch(searchQuery);
+                }}
+              >
+                <label htmlFor="header-search-input" className="sr-only">
+                  ¿Qué estás buscando?
+                </label>
                 <input
+                  id="header-search-input"
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -369,11 +421,11 @@ export default function Header({ variant = 'public' }) {
                 />
               </form>
               <div className="mt-6 flex flex-wrap gap-2">
-                {['Vestidos', 'Blazers', 'Camisas', 'Pantalones'].map((term) => (
+                {SEARCH_SUGGESTIONS.map((term) => (
                   <button
                     key={term}
                     type="button"
-                    onClick={() => window.location.href = `/catalogo?search=${encodeURIComponent(term)}`}
+                    onClick={() => goToSearch(term)}
                     className="px-4 py-2 text-xs uppercase tracking-widest border border-sisley-border text-sisley-text-secondary hover:border-sisley-black hover:text-sisley-black transition-colors duration-200 cursor-pointer"
                   >
                     {term}

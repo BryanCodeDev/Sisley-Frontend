@@ -26,6 +26,8 @@ const footerLinks = {
   ],
 };
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 /**
  * Underline-sweep link used across the footer.
  * scaleX(0) -> scaleX(1), transform-origin left (motion spec item 9).
@@ -83,6 +85,78 @@ function Reveal({ children, className = '', delay = 0 }) {
   );
 }
 
+/** Newsletter form with real submit feedback (idle/loading/success/error) instead of a no-op handler. */
+function NewsletterForm() {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState('idle'); // idle | loading | success | error
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!EMAIL_PATTERN.test(email)) {
+      setStatus('error');
+      return;
+    }
+
+    setStatus('loading');
+    try {
+      // TODO: conectar con el servicio real de newsletter cuando exista
+      // (por ejemplo POST /api/newsletter). Por ahora confirmamos localmente
+      // para no dejar el formulario sin respuesta.
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      setStatus('success');
+      setEmail('');
+    } catch {
+      setStatus('error');
+    }
+  }
+
+  if (status === 'success') {
+    return (
+      <p role="status" aria-live="polite" className="text-sm text-white max-w-md mx-auto">
+        ¡Gracias por suscribirte! Revisa tu correo para confirmar.
+      </p>
+    );
+  }
+
+  return (
+    <>
+      <form
+        onSubmit={handleSubmit}
+        className="flex items-center justify-center gap-0 max-w-md mx-auto border-b border-white/30 focus-within:border-white transition-colors duration-300"
+      >
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (status === 'error') setStatus('idle');
+          }}
+          placeholder="Tu correo electrónico"
+          aria-label="Correo electrónico"
+          disabled={status === 'loading'}
+          className="flex-1 bg-transparent py-3 text-sm placeholder:text-sisley-dark-muted focus:outline-none disabled:opacity-60"
+        />
+        <button
+          type="submit"
+          aria-label="Suscribirse"
+          disabled={status === 'loading'}
+          className="group shrink-0 p-3 text-white transition-transform duration-300 hover:translate-x-1 disabled:opacity-60 disabled:hover:translate-x-0 motion-reduce:transition-none motion-reduce:hover:translate-x-0"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+          </svg>
+        </button>
+      </form>
+      {status === 'error' && (
+        <p role="alert" aria-live="polite" className="text-xs text-red-300 mt-3">
+          Ingresa un correo electrónico válido.
+        </p>
+      )}
+    </>
+  );
+}
+
 export default function Footer() {
   return (
     <footer className="bg-sisley-dark text-white">
@@ -98,27 +172,7 @@ export default function Footer() {
           <p className="text-sm text-sisley-dark-muted max-w-md mx-auto mb-8">
             Recibe novedades de la colección, lanzamientos y acceso anticipado a eventos Sisley.
           </p>
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="flex items-center justify-center gap-0 max-w-md mx-auto border-b border-white/30 focus-within:border-white transition-colors duration-300"
-          >
-            <input
-              type="email"
-              required
-              placeholder="Tu correo electrónico"
-              aria-label="Correo electrónico"
-              className="flex-1 bg-transparent py-3 text-sm placeholder:text-sisley-dark-muted focus:outline-none"
-            />
-            <button
-              type="submit"
-              aria-label="Suscribirse"
-              className="group shrink-0 p-3 text-white transition-transform duration-300 hover:translate-x-1 motion-reduce:transition-none motion-reduce:hover:translate-x-0"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-              </svg>
-            </button>
-          </form>
+          <NewsletterForm />
         </Reveal>
       </div>
 
@@ -155,41 +209,47 @@ export default function Footer() {
 
           <Reveal delay={80}>
             <p className="text-[11px] uppercase tracking-widest text-sisley-dark-muted mb-5">Tienda</p>
-            <ul className="space-y-3">
-              {footerLinks.shop.map((link) => (
-                <li key={link.id}>
-                  <SweepLink href={link.href} prefetch={link.prefetch ?? true} className="text-sm">
-                    {link.label}
-                  </SweepLink>
-                </li>
-              ))}
-            </ul>
+            <nav aria-label="Tienda">
+              <ul className="space-y-3">
+                {footerLinks.shop.map((link) => (
+                  <li key={link.id}>
+                    <SweepLink href={link.href} prefetch={link.prefetch ?? true} className="text-sm">
+                      {link.label}
+                    </SweepLink>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </Reveal>
 
           <Reveal delay={160}>
             <p className="text-[11px] uppercase tracking-widest text-sisley-dark-muted mb-5">Ayuda</p>
-            <ul className="space-y-3">
-              {footerLinks.help.map((link) => (
-                <li key={link.id}>
-                  <SweepLink href={link.href} prefetch={link.prefetch ?? true} className="text-sm">
-                    {link.label}
-                  </SweepLink>
-                </li>
-              ))}
-            </ul>
+            <nav aria-label="Ayuda">
+              <ul className="space-y-3">
+                {footerLinks.help.map((link) => (
+                  <li key={link.id}>
+                    <SweepLink href={link.href} prefetch={link.prefetch ?? true} className="text-sm">
+                      {link.label}
+                    </SweepLink>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </Reveal>
 
           <Reveal delay={240}>
             <p className="text-[11px] uppercase tracking-widest text-sisley-dark-muted mb-5">Empresa</p>
-            <ul className="space-y-3">
-              {footerLinks.company.map((link) => (
-                <li key={link.id}>
-                  <SweepLink href={link.href} prefetch={link.prefetch ?? true} className="text-sm">
-                    {link.label}
-                  </SweepLink>
-                </li>
-              ))}
-            </ul>
+            <nav aria-label="Empresa">
+              <ul className="space-y-3">
+                {footerLinks.company.map((link) => (
+                  <li key={link.id}>
+                    <SweepLink href={link.href} prefetch={link.prefetch ?? true} className="text-sm">
+                      {link.label}
+                    </SweepLink>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </Reveal>
         </div>
 

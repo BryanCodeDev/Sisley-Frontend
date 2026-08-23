@@ -4,6 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import Button from '@/app/components/Button';
 import HeroBackground from '@/app/components/HeroBackground';
 
+const MAX_PARALLAX_SHIFT_PX = 24;
+const PARALLAX_FACTOR = 0.06;
+const SCROLLED_THRESHOLD_PX = 40;
+
 export default function HeroSection() {
   const [loaded, setLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -16,23 +20,21 @@ export default function HeroSection() {
   }, []);
 
   // Cinematic, near-imperceptible parallax on the hero image (max ~24px) + scroll-indicator fade.
-  // Skipped entirely for prefers-reduced-motion.
+  // Both derived values are computed inside one rAF-throttled handler so a single scroll
+  // event only ever triggers one batched state update. Skipped entirely for prefers-reduced-motion.
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return undefined;
 
     let ticking = false;
     function handleScroll() {
-      setScrolled(window.scrollY > 40);
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const maxShift = 24;
-          const shift = Math.min(window.scrollY * 0.06, maxShift);
-          setParallax(shift);
-          ticking = false;
-        });
-        ticking = true;
-      }
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        setScrolled(window.scrollY > SCROLLED_THRESHOLD_PX);
+        setParallax(Math.min(window.scrollY * PARALLAX_FACTOR, MAX_PARALLAX_SHIFT_PX));
+        ticking = false;
+      });
     }
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
