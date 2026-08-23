@@ -1,4 +1,3 @@
-import { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Playfair_Display } from 'next/font/google'
 import Providers from './providers'
