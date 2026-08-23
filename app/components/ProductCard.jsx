@@ -2,30 +2,34 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import ImageWithPlaceholder from '@/app/components/ImageWithPlaceholder';
 import { useFavorites } from '@/app/contexts/FavoritesContext';
 
-const LOCAL_IMAGES = {
-  blusa: '/assets/catalog/1.webp',
-  pantalon: '/assets/catalog/2.webp',
-  vestido: '/assets/catalog/3.webp',
-};
+const FALLBACK_IMAGES = [
+  '/assets/catalog/1.webp',
+  '/assets/catalog/2.webp',
+  '/assets/catalog/3.webp',
+  '/assets/catalog/4.webp',
+  '/assets/catalog/5.webp',
+  '/assets/catalog/6.webp',
+  '/assets/catalog/7.webp',
+  '/assets/catalog/8.webp',
+  '/assets/catalog/9.webp',
+  '/assets/catalog/blusa-satinada.webp',
+  '/assets/catalog/pantalon-wide-leg.webp',
+  '/assets/catalog/vestido-midi-plisado.webp',
+];
 
-function getLocalImage(product) {
-  const slug = product.slug || '';
-  if (slug.includes('blusa')) return LOCAL_IMAGES.blusa;
-  if (slug.includes('pantalon')) return LOCAL_IMAGES.pantalon;
-  if (slug.includes('vestido')) return LOCAL_IMAGES.vestido;
-  return null;
+function getProductImage(product) {
+  if (product.images?.[0]?.url) return product.images[0].url;
+  if (product.image) return product.image;
+  const index = product.id ? (product.id - 1) % FALLBACK_IMAGES.length : 0;
+  return FALLBACK_IMAGES[index];
 }
 
 export default function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
   const { isFavorite, toggleFavorite } = useFavorites();
-  const localImage = getLocalImage(product);
-  const remoteImage = product.images?.[0]?.url || product.image || null;
-  const imageSrc = localImage || remoteImage;
+  const imageSrc = getProductImage(product);
   const favorite = isFavorite(product.id);
 
   const handleFavoriteClick = (e) => {
@@ -42,25 +46,13 @@ export default function ProductCard({ product }) {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative aspect-[3/4] bg-sisley-bg overflow-hidden mb-4">
-        {imageSrc ? (
-          <Image
-            src={imageSrc}
-            alt={product.name}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className={`object-cover transition-all duration-500 ease-out ${
-              isHovered ? 'scale-[1.02] opacity-90' : 'scale-100 opacity-100'
-            }`}
-          />
-        ) : (
-          <ImageWithPlaceholder
-            src={null}
-            alt={product.name}
-            categorySlug={product.categorySlug || product.category || ''}
-            index={product.id ? (product.id - 1) % 3 : 0}
-            className="w-full h-full"
-          />
-        )}
+        <img
+          src={imageSrc}
+          alt={product.name}
+          className={`w-full h-full object-cover transition-all duration-500 ease-out ${
+            isHovered ? 'scale-[1.02] opacity-90' : 'scale-100 opacity-100'
+          }`}
+        />
 
         {product.badge && (
           <span className="absolute top-3 left-3 px-3 py-1 bg-sisley-white text-sisley-text text-[10px] uppercase tracking-widest z-10">

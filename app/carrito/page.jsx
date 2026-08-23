@@ -7,9 +7,24 @@ import Button from '@/app/components/Button';
 import Skeleton from '@/app/components/Skeleton';
 import Breadcrumb from '@/app/components/Breadcrumb';
 import EmptyState from '@/app/components/EmptyState';
-import ImageWithPlaceholder from '@/app/components/ImageWithPlaceholder';
 import Link from 'next/link';
 import { getCart, updateCartItem, removeCartItem } from '@/app/services/cart';
+
+const CART_IMAGES = [
+  '/assets/catalog/1.webp',
+  '/assets/catalog/2.webp',
+  '/assets/catalog/3.webp',
+  '/assets/catalog/4.webp',
+  '/assets/catalog/5.webp',
+  '/assets/catalog/6.webp',
+  '/assets/catalog/7.webp',
+  '/assets/catalog/8.webp',
+  '/assets/catalog/9.webp',
+];
+
+function getCartImage(index) {
+  return CART_IMAGES[index % CART_IMAGES.length];
+}
 
 export default function Carrito() {
   const [cartItems, setCartItems] = useState([]);
@@ -165,8 +180,8 @@ export default function Carrito() {
                     {cartItems.map((item, index) => (
                       <div key={item.id} className={`py-8 flex gap-6 transition-colors duration-200 hover:bg-sisley-bg/50 ${index !== cartItems.length - 1 ? 'border-b border-sisley-border' : ''}`}>
                         <div className="w-24 h-32 bg-sisley-bg flex-shrink-0 overflow-hidden">
-                          <ImageWithPlaceholder
-                            src={item.image || item.productImage || null}
+                          <img
+                            src={item.image || item.productImage || getCartImage(index)}
                             alt={item.productName}
                             className="w-full h-full object-cover"
                           />

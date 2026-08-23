@@ -1,6 +1,16 @@
 'use client';
 
-const FALLBACK_IMAGES = [
+const CATEGORY_IMAGES = {
+  mujer: '/assets/catalog/Hero-principal.webp',
+  hombre: '/assets/catalog/Hero-alterno.webp',
+  'nueva-coleccion': '/assets/catalog/Hero-Nueva-Colección.webp',
+  ofertas: '/assets/catalog/1.webp',
+  accesorios: '/assets/catalog/2.webp',
+  denim: '/assets/catalog/3.webp',
+  outerwear: '/assets/catalog/4.webp',
+};
+
+const PRODUCT_IMAGES = [
   '/assets/catalog/1.webp',
   '/assets/catalog/2.webp',
   '/assets/catalog/3.webp',
@@ -15,36 +25,39 @@ const FALLBACK_IMAGES = [
   '/assets/catalog/vestido-midi-plisado.webp',
 ];
 
-function resolveImage(src) {
-  if (!src) return null;
-  if (typeof src === 'string') {
-    if (src.startsWith('/assets/')) return src;
-    if (src.startsWith('http')) return src;
-    return src;
-  }
-  if (typeof src === 'object' && src.url) {
-    return resolveImage(src.url);
-  }
-  return null;
+function getCategoryImage(slug) {
+  return CATEGORY_IMAGES[slug] || CATEGORY_IMAGES.mujer;
 }
 
-function getFallbackImage(index = 0) {
-  return FALLBACK_IMAGES[index % FALLBACK_IMAGES.length];
+function getProductImage(index = 0) {
+  return PRODUCT_IMAGES[index % PRODUCT_IMAGES.length];
 }
 
 export default function ImageWithPlaceholder({
   src,
   alt = '',
   className = '',
-  aspectRatio = 'product',
   categorySlug = '',
   index = 0,
-  title = '',
-  subtitle = '',
   ...props
 }) {
-  const resolvedSrc = resolveImage(src);
-  const imageSrc = resolvedSrc || getFallbackImage(index);
+  let imageSrc = null;
+
+  if (src) {
+    if (typeof src === 'string') {
+      imageSrc = src;
+    } else if (typeof src === 'object' && src?.url) {
+      imageSrc = src.url;
+    }
+  }
+
+  if (!imageSrc && categorySlug) {
+    imageSrc = getCategoryImage(categorySlug);
+  }
+
+  if (!imageSrc) {
+    imageSrc = getProductImage(index);
+  }
 
   return (
     <img

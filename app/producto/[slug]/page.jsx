@@ -8,11 +8,30 @@ import Badge from '@/app/components/Badge';
 import ProductCard from '@/app/components/ProductCard';
 import Breadcrumb from '@/app/components/Breadcrumb';
 import Accordion from '@/app/components/Accordion';
-import ImageWithPlaceholder from '@/app/components/ImageWithPlaceholder';
 import Link from 'next/link';
 import { useParams, notFound } from 'next/navigation';
 import { getProductBySlug, getProducts } from '@/app/services/products';
 import { addToCart } from '@/app/services/cart';
+
+const PRODUCT_FALLBACK_IMAGES = [
+  '/assets/catalog/1.webp',
+  '/assets/catalog/2.webp',
+  '/assets/catalog/3.webp',
+  '/assets/catalog/4.webp',
+  '/assets/catalog/5.webp',
+  '/assets/catalog/6.webp',
+  '/assets/catalog/7.webp',
+  '/assets/catalog/8.webp',
+  '/assets/catalog/9.webp',
+  '/assets/catalog/blusa-satinada.webp',
+  '/assets/catalog/pantalon-wide-leg.webp',
+  '/assets/catalog/vestido-midi-plisado.webp',
+];
+
+function getProductImage(src, index = 0) {
+  if (src) return src;
+  return PRODUCT_FALLBACK_IMAGES[index % PRODUCT_FALLBACK_IMAGES.length];
+}
 
 export default function ProductoPage() {
   const params = useParams();
@@ -110,12 +129,10 @@ export default function ProductoPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16">
             <div className="space-y-4">
               <div className="aspect-[3/4] bg-sisley-bg overflow-hidden">
-                <ImageWithPlaceholder
+                <img
                   key={imageKey}
-                  src={images[activeImage] || null}
+                  src={getProductImage(images[activeImage], product.id ? product.id - 1 : 0)}
                   alt={product.name}
-                  categorySlug={product.categorySlug || product.category || ''}
-                  index={(product.id ? product.id - 1 : 0) % 3}
                   className="w-full h-full object-cover"
                   style={{ animation: 'fade-in 400ms ease-out' }}
                 />
@@ -130,11 +147,9 @@ export default function ProductoPage() {
                         activeImage === index ? 'border-sisley-black opacity-100' : 'border-transparent opacity-60 hover:opacity-100'
                       }`}
                     >
-                      <ImageWithPlaceholder
-                        src={img}
+                      <img
+                        src={getProductImage(img, index)}
                         alt=""
-                        categorySlug={product.categorySlug || product.category || ''}
-                        index={index % 3}
                         className="w-full h-full object-cover"
                       />
                     </button>
