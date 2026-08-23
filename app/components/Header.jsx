@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 import { useAuth } from '@/app/contexts/AuthContext';
 import UserDropdown from './UserDropdown';
+import { getCart } from '@/app/services/cart';
 
 const publicNavLinks = [
   { href: '/catalogo?categoria=mujer', label: 'Mujer', prefetch: false },
@@ -35,12 +36,31 @@ export default function Header({ variant = 'public' }) {
   const [mobileVisible, setMobileVisible] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [cartCount, setCartCount] = useState(0);
   const pathname = usePathname();
   const { customer, loading: customerLoading, isAuthenticated: isCustomerAuth, logout: customerLogout } = useCustomerAuth();
   const { user, loading: adminLoading, isAuthenticated: isAdminAuth, logout: adminLogout } = useAuth();
 
   const isAdmin = variant === 'admin';
   const adminUser = isAdminAuth ? user : null;
+
+  const loadCartCount = useCallback(async () => {
+    if (isAdmin) return;
+    try {
+      const data = await getCart();
+      const items = data.data?.items || [];
+      setCartCount(items.reduce((sum, item) => sum + item.quantity, 0));
+    } catch {
+      setCartCount(0);
+    }
+  }, [isAdmin]);
+
+  useEffect(() => {
+    loadCartCount();
+    window.addEventListener('cartUpdated', loadCartCount);
+    return () => window.removeEventListener('cartUpdated', loadCartCount);
+  }, [loadCartCount]);
 
   useEffect(() => {
     function handleScroll() {
@@ -137,7 +157,7 @@ export default function Header({ variant = 'public' }) {
               {!isAdmin && (
                 <>
                   <Link
-                    href="/mis-pedidos"
+                    href="/favoritos"
                     className="hidden md:flex p-2 text-sisley-text-secondary hover:text-sisley-black transition-all duration-200 hover:scale-105 motion-reduce:hover:scale-100"
                     aria-label="Favoritos"
                   >
@@ -156,7 +176,11 @@ export default function Header({ variant = 'public' }) {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
-                    <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-sisley-black rounded-full" />
+                    {cartCount > 0 && (
+                      <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center bg-sisley-black text-white text-[10px] font-medium rounded-full px-1">
+                        {cartCount > 99 ? '99+' : cartCount}
+                      </span>
+                    )}
                   </Link>
                 </>
               )}
@@ -177,7 +201,7 @@ export default function Header({ variant = 'public' }) {
       </header>
 
       {mobileOpen && (
-        <div className="fixed inset-0 z-[60]">
+        <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title">
           <div
             className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-out motion-reduce:transition-none ${
               mobileVisible ? 'opacity-100' : 'opacity-0'
@@ -190,7 +214,7 @@ export default function Header({ variant = 'public' }) {
             }`}
           >
             <div className="flex items-center justify-between p-6 border-b border-sisley-border">
-              <span className="text-lg font-light tracking-[0.2em] text-sisley-black uppercase">Menú</span>
+              <span id="mobile-menu-title" className="text-lg font-light tracking-[0.2em] text-sisley-black uppercase">Menú</span>
               <button
                 onClick={() => setMobileOpen(false)}
                 className="p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors"
@@ -270,7 +294,7 @@ export default function Header({ variant = 'public' }) {
       )}
 
       {!isAdmin && searchOpen && (
-        <div className="fixed inset-0 z-[60]">
+        <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-labelledby="search-title">
           <div
             className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-out motion-reduce:transition-none ${
               searchVisible ? 'opacity-100' : 'opacity-0'
@@ -284,7 +308,7 @@ export default function Header({ variant = 'public' }) {
           >
             <div className="max-w-3xl mx-auto">
               <div className="flex items-center justify-between mb-6">
-                <p className="text-[11px] uppercase tracking-widest text-sisley-muted">Buscar</p>
+                <p id="search-title" className="text-[11px] uppercase tracking-widest text-sisley-muted">Buscar</p>
                 <button
                   onClick={() => setSearchOpen(false)}
                   className="p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors"
@@ -296,20 +320,31 @@ export default function Header({ variant = 'public' }) {
                   </svg>
                 </button>
               </div>
-              <input
-                type="text"
-                placeholder="¿Qué estás buscando?"
-                className="w-full text-2xl md:text-3xl font-light bg-transparent border-b-2 border-sisley-border focus:border-sisley-black focus:outline-none py-3 placeholder:text-sisley-muted-strong transition-colors duration-300"
-                autoFocus
-              />
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                if (searchQuery.trim()) {
+                  window.location.href = `/catalogo?search=${encodeURIComponent(searchQuery.trim())}`;
+                }
+              }}>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="¿Qué estás buscando?"
+                  className="w-full text-2xl md:text-3xl font-light bg-transparent border-b-2 border-sisley-border focus:border-sisley-black focus:outline-none py-3 placeholder:text-sisley-muted-strong transition-colors duration-300"
+                  autoFocus
+                />
+              </form>
               <div className="mt-6 flex flex-wrap gap-2">
                 {['Vestidos', 'Blazers', 'Camisas', 'Pantalones'].map((term) => (
-                  <span
+                  <button
                     key={term}
+                    type="button"
+                    onClick={() => window.location.href = `/catalogo?search=${encodeURIComponent(term)}`}
                     className="px-4 py-2 text-xs uppercase tracking-widest border border-sisley-border text-sisley-text-secondary hover:border-sisley-black hover:text-sisley-black transition-colors duration-200 cursor-pointer"
                   >
                     {term}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>

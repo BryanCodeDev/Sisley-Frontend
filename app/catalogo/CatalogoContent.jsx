@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import ProductCard from '@/app/components/ProductCard';
 import Button from '@/app/components/Button';
 import Badge from '@/app/components/Badge';
+import Breadcrumb from '@/app/components/Breadcrumb';
 import { getProducts } from '@/app/services/products';
 import { getCategories } from '@/app/services/categories';
 import Link from 'next/link';
@@ -68,6 +69,13 @@ export default function CatalogoContent({ searchParams }) {
   return (
     <main className="min-h-screen bg-sisley-white">
       <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
+        <Breadcrumb
+          items={[
+            { label: 'Inicio', href: '/' },
+            { label: selectedCategory ? 'Catálogo' : 'Catálogo', href: selectedCategory ? '/catalogo' : undefined },
+            ...(selectedCategory ? [{ label: selectedCategory.name }] : []),
+          ]}
+        />
         <div className="mb-10">
           <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-2">Tienda</p>
           <h1 className="font-serif text-3xl md:text-4xl font-light text-sisley-text tracking-tight">
@@ -143,6 +151,17 @@ export default function CatalogoContent({ searchParams }) {
                 <p className="text-sm text-sisley-text-secondary">
                   {loading ? 'Cargando...' : `${filtered.length} ${filtered.length === 1 ? 'producto' : 'productos'}`}
                 </p>
+                {(categoryFilter || priceRange !== 'todos') && (
+                  <button
+                    onClick={() => {
+                      setPriceRange('todos');
+                      window.location.href = '/catalogo';
+                    }}
+                    className="text-xs text-sisley-muted hover:text-sisley-black underline"
+                  >
+                    Limpiar filtros
+                  </button>
+                )}
               </div>
               <select
                 value={sort}

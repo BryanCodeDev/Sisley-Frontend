@@ -5,6 +5,8 @@ import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import Button from '@/app/components/Button';
 import Skeleton from '@/app/components/Skeleton';
+import Breadcrumb from '@/app/components/Breadcrumb';
+import EmptyState from '@/app/components/EmptyState';
 import ImageWithPlaceholder from '@/app/components/ImageWithPlaceholder';
 import Link from 'next/link';
 import { getCart, updateCartItem, removeCartItem } from '@/app/services/cart';
@@ -114,15 +116,24 @@ export default function Carrito() {
       <>
         <Header />
         <main className="min-h-screen bg-sisley-white">
-          <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-20 text-center">
-            <svg className="w-16 h-16 mx-auto text-sisley-border-strong mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
-            <h1 className="font-serif text-2xl font-light text-sisley-text mb-4">Tu carrito está vacío</h1>
-            <p className="text-sm text-sisley-muted mb-8">Agrega productos para continuar.</p>
-            <Link href="/catalogo">
-              <Button>Ir a la tienda</Button>
-            </Link>
+          <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
+            <Breadcrumb
+              items={[
+                { label: 'Inicio', href: '/' },
+                { label: 'Carrito' },
+              ]}
+            />
+            <EmptyState
+              icon={
+                <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+              }
+              title="Tu carrito está vacío"
+              description="Agrega productos para continuar con tu compra."
+              actionLabel="Ir a la tienda"
+              actionHref="/catalogo"
+            />
           </div>
         </main>
         <Footer />
@@ -131,29 +142,35 @@ export default function Carrito() {
   }
 
   return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-sisley-white pb-24 md:pb-0">
-        <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
-          <div className="mb-10">
-            <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-2">Carrito</p>
-            <h1 className="font-serif text-3xl md:text-4xl font-light text-sisley-text tracking-tight">
-              Tu carrito de compras
-            </h1>
-          </div>
+      <>
+        <Header />
+        <main className="min-h-screen bg-sisley-white pb-24 md:pb-0">
+          <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
+            <Breadcrumb
+              items={[
+                { label: 'Inicio', href: '/' },
+                { label: 'Carrito' },
+              ]}
+            />
+            <div className="mb-10">
+              <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-2">Carrito</p>
+              <h1 className="font-serif text-3xl md:text-4xl font-light text-sisley-text tracking-tight">
+                Tu carrito de compras
+              </h1>
+            </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 md:gap-16">
             <div className="lg:col-span-2">
-              <div className="border-b border-sisley-border">
-                {cartItems.map((item, index) => (
-                  <div key={item.id} className={`py-8 flex gap-6 transition-colors duration-200 hover:bg-sisley-bg/50 ${index !== cartItems.length - 1 ? 'border-b border-sisley-border' : ''}`}>
-                    <div className="w-24 h-32 bg-sisley-bg flex-shrink-0 overflow-hidden">
-                      <ImageWithPlaceholder
-                        src={item.productId ? `/assets/catalog/${(item.productId % 9) + 1}.webp` : null}
-                        alt={item.productName}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+                  <div className="border-b border-sisley-border">
+                    {cartItems.map((item, index) => (
+                      <div key={item.id} className={`py-8 flex gap-6 transition-colors duration-200 hover:bg-sisley-bg/50 ${index !== cartItems.length - 1 ? 'border-b border-sisley-border' : ''}`}>
+                        <div className="w-24 h-32 bg-sisley-bg flex-shrink-0 overflow-hidden">
+                          <ImageWithPlaceholder
+                            src={item.image || item.productImage || null}
+                            alt={item.productName}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start mb-1">
                         <h3 className="text-sm font-medium text-sisley-text truncate pr-4">{item.productName}</h3>

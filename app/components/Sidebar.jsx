@@ -38,7 +38,7 @@ export default function Sidebar({ isOpen, onClose }) {
       >
         <div className="flex items-center justify-between p-6 flex-shrink-0">
           <span className="text-lg font-light tracking-[0.2em] text-sisley-text uppercase">Menú</span>
-          <button onClick={onClose} className="p-2 text-sisley-text-secondary hover:text-sisley-text transition-colors" aria-label="Cerrar menú">
+          <button onClick={onClose} className="p-2 text-sisley-text-secondary hover:text-sisley-text transition-colors lg:hidden" aria-label="Cerrar menú">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>

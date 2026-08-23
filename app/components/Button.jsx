@@ -7,14 +7,15 @@ export default function Button({
   className = '',
   disabled = false,
   type = 'button',
+  href,
   ...props
 }) {
-  const base = 'inline-flex items-center justify-center font-sans transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-sisley-black focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const base = 'inline-flex items-center justify-center font-sans rounded-sm transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-sisley-black focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variants = {
     primary: 'bg-sisley-black text-white hover:bg-sisley-text active:scale-[0.98]',
     secondary: 'bg-transparent border border-sisley-black text-sisley-black hover:bg-sisley-black hover:text-white',
-    ghost: 'bg-transparent text-sisley-text hover:bg-sisley-gray-100 underline underline-offset-4 decoration-sisley-border-strong hover:decoration-sisley-black',
+    ghost: 'bg-transparent text-sisley-text hover:bg-sisley-bg underline underline-offset-4 decoration-sisley-border-strong hover:decoration-sisley-black',
     text: 'bg-transparent text-sisley-text hover:text-sisley-black underline underline-offset-4 decoration-sisley-border-strong hover:decoration-sisley-black',
   };
 
@@ -24,11 +25,21 @@ export default function Button({
     lg: 'px-8 py-4 text-xs uppercase tracking-widest',
   };
 
+  const classes = `${base} ${variants[variant]} ${sizes[size]} ${className}`;
+
+  if (href) {
+    return (
+      <a href={href} className={classes} {...props}>
+        {children}
+      </a>
+    );
+  }
+
   return (
     <button
       type={type}
       disabled={disabled}
-      className={`${base} ${variants[variant]} ${sizes[size]} ${className}`}
+      className={classes}
       {...props}
     >
       {children}

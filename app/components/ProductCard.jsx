@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import ImageWithPlaceholder from '@/app/components/ImageWithPlaceholder';
+import { useFavorites } from '@/app/contexts/FavoritesContext';
 
 const LOCAL_IMAGES = {
   blusa: '/assets/catalog/1.webp',
@@ -21,9 +22,17 @@ function getLocalImage(product) {
 
 export default function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
+  const { isFavorite, toggleFavorite } = useFavorites();
   const localImage = getLocalImage(product);
   const remoteImage = product.images?.[0]?.url || product.image || null;
   const imageSrc = localImage || remoteImage;
+  const favorite = isFavorite(product.id);
+
+  const handleFavoriteClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleFavorite(product);
+  };
 
   return (
     <Link
@@ -60,14 +69,13 @@ export default function ProductCard({ product }) {
         )}
 
         <button
-          className="absolute top-3 right-3 p-2 bg-sisley-white/90 backdrop-blur-sm text-sisley-text hover:text-sisley-black transition-colors z-10 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 duration-300"
-          aria-label="Agregar a favoritos"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
+          className={`absolute top-3 right-3 p-2 backdrop-blur-sm text-sisley-text transition-all z-10 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 duration-300 ${
+            favorite ? 'bg-red-50 text-red-600' : 'bg-sisley-white/90 hover:text-sisley-black'
+          }`}
+          aria-label={favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+          onClick={handleFavoriteClick}
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+          <svg className="w-4 h-4" fill={favorite ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
         </button>

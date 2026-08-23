@@ -7,6 +7,7 @@ import Footer from '@/app/components/Footer';
 import Button from '@/app/components/Button';
 import Input from '@/app/components/Input';
 import Skeleton from '@/app/components/Skeleton';
+import Breadcrumb from '@/app/components/Breadcrumb';
 import Link from 'next/link';
 import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 import { getCart } from '@/app/services/cart';
@@ -98,22 +99,33 @@ export default function Checkout() {
 
   const validateStep = () => {
     if (step === 1) {
-      if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) {
-        return 'Completa todos los campos de información personal';
+      const errors = [];
+      if (!formData.firstName?.trim()) errors.push('El nombre es requerido');
+      if (!formData.lastName?.trim()) errors.push('El apellido es requerido');
+      if (!formData.email?.trim()) {
+        errors.push('El correo electrónico es requerido');
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        errors.push('Ingresa un correo electrónico válido');
       }
+      if (!formData.phone?.trim()) {
+        errors.push('El teléfono es requerido');
+      } else if (!/^\+?[\d\s-]{7,15}$/.test(formData.phone)) {
+        errors.push('Ingresa un teléfono válido');
+      }
+      return errors.length ? errors : null;
     }
     if (step === 2) {
       if (!formData.addressId && (!formData.address || !formData.city || !formData.department)) {
-        return 'Selecciona una dirección o completa los datos de envío';
+        return ['Selecciona una dirección o completa los datos de envío'];
       }
     }
     return null;
   };
 
   const handleNext = () => {
-    const validationError = validateStep();
-    if (validationError) {
-      setError(validationError);
+    const validationErrors = validateStep();
+    if (validationErrors) {
+      setError(validationErrors.join('. '));
       return;
     }
     setError(null);
@@ -247,16 +259,23 @@ export default function Checkout() {
   ];
 
   return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-sisley-white">
-        <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
-          <div className="mb-10">
-            <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-2">Checkout</p>
-            <h1 className="font-serif text-3xl md:text-4xl font-light text-sisley-text tracking-tight">
-              Finalizar compra
-            </h1>
-          </div>
+      <>
+        <Header />
+        <main className="min-h-screen bg-sisley-white">
+          <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
+            <Breadcrumb
+              items={[
+                { label: 'Inicio', href: '/' },
+                { label: 'Carrito', href: '/carrito' },
+                { label: 'Checkout' },
+              ]}
+            />
+            <div className="mb-10">
+              <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-2">Checkout</p>
+              <h1 className="font-serif text-3xl md:text-4xl font-light text-sisley-text tracking-tight">
+                Finalizar compra
+              </h1>
+            </div>
 
           <div className="flex items-center gap-6 mb-12">
             {[
@@ -477,7 +496,15 @@ export default function Checkout() {
                     <div className="flex gap-4">
                       <Button variant="secondary" onClick={handleBack}>Volver</Button>
                       <Button onClick={handleSubmit} disabled={submitting}>
-                        {submitting ? 'Procesando...' : 'Confirmar pedido'}
+                        {submitting ? (
+                          <>
+                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                            </svg>
+                            Procesando...
+                          </>
+                        ) : 'Confirmar pedido'}
                       </Button>
                     </div>
                   </div>

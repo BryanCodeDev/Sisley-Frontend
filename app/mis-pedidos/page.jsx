@@ -7,6 +7,8 @@ import Footer from '@/app/components/Footer';
 import Button from '@/app/components/Button';
 import Badge from '@/app/components/Badge';
 import Skeleton from '@/app/components/Skeleton';
+import Breadcrumb from '@/app/components/Breadcrumb';
+import EmptyState from '@/app/components/EmptyState';
 import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 import { getOrders } from '@/app/services/orders';
 import Link from 'next/link';
@@ -94,6 +96,12 @@ export default function MisPedidos() {
       <main className="min-h-screen bg-sisley-white">
         <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
           <div className="mb-10">
+            <Breadcrumb
+              items={[
+                { label: 'Inicio', href: '/' },
+                { label: 'Mis pedidos' },
+              ]}
+            />
             <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-2">Cuenta</p>
             <h1 className="font-serif text-3xl md:text-4xl font-light text-sisley-text tracking-tight">
               Mis pedidos
@@ -114,10 +122,17 @@ export default function MisPedidos() {
               ))}
             </div>
           ) : orders.length === 0 ? (
-            <div className="py-20 text-center">
-              <p className="text-sisley-muted mb-4">Aún no tienes pedidos.</p>
-              <Link href="/catalogo"><Button>Ir a la tienda</Button></Link>
-            </div>
+            <EmptyState
+              icon={
+                <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              }
+              title="Aún no tienes pedidos"
+              description="Realiza tu primera compra y podrás ver el estado de tus pedidos aquí."
+              actionLabel="Ir a la tienda"
+              actionHref="/catalogo"
+            />
           ) : (
             <div className="border border-sisley-border divide-y divide-sisley-border">
               {orders.map((order) => {

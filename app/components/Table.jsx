@@ -5,11 +5,11 @@ export default function Table({ columns, data, emptyMessage = 'No hay datos para
     <div className="overflow-x-auto">
       <table className="w-full text-left text-sm">
         <thead>
-          <tr className="border-b border-sisley-gray-200">
+          <tr className="border-b border-sisley-border">
             {columns.map((column) => (
               <th
                 key={column.key}
-                className="py-3 px-4 text-xs uppercase tracking-widest text-sisley-gray-500 font-medium"
+                className="py-3 px-4 text-xs uppercase tracking-widest text-sisley-muted font-medium"
               >
                 {column.label}
               </th>
@@ -19,7 +19,7 @@ export default function Table({ columns, data, emptyMessage = 'No hay datos para
         <tbody>
           {data.length === 0 ? (
             <tr>
-              <td colSpan={columns.length} className="py-12 text-center text-sisley-gray-400">
+              <td colSpan={columns.length} className="py-12 text-center text-sisley-muted">
                 {emptyMessage}
               </td>
             </tr>
@@ -27,10 +27,10 @@ export default function Table({ columns, data, emptyMessage = 'No hay datos para
             data.map((row, index) => (
               <tr
                 key={row.id || index}
-                className="border-b border-sisley-gray-100 hover:bg-sisley-gray-50 transition-colors"
+                className="border-b border-sisley-border hover:bg-sisley-bg transition-colors"
               >
                 {columns.map((column) => (
-                  <td key={column.key} className="py-3 px-4 text-sisley-gray-700">
+                  <td key={column.key} className="py-3 px-4 text-sisley-text">
                     {column.render ? column.render(row[column.key], row) : row[column.key]}
                   </td>
                 ))}

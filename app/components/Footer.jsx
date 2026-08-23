@@ -6,24 +6,23 @@ import Image from 'next/image';
 
 const footerLinks = {
   shop: [
-    { id: 'shop-1', href: '/catalogo', label: 'Todos los productos', prefetch: false },
-    { id: 'shop-2', href: '/catalogo?genero=mujer', label: 'Mujer', prefetch: false },
-    { id: 'shop-3', href: '/catalogo?genero=hombre', label: 'Hombre', prefetch: false },
-    { id: 'shop-4', href: '/catalogo?coleccion=nueva', label: 'Nueva colección', prefetch: false },
-    { id: 'shop-5', href: '/catalogo?ofertas=true', label: 'Ofertas', prefetch: false },
+    { id: 'shop-1', href: '/catalogo', label: 'Todos los productos' },
+    { id: 'shop-2', href: '/catalogo?categoria=mujer', label: 'Mujer' },
+    { id: 'shop-3', href: '/catalogo?categoria=hombre', label: 'Hombre' },
+    { id: 'shop-4', href: '/catalogo?categoria=nueva-coleccion', label: 'Nueva colección' },
+    { id: 'shop-5', href: '/catalogo?categoria=ofertas', label: 'Ofertas' },
   ],
   help: [
-    { id: 'help-1', href: '/', label: 'Contacto', prefetch: false },
-    { id: 'help-2', href: '/', label: 'Envíos y entregas', prefetch: false },
-    { id: 'help-3', href: '/', label: 'Cambios y devoluciones', prefetch: false },
-    { id: 'help-4', href: '/', label: 'Guía de tallas', prefetch: false },
-    { id: 'help-5', href: '/', label: 'Preguntas frecuentes', prefetch: false },
+    { id: 'help-1', href: '/contacto', label: 'Contacto' },
+    { id: 'help-2', href: '/envios', label: 'Envíos y entregas' },
+    { id: 'help-3', href: '/devoluciones', label: 'Cambios y devoluciones' },
+    { id: 'help-4', href: '/guia-tallas', label: 'Guía de tallas' },
+    { id: 'help-5', href: '/faq', label: 'Preguntas frecuentes' },
   ],
   company: [
-    { id: 'company-1', href: '/', label: 'Sobre Sisley', prefetch: false },
-    { id: 'company-2', href: '/', label: 'Sostenibilidad', prefetch: false },
-    { id: 'company-3', href: '/', label: 'Privacidad', prefetch: false },
-    { id: 'company-4', href: '/', label: 'Términos', prefetch: false },
+    { id: 'company-1', href: '/sobre-sisley', label: 'Sobre Sisley' },
+    { id: 'company-2', href: '/privacidad', label: 'Privacidad' },
+    { id: 'company-3', href: '/terminos', label: 'Términos' },
   ],
 };
 
@@ -199,9 +198,9 @@ export default function Footer() {
             © {new Date().getFullYear()} Sisley Colombia. Todos los derechos reservados.
           </p>
           <div className="flex items-center gap-6">
-            <SweepLink href="/" className="text-xs">Privacidad</SweepLink>
-            <SweepLink href="/" className="text-xs">Términos</SweepLink>
-            <SweepLink href="/" className="text-xs">Cookies</SweepLink>
+            <SweepLink href="/privacidad" className="text-xs">Privacidad</SweepLink>
+            <SweepLink href="/terminos" className="text-xs">Términos</SweepLink>
+            <SweepLink href="/cookies" className="text-xs">Cookies</SweepLink>
           </div>
         </div>
       </div>
