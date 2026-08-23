@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import ProductCard from '@/app/components/ProductCard';
@@ -13,12 +14,54 @@ import Image from 'next/image';
 import { getCategories } from '@/app/services/categories';
 import Link from 'next/link';
 
+// Renderizado dinámico: el catálogo y las categorías cambian con frecuencia
+// (stock, novedades), así que evitamos servir una página estática desactualizada.
 export const dynamic = 'force-dynamic';
+
+export const metadata = {
+  title: 'Sisley Colombia | Moda femenina con envío a todo el país',
+  description:
+    'Descubre la nueva colección Sisley: prendas seleccionadas por nuestra directora creativa, envío a todo Colombia, devoluciones en 30 días y pago 100% seguro.',
+  openGraph: {
+    title: 'Sisley Colombia',
+    description: 'Moda femenina con identidad. Envío a todo el país.',
+    images: ['/assets/catalog/Hero-alterno.webp'],
+  },
+};
+
+// --- Datos estáticos de la página -------------------------------------------------
+// Se definen fuera del componente para que no se recreen en cada render
+// y para que sean fáciles de editar sin tocar la lógica del layout.
+
+const TRUST_BADGES = [
+  { title: 'Envío a todo Colombia', description: 'Recibe tu pedido donde estés.' },
+  { title: 'Devoluciones en 30 días', description: 'Cámbialo si no es perfecto.' },
+  { title: 'Pago 100% seguro', description: 'Tus datos, siempre protegidos.' },
+  { title: 'Tallas reales', description: 'Guía de tallas para acertar.' },
+];
+
+const EDITORIAL_CONTENT = {
+  eyebrow: 'Editorial',
+  title: 'La nueva temporada, a tu medida',
+  body:
+    'Cada prenda nace de una obsesión por el detalle: telas que se sienten, cortes que favorecen y acabados que perduran. Esta temporada, vestir bien nunca fue tan fácil.',
+  image: '/assets/catalog/Hero-alterno.webp',
+  imageAlt: 'La nueva temporada — Sisley Colombia',
+};
+
+// --- Data fetching -----------------------------------------------------------------
+// Cada función atrapa sus propios errores para que un fallo en un servicio
+// (por ejemplo categorías caídas) nunca tumbe el resto de la página.
 
 async function getFeaturedProducts() {
   try {
-    const data = await getProducts({ status: 'active', limit: '12', orderBy: 'featured', inStock: 'true' });
-    return data.data || [];
+    const data = await getProducts({
+      status: 'active',
+      limit: '12',
+      orderBy: 'featured',
+      inStock: 'true',
+    });
+    return data.data ?? [];
   } catch (error) {
     console.error('Failed to load featured products:', error.message);
     return [];
@@ -28,47 +71,194 @@ async function getFeaturedProducts() {
 async function getActiveCategories() {
   try {
     const data = await getCategories({ status: 'active', limit: '8' });
-    return data.data || [];
+    return data.data ?? [];
   } catch (error) {
     console.error('Failed to load categories:', error.message);
     return [];
   }
 }
 
-export default async function Home() {
-  const [featured, categories] = await Promise.all([getFeaturedProducts(), getActiveCategories()]);
-  const destacados = featured.slice(0, 8);
+// --- Subcomponentes de datos (streaming) --------------------------------------------
+// Al separar cada sección en su propio componente async envuelto en <Suspense>,
+// el shell de la página (hero, beneficios, editorial, CTA) se pinta de inmediato
+// y cada sección de datos aparece en cuanto está lista, en vez de bloquear
+// todo el render a la respuesta más lenta.
+
+async function CategoriesSection() {
+  const categories = await getActiveCategories();
   const topCategories = categories.slice(0, 4);
 
+  if (topCategories.length === 0) {
+    return (
+      <p className="text-sm text-sisley-muted">
+        No hay categorías disponibles en este momento. Vuelve pronto o explora el{' '}
+        <Link href="/catalogo" className="underline hover:text-sisley-black">
+          catálogo completo
+        </Link>
+        .
+      </p>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
+      {topCategories.map((category, index) => {
+        const isLarge = index === 0;
+        return (
+          <ScrollReveal key={category.id} delay={100 * (index + 1)}>
+            <Link
+              href={`/catalogo?categoria=${category.slug}`}
+              className={`group relative overflow-hidden block ${
+                isLarge ? 'sm:col-span-2 lg:col-span-7 lg:row-span-2' : 'lg:col-span-5'
+              }`}
+            >
+              <div
+                className={`relative w-full overflow-hidden bg-sisley-bg ${
+                  isLarge
+                    ? 'aspect-[4/5] lg:aspect-auto lg:h-full min-h-[350px] lg:min-h-[500px]'
+                    : 'aspect-[4/3]'
+                }`}
+              >
+                <ImageWithPlaceholder
+                  src={category.imageUrl || category.image || null}
+                  alt={category.name}
+                  categorySlug={category.slug}
+                  index={index}
+                  className="w-full h-full"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="absolute inset-0 flex flex-col justify-end p-5 md:p-6 lg:p-8">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-white/70 mb-1.5">
+                    {category.count ? `${category.count} piezas` : 'Colección'}
+                  </p>
+                  <h3
+                    className={`font-serif font-light text-white tracking-tight ${
+                      isLarge ? 'text-2xl lg:text-3xl' : 'text-xl lg:text-2xl'
+                    }`}
+                  >
+                    {category.name}
+                  </h3>
+                  <span className="mt-3 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.15em] text-white/90 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    Explorar
+                    <svg
+                      className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      aria-hidden="true"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </ScrollReveal>
+        );
+      })}
+    </div>
+  );
+}
+
+function ProductGrid({ products, emptyMessage }) {
+  if (products.length === 0) {
+    return (
+      <p className="text-sm text-sisley-muted">
+        {emptyMessage}{' '}
+        <Link href="/catalogo" className="underline hover:text-sisley-black">
+          Ver catálogo completo
+        </Link>
+        .
+      </p>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+      {products.map((product, index) => (
+        <ScrollReveal key={product.id} delay={100 * (index + 1)}>
+          <ProductCard product={product} />
+        </ScrollReveal>
+      ))}
+    </div>
+  );
+}
+
+async function FeaturedSection() {
+  const featured = await getFeaturedProducts();
+  return (
+    <ProductGrid
+      products={featured.slice(0, 4)}
+      emptyMessage="Aún no hay destacados publicados."
+    />
+  );
+}
+
+async function NewArrivalsSection() {
+  const featured = await getFeaturedProducts();
+  return (
+    <ProductGrid
+      products={featured.slice(4, 8)}
+      emptyMessage="Aún no hay novedades publicadas."
+    />
+  );
+}
+
+// --- Skeletons de carga --------------------------------------------------------------
+
+function GridSkeleton({ count = 4 }) {
+  return (
+    <div
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
+      aria-hidden="true"
+    >
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} className="aspect-[3/4] w-full bg-sisley-bg animate-pulse" />
+      ))}
+    </div>
+  );
+}
+
+function CategoriesSkeleton() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6" aria-hidden="true">
+      <div className="sm:col-span-2 lg:col-span-7 lg:row-span-2 aspect-[4/5] lg:aspect-auto min-h-[350px] lg:min-h-[500px] bg-sisley-bg animate-pulse" />
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className="lg:col-span-5 aspect-[4/3] bg-sisley-bg animate-pulse" />
+      ))}
+    </div>
+  );
+}
+
+// --- Página --------------------------------------------------------------------------
+
+export default function Home() {
   return (
     <>
       <Header />
       <main>
         <HeroSection />
 
-        <section className="border-y border-sisley-border bg-sisley-white">
+        <section aria-label="Beneficios de comprar en Sisley" className="border-y border-sisley-border bg-sisley-white">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-6">
-              {[
-                { t: 'Envío a todo Colombia', d: 'Recibe tu pedido donde estés.' },
-                { t: 'Devoluciones en 30 días', d: 'Cámbialo si no es perfecto.' },
-                { t: 'Pago 100% seguro', d: 'Tus datos, siempre protegidos.' },
-                { t: 'Tallas reales', d: 'Guía de tallas para acertar.' },
-              ].map((b) => (
-                <div key={b.t} className="flex flex-col">
-                  <p className="font-serif text-sm text-sisley-black">{b.t}</p>
-                  <p className="text-xs text-sisley-muted mt-1">{b.d}</p>
+              {TRUST_BADGES.map((badge) => (
+                <div key={badge.title} className="flex flex-col">
+                  <p className="font-serif text-sm text-sisley-black">{badge.title}</p>
+                  <p className="text-xs text-sisley-muted mt-1">{badge.description}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="py-20 md:py-32 bg-sisley-white">
+        <section aria-labelledby="categorias-heading" className="py-20 md:py-32 bg-sisley-white">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
             <ScrollReveal>
               <EditorialLabel number="01" label="Explora por estilo" />
               <SectionHeader
+                id="categorias-heading"
                 eyebrow="Categorías"
                 title="Tu estilo, a un clic"
                 subtitle="Del look de todos los días al detalle de gala. Elige tu categoría y descubre una selección pensada para ti."
@@ -77,54 +267,25 @@ export default async function Home() {
               />
             </ScrollReveal>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
-              {topCategories.map((category, index) => {
-                const isLarge = index === 0;
-                return (
-                  <ScrollReveal key={category.id} delay={100 * (index + 1)}>
-                    <Link
-                      href={`/catalogo?categoria=${category.slug}`}
-                      className={`group relative overflow-hidden block ${isLarge ? 'sm:col-span-2 lg:col-span-7 lg:row-span-2' : 'lg:col-span-5'}`}
-                    >
-                      <div className={`relative w-full overflow-hidden bg-sisley-bg ${isLarge ? 'aspect-[4/5] lg:aspect-auto lg:h-full min-h-[350px] lg:min-h-[500px]' : 'aspect-[4/3]'}`}>
-                        <ImageWithPlaceholder
-                          src={category.imageUrl || category.image || null}
-                          alt={category.name}
-                          categorySlug={category.slug}
-                          index={index}
-                          className="w-full h-full"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-                        <div className="absolute inset-0 flex flex-col justify-end p-5 md:p-6 lg:p-8">
-                          <p className="text-[10px] uppercase tracking-[0.2em] text-white/70 mb-1.5">
-                            {category.count ? `${category.count} piezas` : 'Colección'}
-                          </p>
-                          <h3 className={`font-serif font-light text-white tracking-tight ${isLarge ? 'text-2xl lg:text-3xl' : 'text-xl lg:text-2xl'}`}>
-                            {category.name}
-                          </h3>
-                          <span className="mt-3 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.15em] text-white/90 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                            Explorar
-                            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-                            </svg>
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                  </ScrollReveal>
-                );
-              })}
-            </div>
+            <ErrorBoundary
+              title="No pudimos cargar las categorías"
+              message="Intenta de nuevo o explora el catálogo completo."
+            >
+              <Suspense fallback={<CategoriesSkeleton />}>
+                <CategoriesSection />
+              </Suspense>
+            </ErrorBoundary>
           </div>
         </section>
 
-        <section className="py-20 md:py-32 bg-sisley-bg">
+        <section aria-labelledby="destacados-heading" className="py-20 md:py-32 bg-sisley-bg">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
             <ScrollReveal>
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16">
                 <div>
                   <EditorialLabel number="02" label="Selección" />
                   <SectionHeader
+                    id="destacados-heading"
                     eyebrow="Selección"
                     title="Destacados de la temporada"
                     subtitle="Piezas elegidas a mano por nuestra directora creativa. Lo mejor de Sisley, ahora en un solo lugar."
@@ -132,7 +293,10 @@ export default async function Home() {
                     className="mb-0"
                   />
                 </div>
-                <Link href="/catalogo" className="text-[11px] uppercase tracking-widest text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                <Link
+                  href="/catalogo"
+                  className="text-[11px] uppercase tracking-widest text-sisley-text-secondary hover:text-sisley-black transition-colors"
+                >
                   Ver todo →
                 </Link>
               </div>
@@ -142,25 +306,21 @@ export default async function Home() {
               title="No pudimos cargar los destacados"
               message="Intenta de nuevo o explora el catálogo completo."
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {destacados.slice(0, 4).map((product, index) => (
-                  <ScrollReveal key={product.id} delay={100 * (index + 1)}>
-                    <ProductCard product={product} />
-                  </ScrollReveal>
-                ))}
-              </div>
+              <Suspense fallback={<GridSkeleton />}>
+                <FeaturedSection />
+              </Suspense>
             </ErrorBoundary>
           </div>
         </section>
 
-        <section className="py-20 md:py-32 bg-sisley-dark text-white">
+        <section aria-labelledby="editorial-heading" className="py-20 md:py-32 bg-sisley-dark text-white">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
               <ScrollReveal>
                 <div className="relative overflow-hidden aspect-[4/5] w-full">
                   <Image
-                    src="/assets/catalog/Hero-alterno.webp"
-                    alt="La nueva temporada — Sisley Colombia"
+                    src={EDITORIAL_CONTENT.image}
+                    alt={EDITORIAL_CONTENT.imageAlt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
                     className="object-cover"
@@ -169,14 +329,21 @@ export default async function Home() {
               </ScrollReveal>
               <ScrollReveal delay={200}>
                 <div className="max-w-lg">
-                  <EditorialLabel number="03" label="Editorial" />
-                  <h2 className="font-serif text-3xl md:text-4xl font-light text-white tracking-tight leading-tight mb-6">
-                    La nueva temporada, a tu medida
+                  <EditorialLabel number="03" label={EDITORIAL_CONTENT.eyebrow} />
+                  <h2
+                    id="editorial-heading"
+                    className="font-serif text-3xl md:text-4xl font-light text-white tracking-tight leading-tight mb-6"
+                  >
+                    {EDITORIAL_CONTENT.title}
                   </h2>
                   <p className="text-sm text-sisley-dark-muted leading-relaxed mb-8">
-                    Cada prenda nace de una obsesión por el detalle: telas que se sienten, cortes que favorecen y acabados que perduran. Esta temporada, vestir bien nunca fue tan fácil.
+                    {EDITORIAL_CONTENT.body}
                   </p>
-                  <Button href="/catalogo" variant="secondary" className="border-white text-white hover:bg-white hover:text-sisley-black">
+                  <Button
+                    href="/catalogo"
+                    variant="secondary"
+                    className="border-white text-white hover:bg-white hover:text-sisley-black"
+                  >
                     Descubrir la colección
                   </Button>
                 </div>
@@ -185,13 +352,14 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="py-20 md:py-32 bg-sisley-white">
+        <section aria-labelledby="novedades-heading" className="py-20 md:py-32 bg-sisley-white">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
             <ScrollReveal>
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16">
                 <div>
                   <EditorialLabel number="04" label="Novedades" />
                   <SectionHeader
+                    id="novedades-heading"
                     eyebrow="Novedades"
                     title="Lo último que acaba de llegar"
                     subtitle="Renovamos la colección cada semana. Estrenos limitados, primero para ti."
@@ -199,7 +367,10 @@ export default async function Home() {
                     className="mb-0"
                   />
                 </div>
-                <Link href="/catalogo" className="text-[11px] uppercase tracking-widest text-sisley-text-secondary hover:text-sisley-black transition-colors">
+                <Link
+                  href="/catalogo"
+                  className="text-[11px] uppercase tracking-widest text-sisley-text-secondary hover:text-sisley-black transition-colors"
+                >
                   Ver todo →
                 </Link>
               </div>
@@ -209,18 +380,14 @@ export default async function Home() {
               title="No pudimos cargar las novedades"
               message="Intenta de nuevo o explora el catálogo completo."
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {destacados.slice(4, 8).map((product, index) => (
-                  <ScrollReveal key={product.id} delay={100 * (index + 1)}>
-                    <ProductCard key={product.id} product={product} />
-                  </ScrollReveal>
-                ))}
-              </div>
+              <Suspense fallback={<GridSkeleton />}>
+                <NewArrivalsSection />
+              </Suspense>
             </ErrorBoundary>
           </div>
         </section>
 
-        <section className="py-20 md:py-32 bg-sisley-black text-white">
+        <section aria-label="Invitación a comprar" className="py-20 md:py-32 bg-sisley-black text-white">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-10 text-center">
             <ScrollReveal>
               <p className="text-[11px] uppercase tracking-widest text-white/60 mb-4">Tu nueva colección</p>
@@ -230,7 +397,11 @@ export default async function Home() {
               <p className="text-sm text-white/70 leading-relaxed mb-8 max-w-xl mx-auto">
                 Únete a miles de mujeres que ya visten Sisley: envío rápido, cambios fáciles y la calidad que no decepciona.
               </p>
-              <Button href="/catalogo" variant="secondary" className="border-white text-white hover:bg-white hover:text-sisley-black">
+              <Button
+                href="/catalogo"
+                variant="secondary"
+                className="border-white text-white hover:bg-white hover:text-sisley-black"
+              >
                 Empezar a comprar
               </Button>
             </ScrollReveal>
