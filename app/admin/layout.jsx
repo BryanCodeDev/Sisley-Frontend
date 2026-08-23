@@ -15,10 +15,10 @@ export default function AdminLayout({ children, requiredPermission }) {
         <div className="flex">
           <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 lg:ml-64">
             <Header variant="admin" />
 
-            <main className="p-4 md:p-8 pb-24 md:pb-8">
+            <main className="px-4 md:px-8 pt-14 md:pt-16 lg:pt-20 pb-24 md:pb-8">
               {children}
             </main>
           </div>

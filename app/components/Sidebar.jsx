@@ -33,7 +33,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
       <aside
         className={`
-          hidden lg:flex fixed inset-y-0 left-0 z-50 w-64 bg-sisley-white border-r border-sisley-border flex-col
+          hidden lg:flex fixed inset-y-0 left-0 z-[60] w-64 bg-sisley-white border-r border-sisley-border flex-col
         `}
       >
         <div className="flex items-center justify-between p-6 flex-shrink-0">
