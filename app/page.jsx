@@ -77,41 +77,37 @@ export default async function Home() {
               />
             </ScrollReveal>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
               {topCategories.map((category, index) => {
                 const isLarge = index === 0;
                 return (
                   <ScrollReveal key={category.id} delay={100 * (index + 1)}>
                     <Link
                       href={`/catalogo?categoria=${category.slug}`}
-                      className={`group relative overflow-hidden block ${isLarge ? 'md:col-span-7 md:row-span-2' : 'md:col-span-5'}`}
+                      className={`group relative overflow-hidden block ${isLarge ? 'sm:col-span-2 lg:col-span-7 lg:row-span-2' : 'lg:col-span-5'}`}
                     >
-                      <div className={`relative w-full ${isLarge ? 'aspect-[4/5] md:aspect-auto md:h-full min-h-[400px]' : 'aspect-[4/3]'}`}>
+                      <div className={`relative w-full overflow-hidden bg-sisley-bg ${isLarge ? 'aspect-[4/5] lg:aspect-auto lg:h-full min-h-[350px] lg:min-h-[500px]' : 'aspect-[4/3]'}`}>
                         <ImageWithPlaceholder
                           src={category.imageUrl || category.image || null}
                           alt={category.name}
                           categorySlug={category.slug}
                           index={index}
                           className="w-full h-full"
-                          title=""
-                          subtitle=""
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
-                        <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-                          <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                            <p className="text-[10px] uppercase tracking-[0.2em] text-white/70 mb-1.5">
-                              {category.count ? `${category.count} piezas` : 'Colección'}
-                            </p>
-                            <h3 className={`font-serif font-light text-white tracking-tight ${isLarge ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}`}>
-                              {category.name}
-                            </h3>
-                            <span className="mt-3 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.15em] text-white/80 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                              Explorar
-                              <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-                              </svg>
-                            </span>
-                          </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                        <div className="absolute inset-0 flex flex-col justify-end p-5 md:p-6 lg:p-8">
+                          <p className="text-[10px] uppercase tracking-[0.2em] text-white/70 mb-1.5">
+                            {category.count ? `${category.count} piezas` : 'Colección'}
+                          </p>
+                          <h3 className={`font-serif font-light text-white tracking-tight ${isLarge ? 'text-2xl lg:text-3xl' : 'text-xl lg:text-2xl'}`}>
+                            {category.name}
+                          </h3>
+                          <span className="mt-3 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.15em] text-white/90 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                            Explorar
+                            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                            </svg>
+                          </span>
                         </div>
                       </div>
                     </Link>
