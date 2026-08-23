@@ -35,7 +35,8 @@ export default function EditorialPlaceholder({
 }) {
   const palette = getCategoryPalette(categorySlug);
   const gradient = getGradient(index);
-  const displayTitle = title || 'Sisley';
+  const hasContent = title || subtitle;
+  const displayTitle = title || '';
   const displaySubtitle = subtitle || '';
 
   const aspectClasses = {
@@ -58,23 +59,27 @@ export default function EditorialPlaceholder({
             background: `radial-gradient(circle at 30% 20%, ${palette.accent}40 0%, transparent 50%), radial-gradient(circle at 70% 80%, ${palette.accent}30 0%, transparent 50%)`,
           }}
         />
-        <div className="relative z-10 max-w-xs">
-          {displaySubtitle && (
-            <p className="text-[10px] uppercase tracking-[0.2em] mb-3 opacity-60" style={{ color: palette.text }}>
-              {displaySubtitle}
+        {hasContent && (
+          <div className="relative z-10 max-w-xs">
+            {displaySubtitle && (
+              <p className="text-[10px] uppercase tracking-[0.2em] mb-3 opacity-60" style={{ color: palette.text }}>
+                {displaySubtitle}
+              </p>
+            )}
+            {displayTitle && (
+              <h3 className="font-serif text-lg md:text-xl font-light leading-tight" style={{ color: palette.text }}>
+                {displayTitle}
+              </h3>
+            )}
+            <div
+              className="w-8 h-px mx-auto mt-4 mb-3 opacity-40"
+              style={{ backgroundColor: palette.accent }}
+            />
+            <p className="text-[10px] uppercase tracking-[0.15em] opacity-50" style={{ color: palette.text }}>
+              Sisley Colombia
             </p>
-          )}
-          <h3 className="font-serif text-lg md:text-xl font-light leading-tight" style={{ color: palette.text }}>
-            {displayTitle}
-          </h3>
-          <div
-            className="w-8 h-px mx-auto mt-4 mb-3 opacity-40"
-            style={{ backgroundColor: palette.accent }}
-          />
-          <p className="text-[10px] uppercase tracking-[0.15em] opacity-50" style={{ color: palette.text }}>
-            Sisley Colombia
-          </p>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

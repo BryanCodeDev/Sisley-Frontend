@@ -1,13 +1,19 @@
 'use client';
 
-import EditorialPlaceholder from './EditorialPlaceholder';
-
-const LOCAL_IMAGES = {
-  '/assets/catalog/blusa-satinada.webp': '/assets/catalog/blusa-satinada.webp',
-  '/assets/catalog/pantalon-wide-leg.webp': '/assets/catalog/pantalon-wide-leg.webp',
-  '/assets/catalog/vestido-midi-plisado.webp': '/assets/catalog/vestido-midi-plisado.webp',
-  '/assets/logo.webp': '/assets/logo.webp',
-};
+const FALLBACK_IMAGES = [
+  '/assets/catalog/1.webp',
+  '/assets/catalog/2.webp',
+  '/assets/catalog/3.webp',
+  '/assets/catalog/4.webp',
+  '/assets/catalog/5.webp',
+  '/assets/catalog/6.webp',
+  '/assets/catalog/7.webp',
+  '/assets/catalog/8.webp',
+  '/assets/catalog/9.webp',
+  '/assets/catalog/blusa-satinada.webp',
+  '/assets/catalog/pantalon-wide-leg.webp',
+  '/assets/catalog/vestido-midi-plisado.webp',
+];
 
 function resolveImage(src) {
   if (!src) return null;
@@ -22,6 +28,10 @@ function resolveImage(src) {
   return null;
 }
 
+function getFallbackImage(index = 0) {
+  return FALLBACK_IMAGES[index % FALLBACK_IMAGES.length];
+}
+
 export default function ImageWithPlaceholder({
   src,
   alt = '',
@@ -34,26 +44,13 @@ export default function ImageWithPlaceholder({
   ...props
 }) {
   const resolvedSrc = resolveImage(src);
-
-  if (resolvedSrc) {
-    return (
-      <img
-        src={resolvedSrc}
-        alt={alt}
-        className={`object-cover ${className}`}
-        {...props}
-      />
-    );
-  }
+  const imageSrc = resolvedSrc || getFallbackImage(index);
 
   return (
-    <EditorialPlaceholder
-      title={title}
-      subtitle={subtitle}
-      categorySlug={categorySlug}
-      index={index}
-      aspectRatio={aspectRatio}
-      className={className}
+    <img
+      src={imageSrc}
+      alt={alt}
+      className={`object-cover ${className}`}
       {...props}
     />
   );
