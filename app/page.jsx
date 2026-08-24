@@ -67,7 +67,7 @@ async function CategoriesSection() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
       {topCategories.map((category, index) => {
         const isLarge = index === 0;
         return (
@@ -75,7 +75,7 @@ async function CategoriesSection() {
             <Link
               href={`/catalogo?categoria=${category.slug}`}
               className={`group relative overflow-hidden block ${
-                isLarge ? 'lg:col-span-2 lg:row-span-2' : ''
+                isLarge ? 'sm:col-span-2 lg:col-span-7 lg:row-span-2' : 'lg:col-span-5'
               }`}
             >
               <div
@@ -85,6 +85,13 @@ async function CategoriesSection() {
                     : 'aspect-[4/3]'
                 }`}
               >
+                <ImageReveal
+                  src={category.imageUrl || category.image || null}
+                  alt={category.name}
+                  aspectRatio=""
+                  className="w-full h-full"
+                  fallbackLetter={category.name.charAt(0)}
+                />
                 <ImageReveal
                   src={category.imageUrl || category.image || null}
                   alt={category.name}
@@ -188,10 +195,10 @@ function GridSkeleton({ count = 4 }) {
 
 function CategoriesSkeleton() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" aria-hidden="true">
-      <div className="lg:col-span-2 lg:row-span-2 aspect-[4/5] lg:aspect-auto min-h-[350px] lg:min-h-[500px] bg-sisley-smoke animate-pulse" />
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6" aria-hidden="true">
+      <div className="sm:col-span-2 lg:col-span-7 lg:row-span-2 aspect-[4/5] lg:aspect-auto min-h-[350px] lg:min-h-[500px] bg-sisley-smoke animate-pulse" />
       {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="aspect-[4/3] bg-sisley-smoke animate-pulse" />
+        <div key={i} className="lg:col-span-5 aspect-[4/3] bg-sisley-smoke animate-pulse" />
       ))}
     </div>
   );

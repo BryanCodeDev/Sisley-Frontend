@@ -36,29 +36,19 @@ export default function Sidebar({ isOpen, onClose }) {
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
-            onClick={onClose}
-          />
+        <div className="fixed inset-0 z-40 lg:hidden">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
         </div>
       )}
 
       <aside
         className={`
-          fixed inset-y-0 left-0 z-[60] w-64 bg-sisley-charcoal flex-col transform transition-transform duration-300 ease-out
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          lg:translate-x-0 lg:transform-none
-          ${isOpen ? 'flex' : 'hidden lg:flex'}
+          hidden lg:flex fixed inset-y-0 left-0 z-[60] w-64 bg-sisley-charcoal flex-col
         `}
       >
         <div className="flex items-center justify-between p-6 flex-shrink-0">
           <span className="text-[11px] uppercase tracking-[0.3em] text-white/60">Administración</span>
-          <button
-            onClick={onClose}
-            className="p-2 text-white/40 hover:text-white transition-colors lg:hidden"
-            aria-label="Cerrar menú"
-          >
+          <button onClick={onClose} className="p-2 text-white/40 hover:text-white transition-colors lg:hidden" aria-label="Cerrar menú">
             <X className="w-5 h-5" strokeWidth={1.5} />
           </button>
         </div>
