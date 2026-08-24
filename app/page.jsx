@@ -372,30 +372,6 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relative bg-sisley-white py-20 md:py-32">
-          <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
-            <ScrollReveal animation="reveal-up" className="text-center max-w-2xl mx-auto">
-              <EditorialLabel number="06" label="Newsletter" />
-              <h2 className="font-serif display-sm md:display-md text-sisley-text tracking-tighter leading-[0.95] mb-6">
-                Stay in the know
-              </h2>
-              <p className="text-sm md:text-base text-sisley-text-secondary leading-relaxed mb-8">
-                Recibe novedades de la colección, lanzamientos exclusivos y acceso anticipado a eventos Sisley.
-              </p>
-              <form className="flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto">
-                <input
-                  type="email"
-                  placeholder="Tu correo electrónico"
-                  className="flex-1 w-full text-sm bg-transparent border-b-2 border-sisley-border focus:border-sisley-black focus:outline-none py-3 placeholder:text-sisley-muted-strong transition-colors duration-300"
-                />
-                <Button href="/catalogo" size="md" className="w-full sm:w-auto">
-                  Suscribirse
-                </Button>
-              </form>
-            </ScrollReveal>
-          </div>
-        </section>
-
         <section className="bg-sisley-black text-white py-16 md:py-24">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-10 text-center">
             <ScrollReveal animation="reveal-up">

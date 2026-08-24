@@ -149,20 +149,7 @@ function FooterLink({ href, children, className = '' }) {
 export default function Footer() {
   return (
     <footer className="bg-sisley-charcoal text-white">
-      {/* Brand statement */}
-      <div className="border-b border-white/10">
-        <Reveal className="max-w-[1600px] mx-auto px-6 lg:px-10 py-20 md:py-32">
-          <p className="text-meta uppercase tracking-[0.3em] text-white/40 mb-6">Sisley Colombia</p>
-          <h2 className="font-serif display-lg md:display-xl text-white tracking-tighter leading-[0.9] mb-6">
-            Moda que habla<br />por ti.
-          </h2>
-          <p className="text-sm text-white/50 leading-relaxed max-w-md">
-            Elegancia contemporánea, artesanía atemporal. Cada prenda es una declaración de intenciones.
-          </p>
-        </Reveal>
-      </div>
-
-      {/* Newsletter */}
+      {/* Newsletter — única aparición en la página */}
       <div className="border-b border-white/10">
         <Reveal delay={100} className="max-w-[1600px] mx-auto px-6 lg:px-10 py-16 md:py-24 text-center">
           <p className="text-meta uppercase tracking-[0.3em] text-white/40 mb-4">Newsletter</p>
@@ -173,6 +160,19 @@ export default function Footer() {
             Recibe novedades de la colección, lanzamientos y acceso anticipado a eventos Sisley.
           </p>
           <NewsletterForm />
+        </Reveal>
+      </div>
+
+      {/* Brand statement */}
+      <div className="border-b border-white/10">
+        <Reveal className="max-w-[1600px] mx-auto px-6 lg:px-10 py-20 md:py-32">
+          <p className="text-meta uppercase tracking-[0.3em] text-white/40 mb-6">Sisley Colombia</p>
+          <h2 className="font-serif display-lg md:display-xl text-white tracking-tighter leading-[0.9] mb-6">
+            Moda que habla<br />por ti.
+          </h2>
+          <p className="text-sm text-white/50 leading-relaxed max-w-md">
+            Elegancia contemporánea, artesanía atemporal. Cada prenda es una declaración de intenciones.
+          </p>
         </Reveal>
       </div>
 

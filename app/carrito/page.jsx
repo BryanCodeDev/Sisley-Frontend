@@ -260,7 +260,7 @@ export default function Carrito() {
                   </div>
                 </div>
                 <Link href="/checkout">
-                  <Button size="lg" className="w-full">Finalizar compra</Button>
+                  <Button size="lg" className="w-full bg-sisley-black text-white hover:bg-sisley-charcoal">Finalizar compra</Button>
                 </Link>
                 <p className="text-xs text-sisley-muted mt-4 text-center">
                   Envío gratis en compras superiores a $500.000
@@ -270,17 +270,17 @@ export default function Carrito() {
           </div>
         </div>
 
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-sisley-white border-t border-sisley-border p-4 z-40">
-          <div className="max-w-[1600px] mx-auto flex items-center justify-between">
-            <div>
-              <p className="text-meta uppercase tracking-[0.25em] text-sisley-muted">Total</p>
-              <p className="text-lg font-light text-sisley-text">${total.toLocaleString('es-CO')}</p>
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-sisley-white border-t border-sisley-border p-4 z-40">
+              <div className="max-w-[1600px] mx-auto flex items-center justify-between">
+                <div>
+                  <p className="text-meta uppercase tracking-[0.25em] text-sisley-muted">Total</p>
+                  <p className="text-lg font-light text-sisley-text">${total.toLocaleString('es-CO')}</p>
+                </div>
+                <Link href="/checkout">
+                  <Button size="lg" className="bg-sisley-black text-white hover:bg-sisley-charcoal">Finalizar compra</Button>
+                </Link>
+              </div>
             </div>
-            <Link href="/checkout">
-              <Button size="lg">Finalizar compra</Button>
-            </Link>
-          </div>
-        </div>
       </main>
       <Footer />
     </>

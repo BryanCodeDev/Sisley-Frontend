@@ -15,7 +15,7 @@ export default function Button({
   const base = 'inline-flex items-center justify-center font-sans rounded-sm transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-sisley-black focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variants = {
-    primary: 'bg-sisley-black text-white hover:bg-sisley-text active:scale-[0.98]',
+    primary: 'bg-sisley-black text-white hover:bg-sisley-charcoal active:scale-[0.98]',
     secondary: 'bg-transparent border border-sisley-black text-sisley-black hover:bg-sisley-black hover:text-white',
     ghost: 'bg-transparent text-sisley-text hover:text-sisley-black underline underline-offset-4 decoration-sisley-border-strong hover:decoration-sisley-black',
     text: 'bg-transparent text-sisley-text hover:text-sisley-black underline underline-offset-4 decoration-sisley-border-strong hover:decoration-sisley-black',

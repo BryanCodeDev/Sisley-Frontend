@@ -17,6 +17,8 @@ const playfairDisplay = Playfair_Display({
   display: 'swap',
 })
 
+export const metadataBase = new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
+
 export const metadata = {
   title: 'Sisley Colombia — Moda Premium',
   description: 'Descubre la nueva colección de Sisley Colombia. Moda premium, elegancia contemporánea y estilo atemporal.',

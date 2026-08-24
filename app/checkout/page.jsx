@@ -491,8 +491,8 @@ export default function Checkout() {
                       Esta es una demostración. No se procesará ningún pago real.
                     </p>
                     <div className="flex gap-4">
-                      <Button variant="secondary" onClick={handleBack}>Volver</Button>
-                      <Button onClick={handleSubmit} disabled={submitting}>
+                      <Button variant="secondary" onClick={handleBack} className="border-sisley-black text-sisley-black hover:bg-sisley-black hover:text-white">Volver</Button>
+                      <Button onClick={handleSubmit} disabled={submitting} className="bg-sisley-black text-white hover:bg-sisley-charcoal">
                         {submitting ? 'Procesando...' : 'Confirmar pedido'}
                       </Button>
                     </div>
