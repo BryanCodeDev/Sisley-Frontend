@@ -142,12 +142,10 @@ export default function CategoriaPage() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8">
               {sortedProducts.map((product, index) => (
                 <ScrollReveal key={product.id} delay={60 * (index + 1)} animation="reveal-up">
-                  <div className={index === 0 ? 'lg:col-span-7 lg:row-span-2' : 'lg:col-span-5'}>
-                    <ProductCard product={product} />
-                  </div>
+                  <ProductCard product={product} />
                 </ScrollReveal>
               ))}
             </div>

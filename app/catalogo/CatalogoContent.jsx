@@ -423,23 +423,18 @@ export default function CatalogoContent({ searchParams }) {
         )}
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className={`${i === 0 ? 'lg:col-span-7 aspect-[4/5]' : 'lg:col-span-5 aspect-[3/4]'} w-full bg-sisley-smoke animate-pulse`} />
+              <div key={i} className="aspect-[3/4] w-full bg-sisley-smoke animate-pulse" />
             ))}
           </div>
         ) : (
-          <div key={gridKey} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-6">
-            {filtered.map((product, index) => {
-              const isHero = index === 0;
-              return (
-                <ScrollReveal key={product.id} delay={60 * (index + 1)} animation="reveal-up">
-                  <div className={`${isHero ? 'lg:col-span-7 lg:row-span-2' : 'lg:col-span-5'}`}>
-                    <ProductCard product={product} />
-                  </div>
-                </ScrollReveal>
-              );
-            })}
+          <div key={gridKey} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8">
+            {filtered.map((product, index) => (
+              <ScrollReveal key={product.id} delay={60 * (index + 1)} animation="reveal-up">
+                <ProductCard product={product} />
+              </ScrollReveal>
+            ))}
           </div>
         )}
       </div>
