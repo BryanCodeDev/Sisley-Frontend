@@ -98,7 +98,7 @@ export default function HeroSection() {
             }`}
             style={{ transitionDelay: '1100ms' }}
           >
-            <Button href="/catalogo" size="lg" className="group !bg-white !text-sisley-ink hover:bg-sisley-smoke">
+            <Button href="/catalogo" size="lg" className="group !bg-white !text-sisley-ink hover:!bg-white/90">
               <span className="inline-flex items-center gap-3">
                 Descubrir colección
                 <ChevronRight className="w-4 h-4 transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none" strokeWidth={1.5} />

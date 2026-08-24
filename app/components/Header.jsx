@@ -206,12 +206,12 @@ export default function Header({ variant = 'public' }) {
               )}
             </div>
 
-            <div className="flex items-center gap-1 md:gap-2">
+             <div className="flex items-center gap-1 md:gap-2">
               {!isAdmin && (
                 <button
                   ref={searchTriggerRef}
                   onClick={() => setSearchOpen(true)}
-                  className="p-2 text-sisley-text-secondary hover:text-sisley-black transition-all duration-200 hover:scale-105 motion-reduce:hover:scale-100"
+                  className={`p-2 transition-all duration-200 hover:scale-105 motion-reduce:hover:scale-100 ${!scrolled ? 'text-white hover:text-white/80' : 'text-sisley-text-secondary hover:text-sisley-black'}`}
                   aria-label="Buscar"
                   aria-haspopup="dialog"
                   aria-expanded={searchOpen}
@@ -229,7 +229,7 @@ export default function Header({ variant = 'public' }) {
                 <>
                   <Link
                     href="/favoritos"
-                    className="hidden md:flex p-2 text-sisley-text-secondary hover:text-sisley-black transition-all duration-200 hover:scale-105 motion-reduce:hover:scale-100"
+                    className={`hidden md:flex p-2 transition-all duration-200 hover:scale-105 motion-reduce:hover:scale-100 ${!scrolled ? 'text-white hover:text-white/80' : 'text-sisley-text-secondary hover:text-sisley-black'}`}
                     aria-label="Favoritos"
                   >
                     <span className="sr-only">Favoritos</span>
@@ -240,7 +240,7 @@ export default function Header({ variant = 'public' }) {
 
                   <Link
                     href="/carrito"
-                    className="relative p-2 text-sisley-text-secondary hover:text-sisley-black transition-all duration-200 hover:scale-105 motion-reduce:hover:scale-100"
+                    className={`relative p-2 transition-all duration-200 hover:scale-105 motion-reduce:hover:scale-100 ${!scrolled ? 'text-white hover:text-white/80' : 'text-sisley-text-secondary hover:text-sisley-black'}`}
                     aria-label={`Carrito${cartCount > 0 ? `, ${cartCount} artículo${cartCount === 1 ? '' : 's'}` : ''}`}
                   >
                     <span className="sr-only">Carrito</span>
@@ -262,7 +262,7 @@ export default function Header({ variant = 'public' }) {
               <button
                 ref={menuTriggerRef}
                 onClick={() => setMobileOpen(true)}
-                className={`${isAdmin ? 'hidden lg:flex' : 'lg:hidden'} p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200`}
+                className={`${isAdmin ? 'hidden lg:flex' : 'lg:hidden'} p-2 transition-colors duration-200 ${!scrolled ? 'text-white hover:text-white/80' : 'text-sisley-text-secondary hover:text-sisley-black'}`}
                 aria-label="Menú"
                 aria-haspopup="dialog"
                 aria-expanded={mobileOpen}

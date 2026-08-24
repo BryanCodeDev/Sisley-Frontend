@@ -229,31 +229,6 @@ export default function Home() {
           </div>
         </section>
 
-        <section aria-labelledby="categorias-heading" className="py-20 md:py-32 bg-sisley-white">
-          <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
-            <ScrollReveal animation="reveal-up">
-              <EditorialLabel number="02" label="Categorías" />
-              <SectionHeader
-                id="categorias-heading"
-                eyebrow="Explora"
-                title="Tu estilo, a un clic"
-                subtitle="Del look de todos los días al detalle de gala. Elige tu categoría y descubre una selección pensada para ti."
-                align="left"
-                className="mb-12"
-              />
-            </ScrollReveal>
-
-            <ErrorBoundary
-              title="No pudimos cargar las categorías"
-              message="Intenta de nuevo o explora el catálogo completo."
-            >
-              <Suspense fallback={<CategoriesSkeleton />}>
-                <CategoriesSection />
-              </Suspense>
-            </ErrorBoundary>
-          </div>
-        </section>
-
         <section aria-labelledby="destacados-heading" className="py-20 md:py-32 bg-sisley-smoke">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
             <ScrollReveal animation="reveal-up">

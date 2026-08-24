@@ -423,13 +423,13 @@ export default function CatalogoContent({ searchParams }) {
         )}
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8">
-            {Array.from({ length: 6 }).map((_, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="aspect-[3/4] w-full bg-sisley-smoke animate-pulse" />
             ))}
           </div>
         ) : (
-          <div key={gridKey} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8">
+          <div key={gridKey} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {filtered.map((product, index) => (
               <ScrollReveal key={product.id} delay={60 * (index + 1)} animation="reveal-up">
                 <ProductCard product={product} />
