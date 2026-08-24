@@ -178,7 +178,7 @@ export default function AdminProductos() {
       </div>
 
       {deleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setDeleteConfirm(null)} />
           <div className="relative bg-sisley-white border border-sisley-border w-full max-w-sm p-6">
             <h3 className="text-lg font-light text-sisley-text mb-2">Eliminar producto</h3>

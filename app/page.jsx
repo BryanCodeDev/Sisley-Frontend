@@ -10,7 +10,6 @@ import HeroSection from '@/app/components/HeroSection';
 import ErrorBoundary from '@/app/components/ErrorBoundary';
 import ImageReveal from '@/app/components/ImageReveal';
 import { getProducts } from '@/app/services/products';
-import Image from 'next/image';
 import { getCategories } from '@/app/services/categories';
 import Link from 'next/link';
 
@@ -68,7 +67,7 @@ async function CategoriesSection() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
       {topCategories.map((category, index) => {
         const isLarge = index === 0;
         return (
@@ -76,7 +75,9 @@ async function CategoriesSection() {
             <Link
               href={`/catalogo?categoria=${category.slug}`}
               className={`group relative overflow-hidden block ${
-                isLarge ? 'sm:col-span-2 lg:col-span-7 lg:row-span-2' : 'lg:col-span-5'
+                isLarge
+                  ? 'sm:col-span-2 lg:col-span-2 lg:row-span-2'
+                  : ''
               }`}
             >
               <div
@@ -91,6 +92,7 @@ async function CategoriesSection() {
                   alt={category.name}
                   aspectRatio=""
                   className="w-full h-full"
+                  fallbackLetter={category.name.charAt(0)}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute inset-0 flex flex-col justify-end p-5 md:p-6 lg:p-8">
@@ -127,7 +129,7 @@ async function CategoriesSection() {
   );
 }
 
-function ProductGrid({ products, emptyMessage }) {
+function AsymmetricProductGrid({ products, emptyMessage }) {
   if (products.length === 0) {
     return (
       <p className="text-sm text-sisley-muted">
@@ -141,12 +143,17 @@ function ProductGrid({ products, emptyMessage }) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-      {products.map((product, index) => (
-        <ScrollReveal key={product.id} delay={80 * (index + 1)} animation="reveal-up">
-          <ProductCard product={product} />
-        </ScrollReveal>
-      ))}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-6">
+      {products.map((product, index) => {
+        const isHero = index === 0;
+        return (
+          <ScrollReveal key={product.id} delay={80 * (index + 1)} animation="reveal-up">
+            <div className={`${isHero ? 'lg:col-span-7 lg:row-span-2' : 'lg:col-span-5'}`}>
+              <ProductCard product={product} />
+            </div>
+          </ScrollReveal>
+        );
+      })}
     </div>
   );
 }
@@ -154,8 +161,8 @@ function ProductGrid({ products, emptyMessage }) {
 async function FeaturedSection() {
   const featured = await getFeaturedProducts();
   return (
-    <ProductGrid
-      products={featured.slice(0, 4)}
+    <AsymmetricProductGrid
+      products={featured.slice(0, 5)}
       emptyMessage="Aún no hay destacados publicados."
     />
   );
@@ -164,8 +171,8 @@ async function FeaturedSection() {
 async function NewArrivalsSection() {
   const featured = await getFeaturedProducts();
   return (
-    <ProductGrid
-      products={featured.slice(4, 8)}
+    <AsymmetricProductGrid
+      products={featured.slice(5, 10)}
       emptyMessage="Aún no hay novedades publicadas."
     />
   );
@@ -173,12 +180,9 @@ async function NewArrivalsSection() {
 
 function GridSkeleton({ count = 4 }) {
   return (
-    <div
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
-      aria-hidden="true"
-    >
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-6" aria-hidden="true">
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="aspect-[3/4] w-full bg-sisley-smoke animate-pulse" />
+        <div key={i} className={`${i === 0 ? 'lg:col-span-7 aspect-[4/5]' : 'lg:col-span-5 aspect-[3/4]'} w-full bg-sisley-smoke animate-pulse`} />
       ))}
     </div>
   );
@@ -186,10 +190,10 @@ function GridSkeleton({ count = 4 }) {
 
 function CategoriesSkeleton() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6" aria-hidden="true">
-      <div className="sm:col-span-2 lg:col-span-7 lg:row-span-2 aspect-[4/5] lg:aspect-auto min-h-[350px] lg:min-h-[500px] bg-sisley-smoke animate-pulse" />
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6" aria-hidden="true">
+      <div className="sm:col-span-2 lg:col-span-2 lg:row-span-2 aspect-[4/5] lg:aspect-auto min-h-[350px] lg:min-h-[500px] bg-sisley-smoke animate-pulse" />
       {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="lg:col-span-5 aspect-[4/3] bg-sisley-smoke animate-pulse" />
+        <div key={i} className="aspect-[4/3] bg-sisley-smoke animate-pulse" />
       ))}
     </div>
   );
@@ -288,7 +292,7 @@ export default function Home() {
               title="No pudimos cargar los destacados"
               message="Intenta de nuevo o explora el catálogo completo."
             >
-              <Suspense fallback={<GridSkeleton />}>
+              <Suspense fallback={<GridSkeleton count={5} />}>
                 <FeaturedSection />
               </Suspense>
             </ErrorBoundary>
@@ -322,7 +326,7 @@ export default function Home() {
                     <Button href="/catalogo" size="lg" className="group">
                       <span className="inline-flex items-center gap-3">
                         Descubrir la colección
-                        <svg className="w-4 h-4 transition-transform duration-300 ease-out group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                        <svg className="w-4 h-4 transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
                         </svg>
                       </span>
@@ -365,7 +369,7 @@ export default function Home() {
               title="No pudimos cargar las novedades"
               message="Intenta de nuevo o explora el catálogo completo."
             >
-              <Suspense fallback={<GridSkeleton />}>
+              <Suspense fallback={<GridSkeleton count={5} />}>
                 <NewArrivalsSection />
               </Suspense>
             </ErrorBoundary>

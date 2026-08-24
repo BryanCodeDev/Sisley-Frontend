@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import Badge from '@/app/components/Badge';
 import Button from '@/app/components/Button';
 import Table from '@/app/components/Table';
@@ -12,9 +12,16 @@ function OrderDetailModal({ order, onClose, onStatusChange }) {
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     setStatus(order?.status || '');
+    if (order) {
+      const raf = requestAnimationFrame(() => setVisible(true));
+      return () => cancelAnimationFrame(raf);
+    }
+    setVisible(false);
+    return undefined;
   }, [order]);
 
   if (!order) return null;
@@ -37,9 +44,9 @@ function OrderDetailModal({ order, onClose, onStatusChange }) {
   const statusOptions = ['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-sisley-white border border-sisley-border w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div className={`relative bg-sisley-white border border-sisley-border w-full max-w-lg max-h-[90vh] overflow-y-auto transition-all duration-300 ease-out ${visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
         <div className="p-6 border-b border-sisley-border flex items-center justify-between">
           <h3 className="text-lg font-light text-sisley-text">Pedido {order.orderNumber || order.id}</h3>
           <button onClick={onClose} className="p-2 text-sisley-text-secondary hover:text-sisley-text transition-colors">

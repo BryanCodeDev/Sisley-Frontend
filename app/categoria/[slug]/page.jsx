@@ -67,13 +67,9 @@ export default function CategoriaPage() {
           <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
             <Skeleton className="h-8 w-48 mb-10" />
             <Skeleton className="h-10 w-full mb-8" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i}>
-                  <Skeleton className="aspect-[3/4] w-full mb-4" />
-                  <Skeleton className="h-4 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-1/4" />
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-6">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className={`${i === 0 ? 'lg:col-span-7 aspect-[4/5]' : 'lg:col-span-5 aspect-[3/4]'} w-full bg-sisley-smoke animate-pulse`} />
               ))}
             </div>
           </div>
@@ -146,9 +142,13 @@ export default function CategoriaPage() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-              {sortedProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-6">
+              {sortedProducts.map((product, index) => (
+                <ScrollReveal key={product.id} delay={60 * (index + 1)} animation="reveal-up">
+                  <div className={index === 0 ? 'lg:col-span-7 lg:row-span-2' : 'lg:col-span-5'}>
+                    <ProductCard product={product} />
+                  </div>
+                </ScrollReveal>
               ))}
             </div>
           )}

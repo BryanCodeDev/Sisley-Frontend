@@ -10,7 +10,7 @@ import Accordion from '@/app/components/Accordion';
 import EditorialLabel from '@/app/components/EditorialLabel';
 import ScrollReveal from '@/app/components/ScrollReveal';
 import ImageReveal from '@/app/components/ImageReveal';
-import { Heart } from 'lucide-react';
+import { Heart, Minus, Plus, Check, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, notFound } from 'next/navigation';
 import { getProductBySlug, getProducts } from '@/app/services/products';
@@ -128,18 +128,46 @@ export default function ProductoPage() {
             ]}
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16">
-            <div className="space-y-4">
-              <div className="aspect-[3/4] bg-sisley-smoke overflow-hidden">
-                <ImageReveal
-                  src={images[activeImage]?.url || images[activeImage] || getProductImage(null, product.id ? product.id - 1 : 0)}
-                  alt={product.name}
-                  aspectRatio="aspect-[3/4]"
-                  priority
-                />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 lg:gap-16">
+            <div className="lg:col-span-7">
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-4 md:gap-6">
+                <div className="relative aspect-[3/4] bg-sisley-smoke overflow-hidden group">
+                  <ImageReveal
+                    src={images[activeImage]?.url || images[activeImage] || getProductImage(null, product.id ? product.id - 1 : 0)}
+                    alt={product.name}
+                    aspectRatio="aspect-[3/4]"
+                    priority
+                  />
+                  {product.badge && (
+                    <span className="absolute top-4 left-4 px-3 py-1 bg-sisley-white text-sisley-text text-[10px] uppercase tracking-widest z-10">
+                      {product.badge}
+                    </span>
+                  )}
+                </div>
+
+                {images.length > 1 && (
+                  <div className="hidden md:flex flex-col gap-3 overflow-y-auto scrollbar-hide max-h-[600px]">
+                    {images.map((img, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleImageChange(index)}
+                        className={`flex-shrink-0 w-full aspect-[3/4] bg-sisley-smoke overflow-hidden border transition-all duration-300 ${
+                          activeImage === index ? 'border-sisley-black opacity-100' : 'border-transparent opacity-60 hover:opacity-100'
+                        }`}
+                      >
+                        <img
+                          src={typeof img === 'string' ? img : img?.url}
+                          alt=""
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
+
               {images.length > 1 && (
-                <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+                <div className="flex md:hidden gap-3 overflow-x-auto scrollbar-hide pb-2 mt-4">
                   {images.map((img, index) => (
                     <button
                       key={index}
@@ -159,7 +187,7 @@ export default function ProductoPage() {
               )}
             </div>
 
-            <div className="lg:sticky lg:top-24 lg:self-start">
+            <div className="lg:col-span-5 lg:sticky lg:top-24 lg:self-start">
               <ScrollReveal animation="reveal-up">
                 <EditorialLabel number="01" label={product.categoryName || 'Producto'} />
                 <h1 className="font-serif display-sm md:display-md text-sisley-text tracking-tighter leading-[0.95] mb-6">
@@ -217,19 +245,17 @@ export default function ProductoPage() {
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     className="w-12 h-12 flex items-center justify-center border border-sisley-border hover:border-sisley-black transition-colors duration-200"
+                    aria-label="Reducir cantidad"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M18 12H6" />
-                    </svg>
+                    <Minus className="w-4 h-4" strokeWidth={1.5} />
                   </button>
                   <span className="text-sm w-8 text-center font-medium">{quantity}</span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
                     className="w-12 h-12 flex items-center justify-center border border-sisley-border hover:border-sisley-black transition-colors duration-200"
+                    aria-label="Aumentar cantidad"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
-                    </svg>
+                    <Plus className="w-4 h-4" strokeWidth={1.5} />
                   </button>
                 </div>
                 {selectedVariant && (
@@ -248,7 +274,16 @@ export default function ProductoPage() {
                       added ? 'bg-sisley-text border-sisley-text' : ''
                     }`}
                   >
-                    {added ? 'Agregado al carrito' : 'Agregar al carrito'}
+                    <span className="inline-flex items-center gap-2">
+                      {added ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          Agregado al carrito
+                        </>
+                      ) : (
+                        'Agregar al carrito'
+                      )}
+                    </span>
                   </Button>
                   <button
                     onClick={() => toggleFavorite(product)}
@@ -295,10 +330,12 @@ export default function ProductoPage() {
                   </h2>
                 </div>
               </ScrollReveal>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-                {related.map((product) => (
-                  <ScrollReveal key={product.id} delay={100} animation="reveal-up">
-                    <ProductCard product={product} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-6">
+                {related.map((product, index) => (
+                  <ScrollReveal key={product.id} delay={100 * (index + 1)} animation="reveal-up">
+                    <div className={index === 0 ? 'lg:col-span-7' : 'lg:col-span-5'}>
+                      <ProductCard product={product} />
+                    </div>
                   </ScrollReveal>
                 ))}
               </div>

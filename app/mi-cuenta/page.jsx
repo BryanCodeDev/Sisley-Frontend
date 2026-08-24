@@ -14,7 +14,7 @@ import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 import { getOrders } from '@/app/services/orders';
 import { getAddresses } from '@/app/services/addresses';
 import { updateCustomer } from '@/app/services/customers';
-import { User, MapPin, ClipboardList, Heart, LogOut } from 'lucide-react';
+import { User, MapPin, ClipboardList, Heart, LogOut, ChevronRight } from 'lucide-react';
 
 export default function MiCuenta() {
   const router = useRouter();
@@ -151,14 +151,14 @@ export default function MiCuenta() {
             </div>
 
             <div className="lg:col-span-3">
-              <div className="flex border-b border-sisley-border mb-8">
+              <div className="flex border-b border-sisley-border mb-8 overflow-x-auto scrollbar-hide">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   return (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 px-4 py-3 text-xs uppercase tracking-widest transition-all ${
+                      className={`flex items-center gap-2 px-4 py-3 text-xs uppercase tracking-widest transition-all whitespace-nowrap ${
                         activeTab === tab.id
                           ? 'border-b-2 border-sisley-black text-sisley-text'
                           : 'text-sisley-muted hover:text-sisley-text'

@@ -12,16 +12,13 @@ export default function AdminLayout({ children, requiredPermission }) {
   return (
     <ProtectedRoute requiredPermission={requiredPermission}>
       <div className="min-h-screen bg-sisley-smoke">
-        <div className="flex">
-          <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-          <div className="flex-1 min-w-0 lg:ml-64">
-            <Header variant="admin" />
-
-            <main className="px-4 md:px-8 pt-14 md:pt-16 lg:pt-20 pb-24 md:pb-8">
-              {children}
-            </main>
-          </div>
+        <div className="flex-1 min-w-0 lg:pl-64">
+          <Header variant="admin" />
+          <main className="px-4 md:px-8 pt-14 md:pt-16 lg:pt-20 pb-24 md:pb-8">
+            {children}
+          </main>
         </div>
 
         <AdminBottomNav />

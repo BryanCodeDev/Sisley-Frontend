@@ -7,18 +7,13 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 import { useAuth } from '@/app/contexts/AuthContext';
 import UserDropdown from './UserDropdown';
+import MegaMenu from './MegaMenu';
+import CartDrawer from './CartDrawer';
 import { getCart } from '@/app/services/cart';
 import { getCategories } from '@/app/services/categories';
 import { Search, Heart, ShoppingBag, Menu, X, ChevronRight } from 'lucide-react';
 
-const defaultNavLinks = [
-  { href: '/catalogo?categoria=mujer', label: 'Mujer', prefetch: false },
-  { href: '/catalogo?categoria=hombre', label: 'Hombre', prefetch: false },
-  { href: '/catalogo?categoria=nueva-coleccion', label: 'Nueva Colección', prefetch: false },
-  { href: '/catalogo?categoria=ofertas', label: 'Ofertas', prefetch: false },
-];
-
-const SEARCH_SUGGESTIONS = ['Vestidos', 'Blazers', 'Camisas', 'Pantalones'];
+const SEARCH_SUGGESTIONS = ['Vestidos', 'Blazers', 'Camisas', 'Pantalones', 'Nueva colección'];
 
 function useEscapeToClose(isOpen, onClose, triggerRef) {
   useEffect(() => {
@@ -42,7 +37,8 @@ export default function Header({ variant = 'public' }) {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [cartCount, setCartCount] = useState(0);
-  const [navLinks, setNavLinks] = useState(defaultNavLinks);
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
   const pathname = usePathname();
   const router = useRouter();
   const searchTriggerRef = useRef(null);
@@ -73,16 +69,12 @@ export default function Header({ variant = 'public' }) {
   useEffect(() => {
     async function loadNavCategories() {
       try {
-        const data = await getCategories({ status: 'active', limit: '4' });
+        const data = await getCategories({ status: 'active', limit: '8' });
         if (data.data && data.data.length > 0) {
-          setNavLinks(data.data.map((cat) => ({
-            href: `/catalogo?categoria=${cat.slug}`,
-            label: cat.name,
-            prefetch: false,
-          })));
+          setCategories(data.data);
         }
       } catch {
-        setNavLinks(defaultNavLinks);
+        setCategories([]);
       }
     }
     if (!isAdmin) {
@@ -150,7 +142,7 @@ export default function Header({ variant = 'public' }) {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
           isAdmin
-            ? 'bg-sisley-white border-b border-sisley-border'
+            ? 'bg-sisley-white border-b border-sisley-border lg:pl-64'
             : scrolled
               ? 'bg-sisley-white/90 backdrop-blur-md border-b border-sisley-border shadow-[0_1px_24px_rgba(0,0,0,0.04)]'
               : 'bg-transparent'
@@ -171,19 +163,7 @@ export default function Header({ variant = 'public' }) {
               </Link>
 
               {!isAdmin && (
-                <nav aria-label="Navegación principal" className="hidden lg:flex items-center gap-8">
-                  {navLinks.slice(0, 4).map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      prefetch={link.prefetch ?? true}
-                      className="group relative text-[11px] uppercase tracking-widest text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
-                    >
-                      {link.label}
-                      <span className="pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-sisley-black transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
-                    </Link>
-                  ))}
-                </nav>
+                <MegaMenu categories={categories} />
               )}
             </div>
 
@@ -213,8 +193,8 @@ export default function Header({ variant = 'public' }) {
                     <Heart className="w-5 h-5" strokeWidth={1.5} />
                   </Link>
 
-                  <Link
-                    href="/carrito"
+                  <button
+                    onClick={() => setCartDrawerOpen(true)}
                     className="relative p-2 text-sisley-text-secondary hover:text-sisley-black transition-all duration-200 hover:scale-105 motion-reduce:hover:scale-100"
                     aria-label={`Carrito${cartCount > 0 ? `, ${cartCount} artículo${cartCount === 1 ? '' : 's'}` : ''}`}
                   >
@@ -227,7 +207,7 @@ export default function Header({ variant = 'public' }) {
                         {cartCount > 99 ? '99+' : cartCount}
                       </span>
                     )}
-                  </Link>
+                  </button>
                 </>
               )}
 
@@ -301,15 +281,15 @@ export default function Header({ variant = 'public' }) {
                       <span>Catálogo</span>
                       <ChevronRight className="w-5 h-5 opacity-40" strokeWidth={1.5} />
                     </Link>
-                    {navLinks.slice(0, 4).map((link, i) => (
+                    {categories.slice(0, 4).map((link, i) => (
                       <Link
-                        key={link.href}
-                        href={link.href}
+                        key={link.id}
+                        href={`/catalogo?categoria=${link.slug}`}
                         onClick={closeMobile}
                         className="flex items-center justify-between py-5 text-3xl md:text-4xl font-serif font-light text-sisley-text hover:text-sisley-black transition-colors border-b border-sisley-border stagger-child"
                         style={{ transitionDelay: `${80 * (i + 1)}ms` }}
                       >
-                        <span>{link.label}</span>
+                        <span>{link.name}</span>
                         <ChevronRight className="w-5 h-5 opacity-40" strokeWidth={1.5} />
                       </Link>
                     ))}
@@ -370,11 +350,11 @@ export default function Header({ variant = 'public' }) {
             onClick={closeSearch}
           />
           <div
-            className={`absolute inset-x-0 top-0 bg-sisley-white border-b border-sisley-border p-6 md:p-10 transition-all duration-500 ease-out motion-reduce:translate-y-0 ${
+            className={`absolute inset-x-0 top-0 bg-sisley-white border-b border-sisley-border transition-all duration-500 ease-out motion-reduce:translate-y-0 ${
               searchVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
             }`}
           >
-            <div className="max-w-3xl mx-auto">
+            <div className="max-w-3xl mx-auto px-6 md:px-10 py-10 md:py-16">
               <div className="flex items-center justify-between mb-8">
                 <p id="search-title" className="text-[11px] uppercase tracking-[0.25em] text-sisley-muted">Buscar</p>
                 <button
@@ -416,10 +396,22 @@ export default function Header({ variant = 'public' }) {
                   </button>
                 ))}
               </div>
+              {searchQuery && (
+                <div className="mt-8 pt-8 border-t border-sisley-border">
+                  <p className="text-meta uppercase tracking-[0.25em] text-sisley-muted mb-4">Resultados</p>
+                  <div className="space-y-4">
+                    <p className="text-sm text-sisley-text-secondary">
+                      Escribe para ver resultados de &quot;{searchQuery}&quot;.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
       )}
+
+      <CartDrawer open={cartDrawerOpen} onClose={() => setCartDrawerOpen(false)} />
     </>
   );
 }

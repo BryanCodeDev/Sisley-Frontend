@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useFavorites } from '@/app/contexts/FavoritesContext';
-import { Heart } from 'lucide-react';
+import { Heart, Eye } from 'lucide-react';
 
 const FALLBACK_IMAGES = [
   '/assets/catalog/1.webp',
@@ -68,13 +68,13 @@ export default function ProductCard({ product }) {
         )}
 
         <button
+          onClick={handleFavoriteClick}
           className={`absolute top-3 right-3 p-2 backdrop-blur-sm text-sisley-text transition-all z-10 duration-300 ${
             isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
           } ${
             favorite ? 'bg-red-50 text-red-600' : 'bg-sisley-white/90 hover:text-sisley-black'
           }`}
           aria-label={favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
-          onClick={handleFavoriteClick}
         >
           <Heart className="w-4 h-4" fill={favorite ? 'currentColor' : 'none'} strokeWidth={1.5} />
         </button>
@@ -85,10 +85,8 @@ export default function ProductCard({ product }) {
           }`}
         >
           <span className="text-white text-[11px] uppercase tracking-widest flex items-center gap-2">
+            <Eye className="w-4 h-4" />
             Ver producto
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-            </svg>
           </span>
         </div>
 

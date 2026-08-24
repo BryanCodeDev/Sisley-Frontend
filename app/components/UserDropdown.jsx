@@ -10,8 +10,10 @@ export default function UserDropdown({ variant = 'public' }) {
   const { customer, loading: customerLoading, logout: customerLogout, isAuthenticated: isCustomerAuth } = useCustomerAuth();
   const { user, loading: adminLoading, logout: adminLogout, isAuthenticated: isAdminAuth } = useAuth();
   const [open, setOpen] = useState(false);
+  const [visible, setVisible] = useState(false);
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
+  const hoverTimer = useRef(null);
 
   const isAdmin = variant === 'admin';
   const adminUser = isAdminAuth ? user : null;
@@ -23,7 +25,7 @@ export default function UserDropdown({ variant = 'public' }) {
   const displayEmail = isAdmin ? adminUser?.email || '' : customer?.email || '';
   const loading = isAdmin ? adminLoading : customerLoading;
   const isAuthenticated = isAdmin ? isAdminAuth : isCustomerAuth;
-  const logout = isAdmin ? adminLogout : customerLogout;
+  const logoutFn = isAdmin ? adminLogout : customerLogout;
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -33,13 +35,15 @@ export default function UserDropdown({ variant = 'public' }) {
         buttonRef.current &&
         !buttonRef.current.contains(event.target)
       ) {
-        setOpen(false);
+        setVisible(false);
+        setTimeout(() => setOpen(false), 200);
       }
     }
 
     function handleEscape(event) {
       if (event.key === 'Escape') {
-        setOpen(false);
+        setVisible(false);
+        setTimeout(() => setOpen(false), 200);
         buttonRef.current?.focus();
       }
     }
@@ -53,6 +57,15 @@ export default function UserDropdown({ variant = 'public' }) {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleEscape);
     };
+  }, [open]);
+
+  useEffect(() => {
+    if (open) {
+      const raf = requestAnimationFrame(() => setVisible(true));
+      return () => cancelAnimationFrame(raf);
+    }
+    setVisible(false);
+    return undefined;
   }, [open]);
 
   return (
@@ -91,10 +104,9 @@ export default function UserDropdown({ variant = 'public' }) {
       {open && (
         <div
           ref={dropdownRef}
-          className="absolute right-0 mt-3 w-80 bg-sisley-white border border-sisley-border z-50"
-          style={{
-            animation: 'fadeIn 0.2s ease-out',
-          }}
+          className={`absolute right-0 mt-3 w-80 bg-sisley-white border border-sisley-border shadow-[0_0_0_1px_rgba(0,0,0,0.03),0_8px_40px_rgba(0,0,0,0.08)] backdrop-blur-md z-50 transition-all duration-300 ease-out motion-reduce:transition-none ${
+            visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+          }`}
           role="menu"
           aria-orientation="vertical"
         >
@@ -109,7 +121,7 @@ export default function UserDropdown({ variant = 'public' }) {
                 <div className="space-y-1">
                   <Link
                     href={isAdmin ? '/admin' : '/mi-cuenta'}
-                    onClick={() => setOpen(false)}
+                    onClick={() => { setVisible(false); setTimeout(() => setOpen(false), 200); }}
                     className="flex items-center gap-3 px-2 py-2.5 text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
                     role="menuitem"
                   >
@@ -118,7 +130,7 @@ export default function UserDropdown({ variant = 'public' }) {
                   </Link>
                   <Link
                     href={isAdmin ? '/admin' : '/mi-cuenta'}
-                    onClick={() => setOpen(false)}
+                    onClick={() => { setVisible(false); setTimeout(() => setOpen(false), 200); }}
                     className="flex items-center gap-3 px-2 py-2.5 text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
                     role="menuitem"
                   >
@@ -129,8 +141,9 @@ export default function UserDropdown({ variant = 'public' }) {
                 <div className="h-px bg-sisley-border my-4" />
                 <button
                   onClick={async () => {
-                    setOpen(false);
-                    await logout();
+                    setVisible(false);
+                    setTimeout(() => setOpen(false), 200);
+                    await logoutFn();
                   }}
                   className="flex items-center gap-3 px-2 py-2.5 text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200 w-full"
                   role="menuitem"
@@ -153,7 +166,7 @@ export default function UserDropdown({ variant = 'public' }) {
                 <div className="space-y-2">
                   <Link
                     href={isAdmin ? '/admin' : '/login'}
-                    onClick={() => setOpen(false)}
+                    onClick={() => { setVisible(false); setTimeout(() => setOpen(false), 200); }}
                     className="block w-full text-center px-4 py-2.5 text-xs uppercase tracking-widest border border-sisley-black text-sisley-black hover:bg-sisley-black hover:text-sisley-white transition-colors duration-200"
                     role="menuitem"
                   >
@@ -162,7 +175,7 @@ export default function UserDropdown({ variant = 'public' }) {
                   {!isAdmin && (
                     <Link
                       href="/registro"
-                      onClick={() => setOpen(false)}
+                      onClick={() => { setVisible(false); setTimeout(() => setOpen(false), 200); }}
                       className="block w-full text-center px-4 py-2.5 text-xs uppercase tracking-widest text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
                       role="menuitem"
                     >

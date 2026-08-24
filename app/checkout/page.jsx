@@ -14,6 +14,7 @@ import { getCart } from '@/app/services/cart';
 import { createCheckout } from '@/app/services/checkout';
 import { getAddresses, createAddress } from '@/app/services/addresses';
 import { CheckCircle2 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Checkout() {
   const router = useRouter();
@@ -275,10 +276,10 @@ export default function Checkout() {
           </div>
 
           <div className="flex items-center gap-4 md:gap-6 mb-12 md:mb-16">
-            {steps.map((s) => (
+            {steps.map((s, idx) => (
               <div key={s.num} className="flex items-center gap-3">
                 <div
-                  className={`w-8 h-8 flex items-center justify-center text-xs border transition-colors ${
+                  className={`w-10 h-10 flex items-center justify-center text-sm border transition-colors ${
                     step >= s.num
                       ? 'border-sisley-black bg-sisley-black text-white'
                       : 'border-sisley-border text-sisley-muted'
@@ -289,7 +290,7 @@ export default function Checkout() {
                 <span className={`text-[11px] uppercase tracking-widest hidden sm:inline ${step >= s.num ? 'text-sisley-text' : 'text-sisley-muted'}`}>
                   {s.label}
                 </span>
-                {s.num < 4 && <div className="w-8 h-px bg-sisley-border hidden sm:block" />}
+                {idx < steps.length - 1 && <div className="w-8 h-px bg-sisley-border hidden sm:block" />}
               </div>
             ))}
           </div>
@@ -503,7 +504,7 @@ export default function Checkout() {
 
             {step < 4 && (
               <div>
-                <div className="border border-sisley-border p-6 md:p-8">
+                <div className="border border-sisley-border p-6 md:p-8 lg:sticky lg:top-24">
                   <h2 className="text-meta uppercase tracking-[0.25em] text-sisley-muted mb-6">Resumen del pedido</h2>
                   <div className="space-y-4 mb-6">
                     {cartItems.map((item) => (
@@ -538,6 +539,18 @@ export default function Checkout() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-sisley-white border-t border-sisley-border p-4 z-40">
+          <div className="max-w-[1600px] mx-auto flex items-center justify-between">
+            <div>
+              <p className="text-meta uppercase tracking-[0.25em] text-sisley-muted">Total</p>
+              <p className="text-lg font-light text-sisley-text">${total.toLocaleString('es-CO')}</p>
+            </div>
+            <Link href="/checkout">
+              <Button size="lg" className="bg-sisley-black text-white hover:bg-sisley-charcoal">Finalizar compra</Button>
+            </Link>
           </div>
         </div>
       </main>

@@ -64,7 +64,7 @@ function CustomerDetailModal({ customer, onClose, onUpdated }) {
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-sisley-white border border-sisley-border w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-sisley-border flex items-center justify-between">
