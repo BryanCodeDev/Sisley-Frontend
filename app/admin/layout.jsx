@@ -11,7 +11,7 @@ export default function AdminLayout({ children, requiredPermission }) {
 
   return (
     <ProtectedRoute requiredPermission={requiredPermission}>
-      <div className="min-h-screen bg-sisley-bg">
+      <div className="min-h-screen bg-sisley-smoke">
         <div className="flex">
           <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 

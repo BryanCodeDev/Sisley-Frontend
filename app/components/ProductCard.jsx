@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useFavorites } from '@/app/contexts/FavoritesContext';
+import { Heart } from 'lucide-react';
 
 const FALLBACK_IMAGES = [
   '/assets/catalog/1.webp',
@@ -26,10 +27,16 @@ function getProductImage(product) {
   return FALLBACK_IMAGES[index];
 }
 
+function getProductImageAlt(product) {
+  return product.images?.[0]?.altText || product.name || 'Producto Sisley';
+}
+
 export default function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
   const { isFavorite, toggleFavorite } = useFavorites();
   const imageSrc = getProductImage(product);
+  const imageAlt = getProductImageAlt(product);
+  const secondImage = product.images?.[1]?.url || imageSrc;
   const favorite = isFavorite(product.id);
 
   const handleFavoriteClick = (e) => {
@@ -45,12 +52,12 @@ export default function ProductCard({ product }) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative aspect-[3/4] bg-sisley-bg overflow-hidden mb-4">
+      <div className="relative aspect-[3/4] bg-sisley-smoke overflow-hidden mb-4">
         <img
-          src={imageSrc}
-          alt={product.name}
-          className={`w-full h-full object-cover transition-all duration-500 ease-out ${
-            isHovered ? 'scale-[1.02] opacity-90' : 'scale-100 opacity-100'
+          src={isHovered ? secondImage : imageSrc}
+          alt={imageAlt}
+          className={`w-full h-full object-cover transition-all duration-700 ease-out ${
+            isHovered ? 'scale-105 opacity-90' : 'scale-100 opacity-100'
           }`}
         />
 
@@ -61,19 +68,19 @@ export default function ProductCard({ product }) {
         )}
 
         <button
-          className={`absolute top-3 right-3 p-2 backdrop-blur-sm text-sisley-text transition-all z-10 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 duration-300 ${
+          className={`absolute top-3 right-3 p-2 backdrop-blur-sm text-sisley-text transition-all z-10 duration-300 ${
+            isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+          } ${
             favorite ? 'bg-red-50 text-red-600' : 'bg-sisley-white/90 hover:text-sisley-black'
           }`}
           aria-label={favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
           onClick={handleFavoriteClick}
         >
-          <svg className="w-4 h-4" fill={favorite ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-          </svg>
+          <Heart className="w-4 h-4" fill={favorite ? 'currentColor' : 'none'} strokeWidth={1.5} />
         </button>
 
         <div
-          className={`absolute inset-0 bg-black/20 flex items-center justify-center transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-black/20 flex items-center justify-center transition-all duration-500 ${
             isHovered ? 'opacity-100' : 'opacity-0'
           }`}
         >
@@ -84,10 +91,14 @@ export default function ProductCard({ product }) {
             </svg>
           </span>
         </div>
+
+        <div className="absolute bottom-3 left-3 text-[10px] uppercase tracking-[0.2em] text-white/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          {String(product.id).padStart(2, '0')}
+        </div>
       </div>
 
       <div className="px-1">
-        <p className="text-[10px] uppercase tracking-widest text-sisley-muted mb-1.5">
+        <p className="text-meta uppercase tracking-[0.2em] text-sisley-muted mb-2">
           {product.categoryName || product.category}
         </p>
         <h3 className="text-sm font-normal text-sisley-text leading-snug mb-2 group-hover:opacity-70 transition-opacity">

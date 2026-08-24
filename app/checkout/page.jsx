@@ -8,11 +8,12 @@ import Button from '@/app/components/Button';
 import Input from '@/app/components/Input';
 import Skeleton from '@/app/components/Skeleton';
 import Breadcrumb from '@/app/components/Breadcrumb';
-import Link from 'next/link';
+import EditorialLabel from '@/app/components/EditorialLabel';
 import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 import { getCart } from '@/app/services/cart';
 import { createCheckout } from '@/app/services/checkout';
 import { getAddresses, createAddress } from '@/app/services/addresses';
+import { CheckCircle2 } from 'lucide-react';
 
 export default function Checkout() {
   const router = useRouter();
@@ -225,14 +226,14 @@ export default function Checkout() {
         <main className="min-h-screen bg-sisley-white">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
             <div className="max-w-lg mx-auto text-center py-12">
-              <svg className="w-16 h-16 mx-auto text-sisley-black mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              <h2 className="font-serif text-2xl font-light text-sisley-text mb-2">¡Pedido confirmado!</h2>
+              <CheckCircle2 className="w-16 h-16 mx-auto text-sisley-black mb-6" strokeWidth={1} />
+              <h2 className="font-serif display-sm md:display-md text-sisley-text tracking-tighter leading-[0.95] mb-4">
+                Pedido confirmado
+              </h2>
               <p className="text-sm text-sisley-text-secondary mb-1">
-                Número de pedido: <span className="text-sisley-text">{orderSuccess.orderNumber}</span>
+                Número de pedido: <span className="text-sisley-text font-medium">{orderSuccess.orderNumber}</span>
               </p>
-              <p className="text-sm text-sisley-muted mb-8">
+              <p className="text-sm text-sisley-muted mb-10">
                 Recibirás un correo de confirmación en {orderSuccess.email || 'tu correo'}.
               </p>
               <div className="flex justify-center gap-4">
@@ -247,43 +248,34 @@ export default function Checkout() {
     );
   }
 
-  const shippingMethods = [
-    { id: 'estandar', label: 'Envío estándar (3-5 días hábiles)', price: 25000 },
-    { id: 'express', label: 'Envío express (1-2 días hábiles)', price: 45000 },
-  ];
-
-  const paymentMethods = [
-    { id: 'card', label: 'Tarjeta de crédito/débito' },
-    { id: 'pse', label: 'PSE' },
-    { id: 'transfer', label: 'Transferencia bancaria' },
+  const steps = [
+    { num: 1, label: 'Información' },
+    { num: 2, label: 'Envío' },
+    { num: 3, label: 'Pago' },
+    { num: 4, label: 'Confirmación' },
   ];
 
   return (
-      <>
-        <Header />
-        <main className="min-h-screen bg-sisley-white">
-          <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
-            <Breadcrumb
-              items={[
-                { label: 'Inicio', href: '/' },
-                { label: 'Carrito', href: '/carrito' },
-                { label: 'Checkout' },
-              ]}
-            />
-            <div className="mb-10">
-              <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-2">Checkout</p>
-              <h1 className="font-serif text-3xl md:text-4xl font-light text-sisley-text tracking-tight">
-                Finalizar compra
-              </h1>
-            </div>
+    <>
+      <Header />
+      <main className="min-h-screen bg-sisley-white">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
+          <Breadcrumb
+            items={[
+              { label: 'Inicio', href: '/' },
+              { label: 'Carrito', href: '/carrito' },
+              { label: 'Checkout' },
+            ]}
+          />
+          <div className="mb-10 md:mb-14">
+            <EditorialLabel number="01" label="Checkout" />
+            <h1 className="font-serif display-sm md:display-md text-sisley-text tracking-tighter leading-[0.95]">
+              Finalizar compra
+            </h1>
+          </div>
 
-          <div className="flex items-center gap-6 mb-12">
-            {[
-              { num: 1, label: 'Información' },
-              { num: 2, label: 'Envío' },
-              { num: 3, label: 'Pago' },
-              { num: 4, label: 'Confirmación' },
-            ].map((s) => (
+          <div className="flex items-center gap-4 md:gap-6 mb-12 md:mb-16">
+            {steps.map((s) => (
               <div key={s.num} className="flex items-center gap-3">
                 <div
                   className={`w-8 h-8 flex items-center justify-center text-xs border transition-colors ${
@@ -312,7 +304,7 @@ export default function Checkout() {
 
               {step === 1 && (
                 <div className="space-y-6">
-                  <h2 className="font-serif text-xl font-light text-sisley-text mb-6">Información personal</h2>
+                  <h2 className="font-serif title-lg text-sisley-text mb-6">Información personal</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Input
                       label="Nombre"
@@ -348,17 +340,17 @@ export default function Checkout() {
 
               {step === 2 && (
                 <div className="space-y-6">
-                  <h2 className="font-serif text-xl font-light text-sisley-text mb-6">Dirección de envío</h2>
+                  <h2 className="font-serif title-lg text-sisley-text mb-6">Dirección de envío</h2>
 
                   {isAuthenticated && addresses.length > 0 && (
                     <div className="space-y-2 mb-6">
-                      <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-3">Direcciones guardadas</p>
+                      <p className="text-meta uppercase tracking-[0.25em] text-sisley-muted mb-3">Direcciones guardadas</p>
                       {addresses.map((addr) => (
                         <label
                           key={addr.id}
                           className={`flex items-start gap-3 p-4 border cursor-pointer transition-all ${
                             formData.addressId === addr.id
-                              ? 'border-sisley-black bg-sisley-bg'
+                              ? 'border-sisley-black bg-sisley-smoke'
                               : 'border-sisley-border hover:border-sisley-border-strong'
                           }`}
                         >
@@ -378,55 +370,56 @@ export default function Checkout() {
                           <div>
                             <p className="text-sm text-sisley-text">{addr.address}</p>
                             <p className="text-xs text-sisley-muted">{addr.city}, {addr.department} {addr.zipCode ? `· ${addr.zipCode}` : ''}</p>
-                            {addr.isMain && <span className="text-[10px] uppercase tracking-widest text-sisley-black mt-1 inline-block">Principal</span>}
+                            {addr.isMain && <span className="text-meta uppercase tracking-[0.2em] text-sisley-black mt-1 inline-block">Principal</span>}
                           </div>
                         </label>
                       ))}
                     </div>
                   )}
 
-                  {!isAuthenticated || (
-                    <div className="border-t border-sisley-border pt-6">
-                      <p className="text-sm text-sisley-text mb-4">O ingresa una nueva dirección</p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="sm:col-span-2">
-                          <Input
-                            label="Dirección"
-                            value={newAddress.address}
-                            onChange={(e) => setNewAddress((prev) => ({ ...prev, address: e.target.value }))}
-                            required={!formData.addressId}
-                          />
-                        </div>
+                  <div className="border-t border-sisley-border pt-6">
+                    <p className="text-sm text-sisley-text mb-4">O ingresa una nueva dirección</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="sm:col-span-2">
                         <Input
-                          label="Ciudad"
-                          value={newAddress.city}
-                          onChange={(e) => setNewAddress((prev) => ({ ...prev, city: e.target.value }))}
+                          label="Dirección"
+                          value={newAddress.address}
+                          onChange={(e) => setNewAddress((prev) => ({ ...prev, address: e.target.value }))}
                           required={!formData.addressId}
-                        />
-                        <Input
-                          label="Departamento"
-                          value={newAddress.department}
-                          onChange={(e) => setNewAddress((prev) => ({ ...prev, department: e.target.value }))}
-                          required={!formData.addressId}
-                        />
-                        <Input
-                          label="Código postal"
-                          value={newAddress.zipCode}
-                          onChange={(e) => setNewAddress((prev) => ({ ...prev, zipCode: e.target.value }))}
                         />
                       </div>
+                      <Input
+                        label="Ciudad"
+                        value={newAddress.city}
+                        onChange={(e) => setNewAddress((prev) => ({ ...prev, city: e.target.value }))}
+                        required={!formData.addressId}
+                      />
+                      <Input
+                        label="Departamento"
+                        value={newAddress.department}
+                        onChange={(e) => setNewAddress((prev) => ({ ...prev, department: e.target.value }))}
+                        required={!formData.addressId}
+                      />
+                      <Input
+                        label="Código postal"
+                        value={newAddress.zipCode}
+                        onChange={(e) => setNewAddress((prev) => ({ ...prev, zipCode: e.target.value }))}
+                      />
                     </div>
-                  )}
+                  </div>
 
                   <div className="pt-6">
-                    <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-3">Método de envío</p>
+                    <p className="text-meta uppercase tracking-[0.25em] text-sisley-muted mb-3">Método de envío</p>
                     <div className="space-y-2">
-                      {shippingMethods.map((option) => (
+                      {[
+                        { id: 'estandar', label: 'Envío estándar (3-5 días hábiles)', price: 25000 },
+                        { id: 'express', label: 'Envío express (1-2 días hábiles)', price: 45000 },
+                      ].map((option) => (
                         <label
                           key={option.id}
                           className={`flex items-center justify-between p-4 border cursor-pointer transition-all ${
                             formData.shipping === option.id
-                              ? 'border-sisley-black bg-sisley-bg'
+                              ? 'border-sisley-black bg-sisley-smoke'
                               : 'border-sisley-border hover:border-sisley-border-strong'
                           }`}
                         >
@@ -457,14 +450,18 @@ export default function Checkout() {
 
               {step === 3 && (
                 <div className="space-y-6">
-                  <h2 className="font-serif text-xl font-light text-sisley-text mb-6">Método de pago</h2>
+                  <h2 className="font-serif title-lg text-sisley-text mb-6">Método de pago</h2>
                   <div className="space-y-2">
-                    {paymentMethods.map((option) => (
+                    {[
+                      { id: 'card', label: 'Tarjeta de crédito/débito' },
+                      { id: 'pse', label: 'PSE' },
+                      { id: 'transfer', label: 'Transferencia bancaria' },
+                    ].map((option) => (
                       <label
                         key={option.id}
                         className={`flex items-center gap-3 p-4 border cursor-pointer transition-all ${
                           formData.payment === option.id
-                            ? 'border-sisley-black bg-sisley-bg'
+                            ? 'border-sisley-black bg-sisley-smoke'
                             : 'border-sisley-border hover:border-sisley-border-strong'
                         }`}
                       >
@@ -496,36 +493,9 @@ export default function Checkout() {
                     <div className="flex gap-4">
                       <Button variant="secondary" onClick={handleBack}>Volver</Button>
                       <Button onClick={handleSubmit} disabled={submitting}>
-                        {submitting ? (
-                          <>
-                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                            </svg>
-                            Procesando...
-                          </>
-                        ) : 'Confirmar pedido'}
+                        {submitting ? 'Procesando...' : 'Confirmar pedido'}
                       </Button>
                     </div>
-                  </div>
-                </div>
-              )}
-
-              {step === 4 && orderSuccess && (
-                <div className="text-center py-12">
-                  <svg className="w-16 h-16 mx-auto text-sisley-black mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <h2 className="font-serif text-2xl font-light text-sisley-text mb-2">¡Pedido confirmado!</h2>
-                  <p className="text-sm text-sisley-text-secondary mb-1">
-                    Número de pedido: <span className="text-sisley-text">{orderSuccess.orderNumber}</span>
-                  </p>
-                  <p className="text-sm text-sisley-muted mb-8">
-                    Recibirás un correo de confirmación en {orderSuccess.email || 'tu correo'}.
-                  </p>
-                  <div className="flex justify-center gap-4">
-                    <Link href="/mis-pedidos"><Button>Ver mis pedidos</Button></Link>
-                    <Link href="/catalogo"><Button variant="secondary">Seguir comprando</Button></Link>
                   </div>
                 </div>
               )}
@@ -534,14 +504,14 @@ export default function Checkout() {
             {step < 4 && (
               <div>
                 <div className="border border-sisley-border p-6 md:p-8">
-                  <h2 className="text-[11px] uppercase tracking-widest text-sisley-muted mb-6">Resumen del pedido</h2>
+                  <h2 className="text-meta uppercase tracking-[0.25em] text-sisley-muted mb-6">Resumen del pedido</h2>
                   <div className="space-y-4 mb-6">
                     {cartItems.map((item) => (
                       <div key={item.id} className="flex justify-between text-sm">
                         <span className="text-sisley-text-secondary truncate pr-4">
                           {item.productName} x{item.quantity}
                         </span>
-                         <span className="text-sisley-text">${(Number(item.unitPrice) * item.quantity).toLocaleString('es-CO')}</span>
+                        <span className="text-sisley-text">${(Number(item.unitPrice) * item.quantity).toLocaleString('es-CO')}</span>
                       </div>
                     ))}
                   </div>

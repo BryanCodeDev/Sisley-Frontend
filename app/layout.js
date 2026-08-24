@@ -6,12 +6,14 @@ import './globals.css'
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+  weight: ['300', '400', '500', '600'],
   display: 'swap',
 })
 
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
-  variable: '--font-geist-serif',
+  variable: '--font-playfair',
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
 })
 
@@ -23,17 +25,18 @@ export const metadata = {
     icon: '/assets/logo.webp',
   },
   openGraph: {
-    title: 'Sisley Colombia — Moda Premium',
-    description: 'Descubre la nueva colección de Sisley Colombia. Moda premium, elegancia contemporánea y estilo atemporal.',
+    title: 'Sisley Colombia',
+    description: 'Moda premium con identidad. Envío a todo Colombia.',
     type: 'website',
     locale: 'es_CO',
+    images: ['/assets/logo.webp'],
   },
 }
 
 export default function RootLayout({ children }) {
   return (
     <html lang="es" className={`${inter.variable} ${playfairDisplay.variable}`}>
-      <body className={`${inter.variable} font-sans antialiased text-sisley-text bg-sisley-white pt-20 lg:pt-24`}>
+      <body className={`${inter.variable} font-sans antialiased text-sisley-text bg-sisley-white`}>
         <Providers>
           {children}
         </Providers>

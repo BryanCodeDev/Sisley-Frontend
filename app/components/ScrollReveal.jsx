@@ -9,6 +9,7 @@ export default function ScrollReveal({
   once = true,
   threshold = 0.1,
   rootMargin = '0px 0px -40px 0px',
+  animation = 'reveal',
   ...props
 }) {
   const ref = useRef(null);
@@ -39,10 +40,20 @@ export default function ScrollReveal({
     return () => observer.disconnect();
   }, [once, threshold, rootMargin]);
 
+  const animationClasses = {
+    reveal: 'reveal',
+    'reveal-up': 'reveal-up',
+    'reveal-scale': 'reveal-scale',
+    'reveal-fade': 'reveal-fade',
+    'text-reveal': 'text-reveal',
+    'image-reveal': 'image-reveal',
+    'line-reveal': 'line-reveal',
+  };
+
   return (
     <div
       ref={ref}
-      className={`reveal ${isVisible ? 'visible' : ''} ${delay ? `reveal-delay-${delay}` : ''} ${className}`}
+      className={`${animationClasses[animation] || 'reveal'} ${isVisible ? 'visible' : ''} ${delay ? `reveal-delay-${delay}` : ''} ${className}`}
       {...props}
     >
       {children}

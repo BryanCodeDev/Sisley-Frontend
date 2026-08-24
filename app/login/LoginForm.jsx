@@ -19,8 +19,6 @@ export default function LoginForm() {
   const router = useRouter();
 
   function toggleMode() {
-    // Limpiamos el error al cambiar de modo: un mensaje de "credenciales
-    // inválidas" del login de cliente no debe quedar visible al pasar a admin.
     setError(null);
     setIsAdmin((prev) => !prev);
   }
@@ -50,16 +48,16 @@ export default function LoginForm() {
   return (
     <>
       <div className="mb-10">
-        <h1 className="font-serif text-2xl md:text-3xl font-light text-sisley-text tracking-tight mb-2">
-          Iniciar sesión
+        <h1 className="font-serif display-sm md:display-md text-sisley-text tracking-tighter leading-[0.95] mb-3">
+          {isAdmin ? 'Acceso administrativo' : 'Bienvenido de nuevo'}
         </h1>
-        <p className="text-sm text-sisley-muted">
-          {isAdmin ? 'Acceso administrativo' : 'Accede a tu cuenta de Sisley'}
+        <p className="text-sm text-sisley-text-secondary">
+          {isAdmin ? 'Ingresa tus credenciales de administrador' : 'Ingresa tus datos para continuar'}
         </p>
         <button
           type="button"
           onClick={toggleMode}
-          className="text-xs text-sisley-text underline underline-offset-4 mt-2 hover:opacity-70"
+          className="text-meta uppercase tracking-[0.2em] text-sisley-muted hover:text-sisley-black transition-colors mt-4"
         >
           {isAdmin ? '¿Eres cliente? Inicia sesión aquí' : '¿Eres administrador? Acceder aquí'}
         </button>
@@ -85,8 +83,8 @@ export default function LoginForm() {
           required
         />
         <div className="flex items-center justify-between">
-          <label className="flex items-center gap-2">
-            <input type="checkbox" className="accent-sisley-black" />
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" className="accent-sisley-black w-4 h-4" />
             <span className="text-xs text-sisley-text-secondary">Recordarme</span>
           </label>
           <Link href="/" className="text-xs text-sisley-muted hover:text-sisley-black transition-colors">

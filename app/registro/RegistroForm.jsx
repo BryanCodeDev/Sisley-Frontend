@@ -8,8 +8,6 @@ import Input from '@/app/components/Input';
 import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 
 const MIN_PASSWORD_LENGTH = 8;
-// Pequeña pausa antes de redirigir para que el mensaje de éxito
-// alcance a leerse en vez de desaparecer instantáneamente.
 const REDIRECT_DELAY_MS = 1200;
 
 export default function RegistroForm() {
@@ -72,10 +70,12 @@ export default function RegistroForm() {
   return (
     <>
       <div className="mb-10">
-        <h1 className="font-serif text-2xl md:text-3xl font-light text-sisley-text tracking-tight mb-2">
+        <h1 className="font-serif display-sm md:display-md text-sisley-text tracking-tighter leading-[0.95] mb-3">
           Crear cuenta
         </h1>
-        <p className="text-sm text-sisley-muted">Únete a Sisley Colombia</p>
+        <p className="text-sm text-sisley-text-secondary">
+          Únete a Sisley Colombia
+        </p>
       </div>
 
       {error && (
@@ -146,8 +146,8 @@ export default function RegistroForm() {
           autoComplete="new-password"
           required
         />
-        <label className="flex items-start gap-2">
-          <input type="checkbox" className="accent-sisley-black mt-1" required />
+        <label className="flex items-start gap-2 cursor-pointer">
+          <input type="checkbox" className="accent-sisley-black w-4 h-4 mt-0.5" required />
           <span className="text-xs text-sisley-text-secondary leading-relaxed">
             Acepto los términos y condiciones y la política de privacidad de Sisley Colombia.
           </span>

@@ -28,25 +28,6 @@ const footerLinks = {
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/**
- * Underline-sweep link used across the footer.
- * scaleX(0) -> scaleX(1), transform-origin left (motion spec item 9).
- */
-function SweepLink({ href, prefetch, className = '', children, ...props }) {
-  return (
-    <Link
-      href={href}
-      prefetch={prefetch}
-      className={`group relative inline-block w-fit text-sisley-dark-muted transition-colors duration-300 hover:text-white ${className}`}
-      {...props}
-    >
-      {children}
-      <span className="pointer-events-none absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-white transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
-    </Link>
-  );
-}
-
-/** Lightweight scroll-reveal: IntersectionObserver + CSS transform/opacity, no extra dependency. */
 function useRevealOnView() {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -85,10 +66,9 @@ function Reveal({ children, className = '', delay = 0 }) {
   );
 }
 
-/** Newsletter form with real submit feedback (idle/loading/success/error) instead of a no-op handler. */
 function NewsletterForm() {
   const [email, setEmail] = useState('');
-  const [status, setStatus] = useState('idle'); // idle | loading | success | error
+  const [status, setStatus] = useState('idle');
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -99,9 +79,6 @@ function NewsletterForm() {
 
     setStatus('loading');
     try {
-      // TODO: conectar con el servicio real de newsletter cuando exista
-      // (por ejemplo POST /api/newsletter). Por ahora confirmamos localmente
-      // para no dejar el formulario sin respuesta.
       await new Promise((resolve) => setTimeout(resolve, 500));
       setStatus('success');
       setEmail('');
@@ -113,7 +90,7 @@ function NewsletterForm() {
   if (status === 'success') {
     return (
       <p role="status" aria-live="polite" className="text-sm text-white max-w-md mx-auto">
-        ¡Gracias por suscribirte! Revisa tu correo para confirmar.
+        Gracias por suscribirte. Revisa tu correo para confirmar.
       </p>
     );
   }
@@ -135,7 +112,7 @@ function NewsletterForm() {
           placeholder="Tu correo electrónico"
           aria-label="Correo electrónico"
           disabled={status === 'loading'}
-          className="flex-1 bg-transparent py-3 text-sm placeholder:text-sisley-dark-muted focus:outline-none disabled:opacity-60"
+          className="flex-1 bg-transparent py-3 text-sm placeholder:text-white/40 focus:outline-none disabled:opacity-60"
         />
         <button
           type="submit"
@@ -157,29 +134,53 @@ function NewsletterForm() {
   );
 }
 
+function FooterLink({ href, children, className = '' }) {
+  return (
+    <Link
+      href={href}
+      className={`group relative inline-block w-fit text-white/60 transition-colors duration-300 hover:text-white ${className}`}
+    >
+      {children}
+      <span className="pointer-events-none absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-white transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
+    </Link>
+  );
+}
+
 export default function Footer() {
   return (
-    <footer className="bg-sisley-dark text-white">
-      {/* Newsletter — editorial block, not a generic card (spec item 20) */}
+    <footer className="bg-sisley-charcoal text-white">
+      {/* Brand statement */}
       <div className="border-b border-white/10">
-        <Reveal className="max-w-[1600px] mx-auto px-6 lg:px-10 py-16 md:py-20 text-center">
-          <p className="text-[11px] uppercase tracking-[0.25em] text-sisley-dark-muted mb-4">
-            Newsletter
+        <Reveal className="max-w-[1600px] mx-auto px-6 lg:px-10 py-20 md:py-32">
+          <p className="text-meta uppercase tracking-[0.3em] text-white/40 mb-6">Sisley Colombia</p>
+          <h2 className="font-serif display-lg md:display-xl text-white tracking-tighter leading-[0.9] mb-6">
+            Moda que habla<br />por ti.
+          </h2>
+          <p className="text-sm text-white/50 leading-relaxed max-w-md">
+            Elegancia contemporánea, artesanía atemporal. Cada prenda es una declaración de intenciones.
           </p>
-          <h2 className="font-serif text-3xl md:text-5xl font-light tracking-tight mb-4">
+        </Reveal>
+      </div>
+
+      {/* Newsletter */}
+      <div className="border-b border-white/10">
+        <Reveal delay={100} className="max-w-[1600px] mx-auto px-6 lg:px-10 py-16 md:py-24 text-center">
+          <p className="text-meta uppercase tracking-[0.3em] text-white/40 mb-4">Newsletter</p>
+          <h2 className="font-serif display-sm md:display-md text-white tracking-tighter leading-[0.95] mb-4">
             Stay in the know
           </h2>
-          <p className="text-sm text-sisley-dark-muted max-w-md mx-auto mb-8">
+          <p className="text-sm text-white/50 max-w-md mx-auto mb-8">
             Recibe novedades de la colección, lanzamientos y acceso anticipado a eventos Sisley.
           </p>
           <NewsletterForm />
         </Reveal>
       </div>
 
+      {/* Links */}
       <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
         <div className="py-16 md:py-24 grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8">
           <Reveal className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center mb-4 w-fit">
+            <Link href="/" className="flex items-center mb-6 w-fit">
               <Image
                 src="/assets/logo.webp"
                 alt="Sisley"
@@ -188,19 +189,19 @@ export default function Footer() {
                 className="h-10 w-auto"
               />
             </Link>
-            <p className="text-sm text-sisley-dark-muted leading-relaxed max-w-xs">
+            <p className="text-sm text-white/40 leading-relaxed max-w-xs">
               Moda premium colombiana. Elegancia contemporánea y estilo atemporal.
             </p>
             <div className="flex items-center gap-5 mt-6">
-              <a href="/" aria-label="Instagram" className="group relative text-sisley-dark-muted hover:text-white transition-colors duration-200">
+              <a href="/" aria-label="Instagram" className="group relative text-white/40 hover:text-white transition-colors duration-200">
                 <span className="text-xs uppercase tracking-widest">Ig</span>
                 <span className="pointer-events-none absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-white transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
               </a>
-              <a href="/" aria-label="Facebook" className="group relative text-sisley-dark-muted hover:text-white transition-colors duration-200">
+              <a href="/" aria-label="Facebook" className="group relative text-white/40 hover:text-white transition-colors duration-200">
                 <span className="text-xs uppercase tracking-widest">Fb</span>
                 <span className="pointer-events-none absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-white transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
               </a>
-              <a href="/" aria-label="Twitter" className="group relative text-sisley-dark-muted hover:text-white transition-colors duration-200">
+              <a href="/" aria-label="Twitter" className="group relative text-white/40 hover:text-white transition-colors duration-200">
                 <span className="text-xs uppercase tracking-widest">X</span>
                 <span className="pointer-events-none absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-white transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
               </a>
@@ -208,14 +209,14 @@ export default function Footer() {
           </Reveal>
 
           <Reveal delay={80}>
-            <p className="text-[11px] uppercase tracking-widest text-sisley-dark-muted mb-5">Tienda</p>
+            <p className="text-meta uppercase tracking-[0.25em] text-white/40 mb-5">Tienda</p>
             <nav aria-label="Tienda">
               <ul className="space-y-3">
                 {footerLinks.shop.map((link) => (
                   <li key={link.id}>
-                    <SweepLink href={link.href} prefetch={link.prefetch ?? true} className="text-sm">
+                    <FooterLink href={link.href} className="text-sm">
                       {link.label}
-                    </SweepLink>
+                    </FooterLink>
                   </li>
                 ))}
               </ul>
@@ -223,14 +224,14 @@ export default function Footer() {
           </Reveal>
 
           <Reveal delay={160}>
-            <p className="text-[11px] uppercase tracking-widest text-sisley-dark-muted mb-5">Ayuda</p>
+            <p className="text-meta uppercase tracking-[0.25em] text-white/40 mb-5">Ayuda</p>
             <nav aria-label="Ayuda">
               <ul className="space-y-3">
                 {footerLinks.help.map((link) => (
                   <li key={link.id}>
-                    <SweepLink href={link.href} prefetch={link.prefetch ?? true} className="text-sm">
+                    <FooterLink href={link.href} className="text-sm">
                       {link.label}
-                    </SweepLink>
+                    </FooterLink>
                   </li>
                 ))}
               </ul>
@@ -238,14 +239,14 @@ export default function Footer() {
           </Reveal>
 
           <Reveal delay={240}>
-            <p className="text-[11px] uppercase tracking-widest text-sisley-dark-muted mb-5">Empresa</p>
+            <p className="text-meta uppercase tracking-[0.25em] text-white/40 mb-5">Empresa</p>
             <nav aria-label="Empresa">
               <ul className="space-y-3">
                 {footerLinks.company.map((link) => (
                   <li key={link.id}>
-                    <SweepLink href={link.href} prefetch={link.prefetch ?? true} className="text-sm">
+                    <FooterLink href={link.href} className="text-sm">
                       {link.label}
-                    </SweepLink>
+                    </FooterLink>
                   </li>
                 ))}
               </ul>
@@ -254,13 +255,13 @@ export default function Footer() {
         </div>
 
         <div className="py-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-sisley-dark-muted">
+          <p className="text-xs text-white/30">
             © {new Date().getFullYear()} Sisley Colombia. Todos los derechos reservados.
           </p>
           <div className="flex items-center gap-6">
-            <SweepLink href="/privacidad" className="text-xs">Privacidad</SweepLink>
-            <SweepLink href="/terminos" className="text-xs">Términos</SweepLink>
-            <SweepLink href="/cookies" className="text-xs">Cookies</SweepLink>
+            <FooterLink href="/privacidad" className="text-xs">Privacidad</FooterLink>
+            <FooterLink href="/terminos" className="text-xs">Términos</FooterLink>
+            <FooterLink href="/cookies" className="text-xs">Cookies</FooterLink>
           </div>
         </div>
       </div>

@@ -3,9 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 import Button from '@/app/components/Button';
 import HeroBackground from '@/app/components/HeroBackground';
+import { ChevronRight } from 'lucide-react';
 
-const MAX_PARALLAX_SHIFT_PX = 24;
-const PARALLAX_FACTOR = 0.06;
+const MAX_PARALLAX_SHIFT_PX = 40;
+const PARALLAX_FACTOR = 0.08;
 const SCROLLED_THRESHOLD_PX = 40;
 
 export default function HeroSection() {
@@ -19,9 +20,6 @@ export default function HeroSection() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Cinematic, near-imperceptible parallax on the hero image (max ~24px) + scroll-indicator fade.
-  // Both derived values are computed inside one rAF-throttled handler so a single scroll
-  // event only ever triggers one batched state update. Skipped entirely for prefers-reduced-motion.
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return undefined;
@@ -41,21 +39,16 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-end bg-sisley-bg overflow-hidden">
+    <section className="relative min-h-screen flex items-end bg-sisley-charcoal overflow-hidden">
       <div className="absolute inset-0">
         <div
-          className={`absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10 transition-opacity duration-700 ease-out ${
-            loaded ? 'opacity-100' : 'opacity-0'
-          }`}
-        />
-        <div
-          className={`absolute inset-0 bg-gradient-to-r from-black/30 to-transparent z-10 transition-opacity duration-700 ease-out ${
+          className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10 z-10 transition-opacity duration-1000 ease-out ${
             loaded ? 'opacity-100' : 'opacity-0'
           }`}
         />
         <div
           ref={imageWrapRef}
-          className={`w-full h-full transition-transform duration-1000 ease-out motion-reduce:!scale-100 motion-reduce:!translate-y-0 ${
+          className={`w-full h-full transition-transform duration-[2000ms] ease-out motion-reduce:scale-100 motion-reduce:translate-y-0 ${
             loaded ? 'scale-100' : 'scale-105'
           }`}
           style={{ transform: `translateY(${parallax}px)` }}
@@ -64,69 +57,53 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div className="relative z-20 max-w-[1600px] mx-auto px-6 lg:px-10 pb-20 md:pb-32 pt-32 w-full">
-        <div className="max-w-2xl">
+      <div className="relative z-20 max-w-[1600px] mx-auto px-6 lg:px-10 pb-16 md:pb-24 lg:pb-32 pt-32 w-full">
+        <div className="max-w-3xl">
           <p
-            className={`text-[11px] uppercase tracking-widest text-white/80 mb-4 md:mb-6 transition-all duration-500 ease-out motion-reduce:!opacity-100 motion-reduce:!translate-y-0 ${
-              loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-            }`}
-            style={{ transitionDelay: '400ms' }}
-          >
-            Nueva Colección
-          </p>
-          <h1
-            className={`font-serif text-4xl md:text-6xl lg:text-7xl font-light text-white tracking-tight leading-[1.1] mb-6 transition-all duration-700 ease-out motion-reduce:!opacity-100 motion-reduce:!translate-y-0 ${
+            className={`text-meta uppercase tracking-[0.3em] text-white/70 mb-6 md:mb-8 transition-all duration-700 ease-out motion-reduce:opacity-100 motion-reduce:translate-y-0 ${
               loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
             }`}
-            style={{ transitionDelay: '600ms' }}
+            style={{ transitionDelay: '300ms' }}
+          >
+            Nueva Colección — Otoño 2026
+          </p>
+          <h1
+            className={`font-serif editorial text-white tracking-tighter leading-[0.95] mb-8 transition-all duration-700 ease-out motion-reduce:opacity-100 motion-reduce:translate-y-0 ${
+              loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+            style={{ transitionDelay: '500ms' }}
           >
             El arte de vestir
           </h1>
           <p
-            className={`text-sm md:text-base text-white/80 leading-relaxed mb-8 max-w-lg transition-all duration-500 ease-out motion-reduce:!opacity-100 motion-reduce:!translate-y-0 ${
-              loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            className={`text-base md:text-lg text-white/75 leading-relaxed mb-10 max-w-xl transition-all duration-700 ease-out motion-reduce:opacity-100 motion-reduce:translate-y-0 ${
+              loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
             }`}
-            style={{ transitionDelay: '900ms' }}
+            style={{ transitionDelay: '800ms' }}
           >
-            Descubre una colección donde la elegancia contemporánea se encuentra con la artesanía atemporal.
+            Descubre una colección donde la elegancia contemporánea se encuentra con la artesanía atemporal. Cada prenda, una declaración.
           </p>
           <div
-            className={`flex flex-wrap gap-4 transition-all duration-500 ease-out motion-reduce:!opacity-100 motion-reduce:!translate-y-0 ${
-              loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            className={`flex flex-wrap gap-4 transition-all duration-700 ease-out motion-reduce:opacity-100 motion-reduce:translate-y-0 ${
+              loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
             }`}
             style={{ transitionDelay: '1100ms' }}
           >
-            <Button href="/catalogo" size="lg" className="group">
-              <span className="inline-flex items-center gap-2">
+            <Button href="/catalogo" size="lg" className="group bg-white text-sisley-ink hover:bg-sisley-smoke">
+              <span className="inline-flex items-center gap-3">
                 Descubrir colección
-                <svg
-                  className="w-4 h-4 transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-                </svg>
+                <ChevronRight className="w-4 h-4 transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none" strokeWidth={1.5} />
               </span>
             </Button>
             <Button
               href="/catalogo?coleccion=nueva"
-              variant="secondary"
+              variant="ghost"
               size="lg"
-              className="group border-white text-white hover:bg-white hover:text-sisley-black"
+              className="text-white border-white/30 hover:bg-white/10 hover:border-white"
             >
-              <span className="inline-flex items-center gap-2">
+              <span className="inline-flex items-center gap-3">
                 Comprar ahora
-                <svg
-                  className="w-4 h-4 transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-                </svg>
+                <ChevronRight className="w-4 h-4 transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none" strokeWidth={1.5} />
               </span>
             </Button>
           </div>
@@ -134,21 +111,13 @@ export default function HeroSection() {
       </div>
 
       <div
-        className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 transition-opacity duration-500 ease-out ${
+        className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3 transition-all duration-700 ease-out ${
           loaded && !scrolled ? 'opacity-60' : 'opacity-0'
         }`}
-        style={{ transitionDelay: loaded && !scrolled ? '1500ms' : '0ms' }}
+        style={{ transitionDelay: loaded && !scrolled ? '2000ms' : '0ms' }}
       >
-        <span className="text-[10px] uppercase tracking-[0.2em] text-white">Scroll</span>
-        <svg
-          className="w-4 h-4 text-white motion-safe:animate-bounce"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-        </svg>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-white/80">Scroll</span>
+        <div className="w-px h-8 bg-gradient-to-b from-white/60 to-transparent motion-safe:animate-pulse" />
       </div>
     </section>
   );

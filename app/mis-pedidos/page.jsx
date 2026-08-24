@@ -7,11 +7,12 @@ import Footer from '@/app/components/Footer';
 import Button from '@/app/components/Button';
 import Badge from '@/app/components/Badge';
 import Skeleton from '@/app/components/Skeleton';
-import Breadcrumb from '@/app/components/Breadcrumb';
+import EditorialLabel from '@/app/components/EditorialLabel';
 import EmptyState from '@/app/components/EmptyState';
 import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 import { getOrders } from '@/app/services/orders';
 import Link from 'next/link';
+import { ClipboardList } from 'lucide-react';
 
 const STATUS_MAP = {
   PENDING: 'Pendiente',
@@ -61,25 +62,6 @@ export default function MisPedidos() {
     load();
   }, [customer?.id]);
 
-  if (authLoading) {
-    return (
-      <>
-        <Header />
-        <main className="min-h-screen bg-sisley-white">
-          <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
-            <Skeleton className="h-8 w-48 mb-10" />
-            <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
-                <Skeleton key={i} className="h-32 w-full" />
-              ))}
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </>
-    );
-  }
-
   useEffect(() => {
     if (!isAuthenticated && !authLoading) {
       router.push('/login');
@@ -95,15 +77,9 @@ export default function MisPedidos() {
       <Header />
       <main className="min-h-screen bg-sisley-white">
         <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-12 md:py-16">
-          <div className="mb-10">
-            <Breadcrumb
-              items={[
-                { label: 'Inicio', href: '/' },
-                { label: 'Mis pedidos' },
-              ]}
-            />
-            <p className="text-[11px] uppercase tracking-widest text-sisley-muted mb-2">Cuenta</p>
-            <h1 className="font-serif text-3xl md:text-4xl font-light text-sisley-text tracking-tight">
+          <div className="mb-10 md:mb-14">
+            <EditorialLabel number="01" label="Cuenta" />
+            <h1 className="font-serif display-sm md:display-md text-sisley-text tracking-tighter leading-[0.95]">
               Mis pedidos
             </h1>
           </div>
@@ -122,17 +98,15 @@ export default function MisPedidos() {
               ))}
             </div>
           ) : orders.length === 0 ? (
-            <EmptyState
-              icon={
-                <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-              }
-              title="Aún no tienes pedidos"
-              description="Realiza tu primera compra y podrás ver el estado de tus pedidos aquí."
-              actionLabel="Ir a la tienda"
-              actionHref="/catalogo"
-            />
+            <div className="py-16 text-center">
+              <EmptyState
+                icon={<ClipboardList className="w-10 h-10" strokeWidth={1} />}
+                title="Aún no tienes pedidos"
+                description="Realiza tu primera compra y podrás ver el estado de tus pedidos aquí."
+                actionLabel="Ir a la tienda"
+                actionHref="/catalogo"
+              />
+            </div>
           ) : (
             <div className="border border-sisley-border divide-y divide-sisley-border">
               {orders.map((order) => {
@@ -141,11 +115,11 @@ export default function MisPedidos() {
                 const orderStatus = statusLabel(order.status);
                 const shippingLabel = [order.shippingAddress, order.shippingCity, order.shippingDepartment].filter(Boolean).join(', ') || '—';
                 return (
-                  <div key={order.id} className="p-6 hover:bg-sisley-bg transition-colors">
+                  <div key={order.id} className="p-6 md:p-8 hover:bg-sisley-smoke transition-colors">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                       <div>
                         <p className="text-sm font-medium text-sisley-text">{orderNumber}</p>
-                        <p className="text-xs text-sisley-muted">{orderDate}</p>
+                        <p className="text-xs text-sisley-muted mt-1">{orderDate}</p>
                       </div>
                       <div className="text-left sm:text-right">
                         <p className="text-sm font-medium text-sisley-text">${Number(order.total).toLocaleString('es-CO')}</p>
