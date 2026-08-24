@@ -279,7 +279,7 @@ export default function Home() {
                 />
               </ScrollReveal>
               <ScrollReveal delay={200} animation="reveal-up" className="order-1 lg:order-2">
-                <div className="max-w-lg lg:ml-auto">
+                <div className="max-w-md lg:max-w-none">
                   <EditorialLabel number="04" label="Editorial" />
                   <h2
                     id="editorial-heading"
@@ -291,7 +291,7 @@ export default function Home() {
                     Cada prenda nace de una obsesión por el detalle: telas que se sienten, cortes que favorecen y acabados que perduran. Esta temporada, vestir bien nunca fue tan fácil.
                   </p>
                   <Link href="/catalogo">
-                    <Button href="/catalogo" size="lg" className="group">
+                    <Button href="/catalogo" size="lg" className="group !bg-white !text-sisley-ink hover:!bg-white/90">
                       <span className="inline-flex items-center gap-3">
                         Descubrir la colección
                         <svg className="w-4 h-4 transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>

@@ -154,13 +154,6 @@ export default function CatalogoContent({ searchParams }) {
   const [error, setError] = useState(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
-  const [gridKey, setGridKey] = useState(0);
-
-  useEffect(() => {
-    setCategoryFilter(searchParams?.categoria || '');
-    setSearchQuery(searchParams?.search || '');
-    setCollectionFilter(searchParams?.coleccion || '');
-  }, [searchParams?.categoria, searchParams?.search, searchParams?.coleccion]);
 
   useEffect(() => {
     async function load() {
@@ -181,10 +174,6 @@ export default function CatalogoContent({ searchParams }) {
     }
     load();
   }, []);
-
-  useEffect(() => {
-    setGridKey((k) => k + 1);
-  }, [categoryFilter, priceRange, sort, searchQuery, collectionFilter]);
 
   const updateCategory = (value) => {
     setCategoryFilter(value);
@@ -429,7 +418,7 @@ export default function CatalogoContent({ searchParams }) {
             ))}
           </div>
         ) : (
-          <div key={gridKey} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {filtered.map((product, index) => (
               <ScrollReveal key={product.id} delay={60 * (index + 1)} animation="reveal-up">
                 <ProductCard product={product} />
