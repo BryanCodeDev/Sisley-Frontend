@@ -6,7 +6,7 @@ import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
 import { useAuth } from '@/app/contexts/AuthContext';
 import { User, UserCheck, LogOut, Settings, ChevronDown } from 'lucide-react';
 
-export default function UserDropdown({ variant = 'public' }) {
+export default function UserDropdown({ variant = 'public', inverted = false }) {
   const { customer, loading: customerLoading, logout: customerLogout, isAuthenticated: isCustomerAuth } = useCustomerAuth();
   const { user, loading: adminLoading, logout: adminLogout, isAuthenticated: isAdminAuth } = useAuth();
   const [open, setOpen] = useState(false);
@@ -27,53 +27,15 @@ export default function UserDropdown({ variant = 'public' }) {
   const isAuthenticated = isAdmin ? isAdminAuth : isCustomerAuth;
   const logoutFn = isAdmin ? adminLogout : customerLogout;
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target)
-      ) {
-        setVisible(false);
-        setTimeout(() => setOpen(false), 200);
-      }
-    }
-
-    function handleEscape(event) {
-      if (event.key === 'Escape') {
-        setVisible(false);
-        setTimeout(() => setOpen(false), 200);
-        buttonRef.current?.focus();
-      }
-    }
-
-    if (open) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleEscape);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, [open]);
-
-  useEffect(() => {
-    if (open) {
-      const raf = requestAnimationFrame(() => setVisible(true));
-      return () => cancelAnimationFrame(raf);
-    }
-    setVisible(false);
-    return undefined;
-  }, [open]);
+  const textColor = inverted ? 'text-white' : 'text-sisley-text-secondary';
+  const hoverTextColor = inverted ? 'hover:text-white/80' : 'hover:text-sisley-black';
 
   return (
     <div className="relative">
       <button
         ref={buttonRef}
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-2 p-2 text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
+        className={`flex items-center gap-2 p-2 transition-colors duration-200 ${textColor} ${hoverTextColor}`}
         aria-label={isAuthenticated ? `Cuenta de ${displayName}` : 'Cuenta'}
         aria-expanded={open}
         aria-haspopup="menu"
@@ -90,7 +52,7 @@ export default function UserDropdown({ variant = 'public' }) {
         ) : (
           <User className="w-5 h-5" strokeWidth={1.5} />
         )}
-        <span className="hidden xl:inline text-xs uppercase tracking-widest">
+        <span className={`hidden xl:inline text-xs uppercase tracking-widest ${textColor}`}>
           {loading ? '' : isAuthenticated ? displayName : 'Cuenta'}
         </span>
         {!loading && (

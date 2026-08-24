@@ -20,12 +20,14 @@ const defaultNavLinks = [
 const SEARCH_SUGGESTIONS = ['Vestidos', 'Blazers', 'Camisas', 'Pantalones'];
 
 /** Nav link with a left-to-right underline sweep on hover (spec item 9). Self-contained, no external CSS needed. */
-function NavLink({ href, prefetch, children }) {
+function NavLink({ href, prefetch, children, inverted = false }) {
   return (
     <Link
       href={href}
       prefetch={prefetch}
-      className="group relative text-sm text-sisley-text-secondary hover:text-sisley-black transition-colors duration-200"
+      className={`group relative text-sm transition-colors duration-200 ${
+        inverted ? 'text-white hover:text-white/80' : 'text-sisley-text-secondary hover:text-sisley-black'
+      }`}
     >
       {children}
       <span className="pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-sisley-black transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
@@ -194,11 +196,11 @@ export default function Header({ variant = 'public' }) {
 
               {!isAdmin && (
                 <nav aria-label="Navegación principal" className="hidden lg:flex items-center gap-8">
-                  <NavLink href="/catalogo" prefetch>
+                  <NavLink href="/catalogo" prefetch inverted={!scrolled}>
                     Catálogo
                   </NavLink>
                   {navLinks.slice(0, 3).map((link) => (
-                    <NavLink key={link.href} href={link.href} prefetch={link.prefetch ?? true}>
+                    <NavLink key={link.href} href={link.href} prefetch={link.prefetch ?? true} inverted={!scrolled}>
                       {link.label}
                     </NavLink>
                   ))}
@@ -223,7 +225,7 @@ export default function Header({ variant = 'public' }) {
                 </button>
               )}
 
-              <UserDropdown variant={variant} />
+              <UserDropdown variant={variant} inverted={!scrolled && !isAdmin} />
 
               {!isAdmin && (
                 <>
