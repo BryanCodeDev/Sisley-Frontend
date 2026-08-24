@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useFavorites } from '@/app/contexts/FavoritesContext';
+import { useQuickView } from '@/app/contexts/QuickViewContext';
 import { Heart, Eye } from 'lucide-react';
 
 const FALLBACK_IMAGES = [
@@ -34,6 +35,7 @@ function getProductImageAlt(product) {
 export default function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { openQuickView } = useQuickView();
   const imageSrc = getProductImage(product);
   const imageAlt = getProductImageAlt(product);
   const secondImage = product.images?.[1]?.url || imageSrc;
@@ -43,6 +45,12 @@ export default function ProductCard({ product }) {
     e.preventDefault();
     e.stopPropagation();
     toggleFavorite(product);
+  };
+
+  const handleQuickView = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    openQuickView(product);
   };
 
   return (
@@ -79,16 +87,18 @@ export default function ProductCard({ product }) {
           <Heart className="w-4 h-4" fill={favorite ? 'currentColor' : 'none'} strokeWidth={1.5} />
         </button>
 
-        <div
-          className={`absolute inset-0 bg-black/20 flex items-center justify-center transition-all duration-500 ${
+        <button
+          onClick={handleQuickView}
+          className={`absolute inset-0 bg-black/10 flex items-center justify-center transition-all duration-500 z-10 ${
             isHovered ? 'opacity-100' : 'opacity-0'
           }`}
+          aria-label="Vista rápida"
         >
-          <span className="text-white text-[11px] uppercase tracking-widest flex items-center gap-2">
+          <span className="text-white text-[11px] uppercase tracking-widest flex items-center gap-2 bg-black/40 px-4 py-2 backdrop-blur-sm">
             <Eye className="w-4 h-4" />
-            Ver producto
+            Vista rápida
           </span>
-        </div>
+        </button>
 
         <div className="absolute bottom-3 left-3 text-[10px] uppercase tracking-[0.2em] text-white/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           {String(product.id).padStart(2, '0')}
@@ -116,3 +126,4 @@ export default function ProductCard({ product }) {
     </Link>
   );
 }
+

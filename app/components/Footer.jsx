@@ -154,7 +154,7 @@ export default function Footer() {
         <Reveal delay={100} className="max-w-[1600px] mx-auto px-6 lg:px-10 py-16 md:py-24 text-center">
           <p className="text-meta uppercase tracking-[0.3em] text-white/40 mb-4">Newsletter</p>
           <h2 className="font-serif display-sm md:display-md text-white tracking-tighter leading-[0.95] mb-4">
-            Stay in the know
+            Mantente informado
           </h2>
           <p className="text-sm text-white/50 max-w-md mx-auto mb-8">
             Recibe novedades de la colección, lanzamientos y acceso anticipado a eventos Sisley.
@@ -193,15 +193,15 @@ export default function Footer() {
               Moda premium colombiana. Elegancia contemporánea y estilo atemporal.
             </p>
             <div className="flex items-center gap-5 mt-6">
-              <a href="/" aria-label="Instagram" className="group relative text-white/40 hover:text-white transition-colors duration-200">
+              <a href="#" aria-label="Instagram" onClick={(e) => e.preventDefault()} className="group relative text-white/40 hover:text-white transition-colors duration-200">
                 <span className="text-xs uppercase tracking-widest">Ig</span>
                 <span className="pointer-events-none absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-white transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
               </a>
-              <a href="/" aria-label="Facebook" className="group relative text-white/40 hover:text-white transition-colors duration-200">
+              <a href="#" aria-label="Facebook" onClick={(e) => e.preventDefault()} className="group relative text-white/40 hover:text-white transition-colors duration-200">
                 <span className="text-xs uppercase tracking-widest">Fb</span>
                 <span className="pointer-events-none absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-white transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
               </a>
-              <a href="/" aria-label="Twitter" className="group relative text-white/40 hover:text-white transition-colors duration-200">
+              <a href="#" aria-label="Twitter" onClick={(e) => e.preventDefault()} className="group relative text-white/40 hover:text-white transition-colors duration-200">
                 <span className="text-xs uppercase tracking-widest">X</span>
                 <span className="pointer-events-none absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-white transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
               </a>

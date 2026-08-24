@@ -50,10 +50,13 @@ export default function ScrollReveal({
     'line-reveal': 'line-reveal',
   };
 
+  const delayStyle = delay ? { transitionDelay: `${delay}ms` } : {};
+
   return (
     <div
       ref={ref}
-      className={`${animationClasses[animation] || 'reveal'} ${isVisible ? 'visible' : ''} ${delay ? `reveal-delay-${delay}` : ''} ${className}`}
+      className={`${animationClasses[animation] || 'reveal'} ${isVisible ? 'visible' : ''} ${className}`}
+      style={delayStyle}
       {...props}
     >
       {children}

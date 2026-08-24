@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google'
 import { Playfair_Display } from 'next/font/google'
 import Providers from './providers'
 import './globals.css'
+import QuickViewModalRenderer from './components/QuickViewModalRenderer'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -41,6 +42,7 @@ export default function RootLayout({ children }) {
       <body className={`${inter.variable} font-sans antialiased text-sisley-text bg-sisley-white`}>
         <Providers>
           {children}
+          <QuickViewModalRenderer />
         </Providers>
       </body>
     </html>

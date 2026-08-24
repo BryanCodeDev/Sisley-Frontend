@@ -28,11 +28,18 @@ const SORT_OPTIONS = [
 function FilterDrawer({ open, onClose, categories, categoryFilter, setCategoryFilter, priceRange, setPriceRange }) {
   const [localCategory, setLocalCategory] = useState(categoryFilter);
   const [localPrice, setLocalPrice] = useState(priceRange);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setLocalCategory(categoryFilter);
-    setLocalPrice(priceRange);
-  }, [categoryFilter, priceRange]);
+    if (open) {
+      setLocalCategory(categoryFilter);
+      setLocalPrice(priceRange);
+      const raf = requestAnimationFrame(() => setVisible(true));
+      return () => cancelAnimationFrame(raf);
+    }
+    setVisible(false);
+    return undefined;
+  }, [open, categoryFilter, priceRange]);
 
   const apply = () => {
     setCategoryFilter(localCategory);
@@ -52,8 +59,17 @@ function FilterDrawer({ open, onClose, categories, categoryFilter, setCategoryFi
     <>
       {open && (
         <div className="fixed inset-0 z-[60] md:hidden">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-          <div className="absolute inset-y-0 right-0 w-full max-w-sm bg-sisley-white shadow-2xl flex flex-col">
+          <div
+            className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ease-out motion-reduce:transition-none ${
+              visible ? 'opacity-100' : 'opacity-0'
+            }`}
+            onClick={onClose}
+          />
+          <div
+            className={`absolute inset-y-0 right-0 w-full max-w-sm bg-sisley-white shadow-2xl flex flex-col transition-all duration-500 ease-out motion-reduce:transition-none ${
+              visible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+            }`}
+          >
             <div className="flex items-center justify-between p-6 border-b border-sisley-border">
               <span className="text-meta uppercase tracking-[0.25em] text-sisley-muted">Filtros</span>
               <button
@@ -207,12 +223,22 @@ export default function CatalogoContent({ searchParams }) {
     window.location.href = '/catalogo';
   };
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
+  const handleToggleFilters = () => {
+    if (isMobile) {
+      setMobileFiltersOpen(true);
+    } else {
+      setShowFilters((prev) => !prev);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-sisley-white">
       <div className="max-w-[1600px] mx-auto px-6 lg:px-10 pt-12 md:pt-16">
         <div className="mb-10 md:mb-14">
           <EditorialLabel number="01" label="Tienda" />
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="flex flex-col md:items-end justify-between gap-6">
             <div>
               <h1 className="font-serif display-sm md:display-md text-sisley-text tracking-tighter leading-[0.95]">
                 {selectedCategory ? selectedCategory.name : searchQuery ? `"${searchQuery}"` : 'Todos los productos'}
@@ -228,7 +254,7 @@ export default function CatalogoContent({ searchParams }) {
             </div>
             <div className="flex items-center gap-3">
               <button
-                onClick={() => setShowFilters(!showFilters)}
+                onClick={handleToggleFilters}
                 className={`flex items-center gap-2 text-xs uppercase tracking-widest transition-colors ${
                   showFilters ? 'text-sisley-black' : 'text-sisley-text-secondary hover:text-sisley-black'
                 }`}

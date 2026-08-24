@@ -8,12 +8,14 @@ import { ChevronRight } from 'lucide-react';
 const MAX_PARALLAX_SHIFT_PX = 40;
 const PARALLAX_FACTOR = 0.08;
 const SCROLLED_THRESHOLD_PX = 40;
+const MAX_FRAME_SHIFT_PX = 8;
 
 export default function HeroSection() {
   const [loaded, setLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [parallax, setParallax] = useState(0);
   const imageWrapRef = useRef(null);
+  const lastShiftRef = useRef(0);
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 100);
@@ -29,8 +31,15 @@ export default function HeroSection() {
       if (ticking) return;
       ticking = true;
       window.requestAnimationFrame(() => {
+        const raw = Math.min(window.scrollY * PARALLAX_FACTOR, MAX_PARALLAX_SHIFT_PX);
+        const delta = raw - lastShiftRef.current;
+        if (Math.abs(delta) > MAX_FRAME_SHIFT_PX) {
+          setParallax(lastShiftRef.current + Math.sign(delta) * MAX_FRAME_SHIFT_PX);
+        } else {
+          setParallax(raw);
+        }
+        lastShiftRef.current = raw;
         setScrolled(window.scrollY > SCROLLED_THRESHOLD_PX);
-        setParallax(Math.min(window.scrollY * PARALLAX_FACTOR, MAX_PARALLAX_SHIFT_PX));
         ticking = false;
       });
     }

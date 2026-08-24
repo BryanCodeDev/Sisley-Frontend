@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { X, Plus, Minus, Trash2, ShoppingBag, ChevronRight } from 'lucide-react';
 import { getCart, updateCartItem, removeCartItem } from '@/app/services/cart';
 import { useCustomerAuth } from '@/app/contexts/CustomerAuthContext';
@@ -24,6 +25,7 @@ function getCartImage(index) {
 }
 
 export default function CartDrawer({ open, onClose }) {
+  const router = useRouter();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState({});
@@ -49,6 +51,14 @@ export default function CartDrawer({ open, onClose }) {
     }
     setVisible(false);
     return undefined;
+  }, [open, loadCart]);
+
+  useEffect(() => {
+    function handleCartUpdate() {
+      if (open) loadCart();
+    }
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    return () => window.removeEventListener('cartUpdated', handleCartUpdate);
   }, [open, loadCart]);
 
   useEffect(() => {
@@ -227,14 +237,12 @@ export default function CartDrawer({ open, onClose }) {
                     <span className="text-lg font-light text-sisley-text">${total.toLocaleString('es-CO')}</span>
                   </div>
                 </div>
-                <Link href="/carrito" onClick={onClose}>
-                  <Button size="lg" className="w-full">
-                    <span className="inline-flex items-center justify-center gap-2">
-                      Ver carrito
-                      <ChevronRight className="w-4 h-4" strokeWidth={1.5} />
-                    </span>
-                  </Button>
-                </Link>
+                <Button size="lg" onClick={() => { onClose(); router.push('/carrito'); }} className="w-full">
+                  <span className="inline-flex items-center justify-center gap-2">
+                    Ver carrito
+                    <ChevronRight className="w-4 h-4" strokeWidth={1.5} />
+                  </span>
+                </Button>
                 <p className="text-xs text-sisley-muted text-center">
                   Envío gratis en compras superiores a $500.000
                 </p>
