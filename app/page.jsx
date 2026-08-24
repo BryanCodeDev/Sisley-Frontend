@@ -267,7 +267,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section aria-labelledby="editorial-heading" className="py-10 md:py-14 bg-sisley-white">
+        <section aria-labelledby="editorial-heading" className="py-8 md:py-10 bg-sisley-white">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
               <ScrollReveal animation="reveal-scale" className="relative overflow-hidden aspect-[4/5] w-full order-2 lg:order-1">
