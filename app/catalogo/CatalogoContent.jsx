@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import ProductCard from '@/app/components/ProductCard';
 import Button from '@/app/components/Button';
 import EditorialLabel from '@/app/components/EditorialLabel';
@@ -141,9 +142,10 @@ function FilterDrawer({ open, onClose, categories, categoryFilter, setCategoryFi
 }
 
 export default function CatalogoContent({ searchParams }) {
-  const categoryFilter = searchParams?.categoria || '';
-  const searchQuery = searchParams?.search || '';
-  const collectionFilter = searchParams?.coleccion || '';
+  const router = useRouter();
+  const [categoryFilter, setCategoryFilter] = useState(searchParams?.categoria || '');
+  const [searchQuery, setSearchQuery] = useState(searchParams?.search || '');
+  const [collectionFilter, setCollectionFilter] = useState(searchParams?.coleccion || '');
   const [sort, setSort] = useState('destacados');
   const [priceRange, setPriceRange] = useState('todos');
   const [products, setProducts] = useState([]);
@@ -153,6 +155,12 @@ export default function CatalogoContent({ searchParams }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [gridKey, setGridKey] = useState(0);
+
+  useEffect(() => {
+    setCategoryFilter(searchParams?.categoria || '');
+    setSearchQuery(searchParams?.search || '');
+    setCollectionFilter(searchParams?.coleccion || '');
+  }, [searchParams?.categoria, searchParams?.search, searchParams?.coleccion]);
 
   useEffect(() => {
     async function load() {
@@ -176,52 +184,71 @@ export default function CatalogoContent({ searchParams }) {
 
   useEffect(() => {
     setGridKey((k) => k + 1);
-  }, [categoryFilter, priceRange, sort, searchQuery]);
+  }, [categoryFilter, priceRange, sort, searchQuery, collectionFilter]);
 
-  let filtered = [...products];
+  const updateCategory = (value) => {
+    setCategoryFilter(value);
+    const params = new URLSearchParams(window.location.search);
+    if (value) {
+      params.set('categoria', value);
+    } else {
+      params.delete('categoria');
+    }
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+  };
 
-  if (categoryFilter) {
-    filtered = filtered.filter((p) => p.categorySlug === categoryFilter || String(p.categoryId) === categoryFilter);
-  }
+  const updatePrice = (value) => {
+    setPriceRange(value);
+  };
 
-  if (collectionFilter) {
-    filtered = filtered.filter((p) => p.collection === collectionFilter || p.tags?.includes(collectionFilter));
-  }
-
-  if (searchQuery) {
-    const q = searchQuery.toLowerCase();
-    filtered = filtered.filter((p) =>
-      p.name?.toLowerCase().includes(q) ||
-      p.categoryName?.toLowerCase().includes(q)
-    );
-  }
-
-  if (priceRange === 'bajo') {
-    filtered = filtered.filter((p) => Number(p.price) < 200000);
-  } else if (priceRange === 'medio') {
-    filtered = filtered.filter((p) => Number(p.price) >= 200000 && Number(p.price) < 400000);
-  } else if (priceRange === 'alto') {
-    filtered = filtered.filter((p) => Number(p.price) >= 400000);
-  }
-
-  if (sort === 'precio-asc') {
-    filtered.sort((a, b) => Number(a.price) - Number(b.price));
-  } else if (sort === 'precio-desc') {
-    filtered.sort((a, b) => Number(b.price) - Number(a.price));
-  } else if (sort === 'nombre') {
-    filtered.sort((a, b) => a.name.localeCompare(b.name));
-  } else {
-    filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-  }
-
-  const selectedCategory = categoryFilter ? categories.find((c) => c.slug === categoryFilter || String(c.id) === categoryFilter) : null;
-  const hasActiveFilters = categoryFilter || priceRange !== 'todos' || searchQuery || collectionFilter;
+  const updateSearch = (value) => {
+    setSearchQuery(value);
+  };
 
   const clearFilters = () => {
     setPriceRange('todos');
     setCategoryFilter('');
-    window.location.href = '/catalogo';
+    setSearchQuery('');
+    setCollectionFilter('');
+    router.push('/catalogo');
   };
+
+  const filtered = useMemo(() => {
+    let result = [...products];
+    if (categoryFilter) {
+      result = result.filter((p) => p.categorySlug === categoryFilter || String(p.categoryId) === categoryFilter);
+    }
+    if (collectionFilter) {
+      result = result.filter((p) => p.collection === collectionFilter || p.tags?.includes(collectionFilter));
+    }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter((p) =>
+        p.name?.toLowerCase().includes(q) ||
+        p.categoryName?.toLowerCase().includes(q)
+      );
+    }
+    if (priceRange === 'bajo') {
+      result = result.filter((p) => Number(p.price) < 200000);
+    } else if (priceRange === 'medio') {
+      result = result.filter((p) => Number(p.price) >= 200000 && Number(p.price) < 400000);
+    } else if (priceRange === 'alto') {
+      result = result.filter((p) => Number(p.price) >= 400000);
+    }
+    if (sort === 'precio-asc') {
+      result.sort((a, b) => Number(a.price) - Number(b.price));
+    } else if (sort === 'precio-desc') {
+      result.sort((a, b) => Number(b.price) - Number(a.price));
+    } else if (sort === 'nombre') {
+      result.sort((a, b) => a.name.localeCompare(b.name));
+    } else {
+      result.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+    }
+    return result;
+  }, [products, categoryFilter, collectionFilter, searchQuery, priceRange, sort]);
+
+  const selectedCategory = categoryFilter ? categories.find((c) => c.slug === categoryFilter || String(c.id) === categoryFilter) : null;
+  const hasActiveFilters = categoryFilter || priceRange !== 'todos' || searchQuery || collectionFilter;
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
@@ -299,7 +326,7 @@ export default function CatalogoContent({ searchParams }) {
             {categoryFilter && selectedCategory && (
               <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-sisley-smoke text-xs text-sisley-text">
                 {selectedCategory.name}
-                <button onClick={() => { setCategoryFilter(''); window.location.href = '/catalogo'; }} className="hover:text-sisley-black">
+                <button onClick={() => { setCategoryFilter(''); router.push('/catalogo'); }} className="hover:text-sisley-black">
                   <X className="w-3 h-3" strokeWidth={1.5} />
                 </button>
               </span>
@@ -315,7 +342,7 @@ export default function CatalogoContent({ searchParams }) {
             {searchQuery && (
               <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-sisley-smoke text-xs text-sisley-text">
                 &quot;{searchQuery}&quot;
-                <button onClick={() => window.location.href = '/catalogo'} className="hover:text-sisley-black">
+                <button onClick={() => { setSearchQuery(''); router.push('/catalogo'); }} className="hover:text-sisley-black">
                   <X className="w-3 h-3" strokeWidth={1.5} />
                 </button>
               </span>

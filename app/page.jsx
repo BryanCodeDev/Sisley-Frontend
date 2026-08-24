@@ -92,13 +92,6 @@ async function CategoriesSection() {
                   className="w-full h-full"
                   fallbackLetter={category.name.charAt(0)}
                 />
-                <ImageReveal
-                  src={category.imageUrl || category.image || null}
-                  alt={category.name}
-                  aspectRatio=""
-                  className="w-full h-full"
-                  fallbackLetter={category.name.charAt(0)}
-                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute inset-0 flex flex-col justify-end p-5 md:p-6 lg:p-8">
                   <p className="text-meta uppercase tracking-[0.25em] text-white/60 mb-2">
@@ -148,17 +141,12 @@ function AsymmetricProductGrid({ products, emptyMessage }) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-6">
-      {products.map((product, index) => {
-        const isHero = index === 0;
-        return (
-          <ScrollReveal key={product.id} delay={80 * (index + 1)} animation="reveal-up">
-            <div className={`${isHero ? 'lg:col-span-7 lg:row-span-2' : 'lg:col-span-5'}`}>
-              <ProductCard product={product} />
-            </div>
-          </ScrollReveal>
-        );
-      })}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      {products.map((product, index) => (
+        <ScrollReveal key={product.id} delay={80 * (index + 1)} animation="reveal-up">
+          <ProductCard product={product} />
+        </ScrollReveal>
+      ))}
     </div>
   );
 }
@@ -185,9 +173,9 @@ async function NewArrivalsSection() {
 
 function GridSkeleton({ count = 4 }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-6" aria-hidden="true">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6" aria-hidden="true">
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className={`${i === 0 ? 'lg:col-span-7 aspect-[4/5]' : 'lg:col-span-5 aspect-[3/4]'} w-full bg-sisley-smoke animate-pulse`} />
+        <div key={i} className="aspect-[3/4] w-full bg-sisley-smoke animate-pulse" />
       ))}
     </div>
   );
