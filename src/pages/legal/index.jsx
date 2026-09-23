@@ -5,7 +5,7 @@ const legalPages = {
   'politica-privacidad': {
     title: 'Política de Privacidad',
     sections: [
-      { h2: '1. Responsable del tratamiento', content: 'Sisley (en adelante, "nosotros"), tienda virtual con presencia en Bogotá, Mosquera, Funza, Ibagué y Madrid, Colombia, es responsable del tratamiento de tus datos personales.' },
+      { h2: '1. Responsable del tratamiento', content: 'Sisley (en adelante, "nosotros"), marca de ropa y moda contemporánea con oficinas en Bogotá (Calle 129 A # 54 - 75) y tiendas físicas en Bogotá, Ipiales, Pasto y Tunja, Colombia, es responsable del tratamiento de tus datos personales.' },
       { h2: '2. Datos que recopilamos', content: 'Recopilamos: datos de identificación (nombre, apellido, email, teléfono), datos de facturación y envío, historial de compras, datos de navegación (cookies), y comunicaciones con soporte.' },
       { h2: '3. Finalidad y base legal', content: 'Tratamos tus datos para: gestionar pedidos y pagos (contractual), enviar comunicaciones comerciales (consentimiento), mejorar nuestra web (interés legítimo), y cumplir obligaciones legales.' },
       { h2: '4. Compartición de datos', content: 'Compartimos datos con: procesadores de pago (Mercado Pago), empresas de logística, proveedores de servicios cloud, y autoridades cuando lo requiera la ley.' },

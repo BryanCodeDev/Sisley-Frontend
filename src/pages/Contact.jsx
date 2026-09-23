@@ -7,27 +7,26 @@ import toast from 'react-hot-toast'
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER
 
 const contactInfo = [
-  { icon: Phone, title: 'Atención 24/7', value: '+57 320 9088777', desc: 'WhatsApp y llamadas las 24 horas' },
+  { icon: Phone, title: 'Atención corporativa', value: '+57 (1) 613 1808', desc: 'Lunes a viernes 9am - 6pm' },
   { icon: Mail, title: 'Email', value: 'hola@sisley.com', desc: 'Respuesta en menos de 2 horas' },
-  { icon: MapPin, title: 'Zonas de Atención', value: 'Bogotá, Mosquera, Funza, Ibagué, Madrid', desc: 'Envíos a todo Colombia' },
+  { icon: MapPin, title: 'Zonas de Atención', value: 'Bogotá, Ipiales, Pasto, Tunja', desc: 'Envíos a todo Colombia' },
 ]
 
 const serviceZones = [
-  { zone: 'Bogotá', icon: MapPin, desc: 'Atención inmediata y envíos en 24-48 horas. Zona central con cobertura total.' },
-  { zone: 'Mosquera', icon: MapPin, desc: 'Zona metropolitana. Entregas rápidas y asesoramiento 24/7 por WhatsApp.' },
-  { zone: 'Funza', icon: MapPin, desc: 'Atención presencial con cita previa. Envíos a todo el país.' },
-  { zone: 'Ibagué', icon: MapPin, desc: 'Cobertura propia y envíos seguros. Asesoramiento personalizado.' },
-  { zone: 'Madrid', icon: MapPin, desc: 'Zona metropolitana. Entregas en 24-48 horas y atención 24/7.' },
+  { zone: 'Bogotá', icon: MapPin, desc: 'Local principal y oficinas corporativas. Atención inmediata y envíos en 24-48 horas.' },
+  { zone: 'Ipiales', icon: MapPin, desc: 'Presencia en el sur del país. Asesoramiento personalizado.' },
+  { zone: 'Pasto', icon: MapPin, desc: 'Tienda en la capital nariñense. Envíos a todo el país.' },
+  { zone: 'Tunja', icon: MapPin, desc: 'Local en el corazón boyacense. Atención y envíos.' },
   { zone: 'Envíos Nacionales', icon: Send, desc: 'Llegamos a cualquier ciudad de Colombia. Envío gratis en compras superiores a $100.000.' },
 ]
 
 const faqs = [
-  { q: '¿Hacen envíos a todo el país?', a: 'Sí, enviamos a todo Colombia. El envío es gratis en compras superiores a $100.000. Los tiempos de entrega varían según la localidad: 24-48hs en Bogotá/Área Metropolitana, 3-5 días en el interior.' },
+{ q: '¿Hacen envíos a todo el país?', a: 'Sí, enviamos a todo Colombia. El envío es gratis en compras superiores a $100.000. Los tiempos de entrega varían según la localidad: 24-48hs en Bogotá, 3-5 días en el interior.' },
   { q: '¿Cuál es la política de devoluciones?', a: 'Tienes 30 días para devolver o cambiar cualquier producto. Debe estar en su estado original, con embalaje y accesorios completos. Los costos de envío de devolución corren por nuestra cuenta si el producto tiene falla de fábrica.' },
-  { q: '¿Los productos tienen garantía oficial?', a: 'Sí, todos nuestros productos cuentan con garantía oficial del fabricante (generalmente 12 meses). Nosotros gestionamos el trámite directamente con el service oficial.' },
+  { q: '¿Los productos tienen garantía oficial?', a: 'Sí, todos nuestros productos cuentan con garantía oficial del fabricante (generalmente 12 meses). Nosotros gestionamos el trámite directamente con el service official.' },
   { q: '¿Puedo pagar en cuotas?', a: 'Sí, a través de Mercado Pago puedes pagar en hasta 12 cuotas sin interés con tarjetas seleccionadas, o en cuotas con interés según la tarjeta.' },
-  { q: '¿Atendemos 24/7?', a: 'Sí, nuestro equipo de atención al cliente está disponible las 24 horas todos los días a través de WhatsApp al +57 320 9088777. Puedes contactarnos en cualquier momento, incluso fines de semana y festivos.' },
-  { q: '¿Tienen showroom físico?', a: 'Somos una tienda virtual con cobertura en Bogotá, Mosquera, Funza, Ibagué y Madrid. Atendemos y enviamos a todo el territorio nacional colombiano. Puedes coordinar una visita previa por WhatsApp para conocernos y ver los productos en exhibición.' },
+  { q: '¿Atendemos en horario corporativo?', a: 'Nuestro equipo de atención atiende de lunes a viernes de 9am a 6pm por el teléfono +57 (1) 613 1808. Para consultas fuera de horario, escríbenos por email o WhatsApp y te responderemos al siguiente día hábil.' },
+  { q: '¿Tienen tiendas físicas?', a: 'Sí, tenemos locales físicos en Bogotá, Ipiales, Pasto y Tunja. Puedes visitarlos para ver los productos en exhibición y recibir asesoramiento personalizado. Encuentra la dirección de tu tienda más cercana en la sección "Nuestras Tiendas".' },
   { q: '¿Cómo funciona la compra por WhatsApp?', a: 'Al hacer clic en "Comprar por WhatsApp" en cualquier producto, se abre una conversación con nuestro equipo con el mensaje pre-cargado. Te asesoramos, confirmas stock y coordinas pago/envío.' },
 ]
 
@@ -64,8 +63,8 @@ export default function Contact() {
   return (
     <>
       <SEO
-        title="Contacto 24/7 | Sisley - Bogotá, Mosquera, Funza, Ibagué, Madrid"
-        description="Sisley atiende 24/7 por WhatsApp al +57 320 9088777. Tienda virtual en Bogotá, Mosquera, Funza, Ibagué y Madrid. Envíos a todo Colombia. Email, WhatsApp y asesoramiento personalizado."
+        title="Contacto | Sisley Colombia"
+        description="Contáctanos en Sisley Colombia. Oficinas en Bogotá (Calle 129 A # 54 - 75). Teléfono +57 (1) 613 1808. Tiendas físicas en Bogotá, Ipiales, Pasto y Tunja. Email hola@sisley.com."
       />
 
       <div className="min-h-screen bg-white pt-20">
@@ -129,13 +128,11 @@ export default function Contact() {
               className="mt-12 text-center"
             >
               <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola, me gustaría recibir asesoramiento personalizado.')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 btn-whatsapp px-8 py-4 text-lg"
+                href="mailto:hola@sisley.com"
+                className="inline-flex items-center gap-3 btn-primary px-8 py-4 text-lg"
               >
-                <MessageSquare className="w-6 h-6" />
-                <span>Escribirnos por WhatsApp 24/7</span>
+                <Mail className="w-6 h-6" />
+                <span>Envíanos un email</span>
               </a>
             </motion.div>
           </div>
@@ -150,8 +147,8 @@ export default function Contact() {
               transition={{ duration: 0.6 }}
               className="text-center mb-16"
             >
-              <h2 id="zones-title" className="section-title mx-auto mb-4">ZONAS DE ATENCIÓN Y ENVÍO</h2>
-              <p className="text-primary-900 max-w-2xl mx-auto">Atendemos las 24 horas en Bogotá, Mosquera, Funza, Ibagué y Madrid. Envíos a todo Colombia.</p>
+<h2 id="zones-title" className="section-title mx-auto mb-4">ZONAS DE ATENCIÓN Y ENVÍO</h2>
+            <p className="text-primary-900 max-w-2xl mx-auto">Atendemos en Bogotá, Ipiales, Pasto y Tunja. Envíos a todo Colombia.</p>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -184,7 +181,7 @@ export default function Contact() {
                 transition={{ duration: 0.6 }}
               >
                 <h2 id="form-title" className="section-title mb-6">ENVIANOS UN MENSAJE</h2>
-                <p className="text-primary-900 mb-8">Completa el formulario y te responderemos en menos de 2 horas. También puedes contactarnos por WhatsApp las 24 horas al +57 320 9088777.</p>
+                <p className="text-primary-900 mb-8">Completa el formulario y te responderemos en menos de 2 horas. También puedes contactarnos por teléfono al +57 (1) 613 1808 de lunes a viernes de 9am a 6pm.</p>
 
                 {submitted ? (
                   <motion.div
@@ -243,7 +240,7 @@ export default function Contact() {
                           value={formData.phone}
                           onChange={handleChange}
                           className="input"
-                          placeholder="+57 320 9088777"
+                          placeholder="+57 (1) 613 1808"
                         />
                       </div>
                       <div>

@@ -59,8 +59,8 @@ const trustItems = [
 ]
 
 const contactInfo = [
-  { icon: MapPin, text: 'Tienda Virtual - Bogotá, Mosquera, Funza, Ibagué y Madrid, Colombia' },
-  { icon: Phone, text: '+57 320 9088777' },
+  { icon: MapPin, text: 'Bogotá (Calle 129 A # 54 - 75), Ipiales, Pasto, Tunja, Colombia' },
+  { icon: Phone, text: '+57 (1) 613 1808' },
   { icon: Mail, text: 'hola@sisley.com' },
 ]
 
@@ -81,7 +81,7 @@ export default function Footer() {
               <span className="font-display font-bold text-2xl text-white">Sisley</span>
             </Link>
             <p className="text-primary-300 text-base leading-relaxed mb-6 max-w-xs">
-              Moda y accesorios premium seleccionados para quienes buscan calidad, estilo y elegancia.
+              Sisley Colombia: marca de moda contemporánea gestionada por Trend Fashion Group. Colecciones Lifestyle para Hombre y Mujer.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social, index) => (

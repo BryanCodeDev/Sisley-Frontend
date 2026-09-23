@@ -271,7 +271,7 @@ export default function Account() {
                         value={formData.phone}
                         onChange={(e) => setFormData({...formData, phone: e.target.value})}
                         className="input"
-                        placeholder="+57 320 9088777"
+                        placeholder="+57 (1) 613 1808"
                       />
                     </div>
                     <div>
