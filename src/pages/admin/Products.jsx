@@ -117,8 +117,8 @@ export default function AdminProducts() {
   return (
     <>
       <SEO
-        title="Productos | TechStore Admin"
-        description="Gestiona el catálogo de productos de TechStore."
+        title="Productos | Sisley Admin"
+        description="Gestiona el catálogo de productos de Sisley."
         noindex
       />
 

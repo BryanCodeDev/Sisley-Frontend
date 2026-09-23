@@ -135,8 +135,8 @@ export default function AdminCategories() {
   return (
     <>
       <SEO
-        title="Categorías | TechStore Admin"
-        description="Gestiona las categorías del catálogo de TechStore."
+        title="Categorías | Sisley Admin"
+        description="Gestiona las categorías del catálogo de Sisley."
         noindex
       />
 

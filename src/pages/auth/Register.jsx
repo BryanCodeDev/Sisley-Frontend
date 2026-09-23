@@ -63,8 +63,8 @@ export default function Register() {
   return (
     <>
       <SEO
-        title="Crear cuenta | TechStore"
-        description="Crea tu cuenta en TechStore para gestionar pedidos, direcciones y preferencias."
+        title="Crear cuenta | Sisley"
+        description="Crea tu cuenta en Sisley para gestionar pedidos, direcciones y preferencias."
         noindex
       />
 
@@ -86,7 +86,7 @@ export default function Register() {
                 <UserPlus className="w-7 h-7 text-white" />
               </div>
               <h1 className="font-display font-bold text-2xl sm:text-3xl text-primary-900 mb-2">Crea tu cuenta</h1>
-              <p className="text-primary-900">Únete a TechStore y empieza a disfrutar</p>
+              <p className="text-primary-900">Únete a Sisley y empieza a disfrutar</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>

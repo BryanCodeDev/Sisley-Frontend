@@ -75,8 +75,8 @@ export default function AdminUsers() {
   return (
     <>
       <SEO
-        title="Usuarios | TechStore Admin"
-        description="Gestiona los usuarios de TechStore."
+        title="Usuarios | Sisley Admin"
+        description="Gestiona los usuarios de Sisley."
         noindex
       />
 

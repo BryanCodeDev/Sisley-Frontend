@@ -5,11 +5,11 @@ const legalPages = {
   'politica-privacidad': {
     title: 'Política de Privacidad',
     sections: [
-      { h2: '1. Responsable del tratamiento', content: 'TechStore (en adelante, "nosotros"), tienda virtual con presencia en Bogotá, Mosquera, Funza, Ibagué y Madrid, Colombia, es responsable del tratamiento de tus datos personales.' },
+      { h2: '1. Responsable del tratamiento', content: 'Sisley (en adelante, "nosotros"), tienda virtual con presencia en Bogotá, Mosquera, Funza, Ibagué y Madrid, Colombia, es responsable del tratamiento de tus datos personales.' },
       { h2: '2. Datos que recopilamos', content: 'Recopilamos: datos de identificación (nombre, apellido, email, teléfono), datos de facturación y envío, historial de compras, datos de navegación (cookies), y comunicaciones con soporte.' },
       { h2: '3. Finalidad y base legal', content: 'Tratamos tus datos para: gestionar pedidos y pagos (contractual), enviar comunicaciones comerciales (consentimiento), mejorar nuestra web (interés legítimo), y cumplir obligaciones legales.' },
       { h2: '4. Compartición de datos', content: 'Compartimos datos con: procesadores de pago (Mercado Pago), empresas de logística, proveedores de servicios cloud, y autoridades cuando lo requiera la ley.' },
-      { h2: '5. Derechos del usuario', content: 'Podés ejercer: acceso, rectificación, supresión, oposición, limitación, y portabilidad. Contactanos a hola@techstore.com con asunto "Derechos ARCO".' },
+      { h2: '5. Derechos del usuario', content: 'Podés ejercer: acceso, rectificación, supresión, oposición, limitación, y portabilidad. Contactanos a hola@sisley.com con asunto "Derechos ARCO".' },
       { h2: '6. Conservación', content: 'Conservamos datos mientras dure la relación contractual y los plazos legales posteriores (mínimo 10 años para facturación).' },
       { h2: '7. Seguridad', content: 'Implementamos medidas técnicas y organizativas: HTTPS, encriptación, acceso restringido, auditorías, y capacitación del personal.' },
       { h2: '8. Cookies', content: 'Usamos cookies técnicas (necesarias), analíticas (Google Analytics), y de marketing (Meta Pixel). Podés configurarlas en el banner de cookies.' },
@@ -28,7 +28,7 @@ const legalPages = {
       { h2: '6. Garantía', content: 'Todos los productos tienen garantía oficial del fabricante (12 meses típicamente). Gestionamos el trámite. Excluye daños por mal uso, golpes, humedad, o intervención de terceros.' },
       { h2: '7. Devoluciones', content: '30 días para cambio/devolución. Producto debe estar nuevo, con embalaje y accesorios. Costos de envío a nuestro cargo si hay falla de fábrica; a cargo del cliente por cambio de opinión.' },
       { h2: '8. Responsabilidad', content: 'No nos hacemos responsables por: daños indirectos, lucro cesante, fallas de conectividad, o uso indebido de productos. Responsabilidad máxima: monto del pedido.' },
-      { h2: '9. Propiedad intelectual', content: 'Contenido del sitio (textos, imágenes, código, diseño) es propiedad de TechStore o usado con licencia. Prohibida su reproducción sin autorización.' },
+      { h2: '9. Propiedad intelectual', content: 'Contenido del sitio (textos, imágenes, código, diseño) es propiedad de Sisley o usado con licencia. Prohibida su reproducción sin autorización.' },
       { h2: '10. Ley aplicable y jurisdicción', content: 'Ley Colombiana. Jurisdicción: tribunales ordinarios de Bogotá, Colombia.' },
     ]
   },
@@ -50,11 +50,11 @@ const legalPages = {
       { h2: 'Categorías de datos', content: 'Identificativos, contacto, transaccionales, navegación, preferencias, comunicaciones.' },
       { h2: 'Legitimación', content: 'Ejecución contractual, consentimiento, interés legítimo, obligación legal.' },
       { h2: 'Destinatarios', content: 'Procesadores de pago, logística, cloud, marketing, autoridades.' },
-      { h2: 'Derechos', content: 'Acceso, rectificación, supresión, oposición, limitación, portabilidad, no decisiones automatizadas. Ejercicio: hola@techstore.com' },
+      { h2: 'Derechos', content: 'Acceso, rectificación, supresión, oposición, limitación, portabilidad, no decisiones automatizadas. Ejercicio: hola@sisley.com' },
       { h2: 'Medidas de seguridad', content: 'Cifrado TLS 1.3, acceso por roles, logs de auditoría, backups encriptados, planes de contingencia.' },
       { h2: 'Conservación', content: 'Datos de clientes: 10 años post-relación (normativa fiscal). Marketing: hasta revocación. Navegación: 24 meses.' },
       { h2: 'Cookies', content: 'Técnicas (sesión, carrito), analíticas (GA4), publicidad (Meta). Configurable en banner.' },
-      { h2: 'Delegado de Protección de Datos', content: 'Contacto: dpo@techstore.com' },
+      { h2: 'Delegado de Protección de Datos', content: 'Contacto: dpo@sisley.com' },
     ]
   },
 }
@@ -66,8 +66,8 @@ export default function LegalPage({ pageKey }) {
   return (
     <>
       <SEO
-        title={`${pageTitle} | TechStore`}
-        description={`Lee nuestra ${pageTitle.toLowerCase()} de TechStore. Información transparente sobre tus derechos y nuestros compromisos.`}
+        title={`${pageTitle} | Sisley`}
+        description={`Lee nuestra ${pageTitle.toLowerCase()} de Sisley. Información transparente sobre tus derechos y nuestros compromisos.`}
         noindex
       />
 

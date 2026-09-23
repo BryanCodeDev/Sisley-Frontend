@@ -6,8 +6,8 @@ import { adminSettingsService } from '../../services/admin'
 import toast from 'react-hot-toast'
 
 const defaultSettings = {
-  site_name: 'TechStore',
-  site_url: 'https://techstore.com',
+  site_name: 'Sisley',
+  site_url: 'https://sisleyy.netlify.app',
   whatsapp_number: import.meta.env.VITE_WHATSAPP_NUMBER || '',
   free_shipping_threshold: 100000,
   default_currency: 'ARS',
@@ -94,8 +94,8 @@ export default function AdminSettings() {
   return (
     <>
       <SEO
-        title="Configuración | TechStore Admin"
-        description="Configura los parámetros principales de TechStore."
+        title="Configuración | Sisley Admin"
+        description="Configura los parámetros principales de Sisley."
         noindex
       />
 

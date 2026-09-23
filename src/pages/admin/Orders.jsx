@@ -106,8 +106,8 @@ export default function AdminOrders() {
   return (
     <>
       <SEO
-        title="Pedidos | TechStore Admin"
-        description="Gestiona los pedidos de TechStore."
+        title="Pedidos | Sisley Admin"
+        description="Gestiona los pedidos de Sisley."
         noindex
       />
 

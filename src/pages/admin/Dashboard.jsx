@@ -86,8 +86,8 @@ export default function AdminDashboard() {
   return (
     <>
       <SEO
-        title="Dashboard | TechStore Admin"
-        description="Panel de administración de TechStore."
+        title="Dashboard | Sisley Admin"
+        description="Panel de administración de Sisley."
         noindex
       />
 
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
           transition={{ duration: 0.5 }}
         >
           <h1 className="font-display font-bold text-2xl sm:text-3xl text-primary-900">Dashboard</h1>
-          <p className="text-primary-900 mt-2">Bienvenido al panel de administración de TechStore</p>
+          <p className="text-primary-900 mt-2">Bienvenido al panel de administración de Sisley</p>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">

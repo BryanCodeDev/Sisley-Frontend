@@ -149,8 +149,8 @@ export default function Store() {
   return (
     <>
       <SEO
-        title={searchQuery ? `Resultados para "${searchQuery}" | TechStore` : category ? `${categoryName} | TechStore` : onSale ? `Ofertas | TechStore` : 'Tienda - TechStore'}
-        description={searchQuery ? `Resultados de búsqueda para "${searchQuery}"` : onSale ? 'Todos los productos en oferta y descuento.' : 'Explora nuestro catálogo completo de productos tecnológicos premium. Filtrá por categoría, precio, marca y más.'}
+        title={searchQuery ? `Resultados para "${searchQuery}" | Sisley` : category ? `${categoryName} | Sisley` : onSale ? `Ofertas | Sisley` : 'Tienda - Sisley'}
+        description={searchQuery ? `Resultados de búsqueda para "${searchQuery}"` : onSale ? 'Todos los productos en oferta y descuento.' : 'Explora nuestro catálogo completo de productos de moda premium. Filtrá por categoría, precio, marca y más.'}
         type="website"
       />
 

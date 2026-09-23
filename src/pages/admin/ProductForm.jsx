@@ -233,8 +233,8 @@ export default function AdminProductForm() {
   return (
     <>
       <SEO
-        title={isEditing ? 'Editar producto | TechStore Admin' : 'Nuevo producto | TechStore Admin'}
-        description={isEditing ? 'Edita un producto del catálogo de TechStore.' : 'Crea un nuevo producto en TechStore.'}
+        title={isEditing ? 'Editar producto | Sisley Admin' : 'Nuevo producto | Sisley Admin'}
+        description={isEditing ? 'Edita un producto del catálogo de Sisley.' : 'Crea un nuevo producto en Sisley.'}
         noindex
       />
 
@@ -582,7 +582,7 @@ export default function AdminProductForm() {
                       onChange={handleChange}
                       className="input"
                       maxLength={200}
-                      placeholder={`${form.name || 'Nombre del producto'} | TechStore`}
+                      placeholder={`${form.name || 'Nombre del producto'} | Sisley`}
                     />
                     <p className="text-primary-900 text-xs mt-1">Recomendado: menos de 60 caracteres</p>
                   </div>

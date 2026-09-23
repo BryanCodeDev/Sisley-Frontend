@@ -61,8 +61,8 @@ export default function Search() {
   return (
     <>
       <SEO
-        title={`Búsqueda: "${query}" | TechStore`}
-        description={query ? `Resultados de búsqueda para "${query}"` : 'Busca productos en TechStore'}
+        title={`Búsqueda: "${query}" | Sisley`}
+        description={query ? `Resultados de búsqueda para "${query}"` : 'Busca productos en Sisley'}
         noindex
       />
 

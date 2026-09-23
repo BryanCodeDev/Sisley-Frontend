@@ -144,14 +144,14 @@ export default function ProductDetail() {
     description: product.description,
     sku: product.sku,
     brand: { '@type': 'Brand', name: product.brand },
-    image: images.map(img => img.startsWith('http') ? img : `https://techstore.com${img}`),
+    image: images.map(img => img.startsWith('http') ? img : `https://sisleyy.netlify.app${img}`),
     offers: {
       '@type': 'Offer',
       url: window.location.href,
       priceCurrency: 'ARS',
       price: product.price,
       availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-      seller: { '@type': 'Organization', name: 'TechStore' },
+      seller: { '@type': 'Organization', name: 'Sisley' },
     },
     ...(product.rating && {
       aggregateRating: {
@@ -165,7 +165,7 @@ export default function ProductDetail() {
   return (
     <>
       <SEO
-        title={`${product.name} | TechStore`}
+        title={`${product.name} | Sisley`}
         description={product.shortDescription || product.description?.slice(0, 160)}
         image={images[0]}
         url={`/producto/${product.slug}`}

@@ -109,7 +109,7 @@ export default function Navbar() {
       }`}>
         <nav className="container-custom" aria-label="Navegación principal">
           <div className="flex items-center justify-between h-16 lg:h-20">
-            <Link to="/" className="flex items-center gap-2 z-10" aria-label="TechStore - Inicio">
+            <Link to="/" className="flex items-center gap-2 z-10" aria-label="Sisley - Inicio">
               <motion.div
                 className="w-10 h-10 rounded-xl bg-charcoal-600 flex items-center justify-center"
                 initial={{ scale: 0, rotate: -180 }}
