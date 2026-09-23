@@ -20,7 +20,7 @@ export default function Newsletter() {
       await new Promise(resolve => setTimeout(resolve, 1000))
       setSubscribed(true)
       setEmail('')
-      toast.success('¡Gracias por suscribirte! Te enviaremos las mejores ofertas.')
+      toast.success('¡Gracias por suscribirte! Te enviaremos las nuevas tendencias.')
     } catch {
       toast.error('Error al suscribirse. Intenta nuevamente.')
     } finally {
@@ -47,7 +47,7 @@ export default function Newsletter() {
               >
                 <CheckCircle className="w-16 h-16 text-green-600" aria-hidden="true" />
                 <h2 id="newsletter-title" className="font-display font-bold text-3xl text-primary-900">¡Gracias por suscribirte!</h2>
-                <p className="text-primary-600">Pronto recibirás nuestras mejores ofertas y novedades.</p>
+                <p className="text-primary-600">Pronto recibirás nuestras nuevas colecciones y tendencias.</p>
                 <button
                   onClick={() => setSubscribed(false)}
                   className="btn-outline mt-4"
@@ -59,9 +59,9 @@ export default function Newsletter() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <h2 id="newsletter-title" className="font-display font-bold text-3xl sm:text-4xl text-primary-900 mb-3">
-                    No te pierdas nuestras ofertas
+                    Únete a la reinvención Sisley
                   </h2>
-                  <p className="text-primary-600">Suscríbete y recibe descuentos exclusivos, lanzamientos y más.</p>
+                  <p className="text-primary-600">Suscríbete y sé el primero en conocer nuevas colecciones, tendencias y ofertas exclusivas.</p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
                   <div className="relative flex-1">
@@ -74,8 +74,8 @@ export default function Newsletter() {
                       className="w-full pl-10 pr-4 py-3 sm:py-4 bg-white border border-dark-border rounded-xl text-primary-900 placeholder:text-charcoal-500 focus:outline-none focus:border-charcoal-400 focus:ring-1 focus:ring-charcoal-300/50"
                       required
                       autoComplete="email"
-                      aria-label="Correo electrónico"
                       disabled={loading}
+                      aria-label="Correo electrónico"
                     />
                   </div>
                   <button
@@ -93,7 +93,7 @@ export default function Newsletter() {
                     )}
                   </button>
                 </div>
-                <p className="text-primary-600 text-xs">Al suscribirte aceptas nuestra <a href="/politica-privacidad" className="underline hover:text-charcoal-600">Política de privacidad</a>. Sin spam, solo lo mejor.</p>
+                <p className="text-primary-600 text-xs">Al suscribirte aceptas nuestra <a href="/politica-privacidad" className="underline hover:text-charcoal-600">Política de privacidad</a>. Sin spam, solo moda.</p>
               </form>
             )}
           </div>

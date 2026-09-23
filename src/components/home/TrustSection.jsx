@@ -1,13 +1,13 @@
 import { motion } from 'framer-motion'
-import { Shield, Truck, RotateCcw, Headphones, Lock, Award } from 'lucide-react'
+import { Shield, Truck, RotateCcw, Store, Building2, Award } from 'lucide-react'
 
 const trustItems = [
-  { icon: Lock, title: 'Pago 100% Seguro', desc: 'Protección SSL y Mercado Pago certificado' },
-  { icon: Shield, title: 'Productos Verificados', desc: 'Calidad garantizada en cada artículo' },
-  { icon: Headphones, title: 'Soporte Experto', desc: 'Asesoramiento personalizado antes y después de tu compra' },
-  { icon: Truck, title: 'Envío Rápido', desc: 'A todo el país con seguimiento en tiempo real' },
-  { icon: RotateCcw, title: 'Devoluciones Fáciles', desc: '30 días para cambios sin complicaciones' },
-  { icon: Award, title: 'Garantía Oficial', desc: 'Todos los productos con garantía del fabricante' },
+  { icon: Shield, title: 'Moda Colombiana', desc: 'Marca 100% colombiana con diseño local y calidad internacional' },
+  { icon: Store, title: 'Tiendas Físicas', desc: 'Visítanos en Bogotá, Ipiales, Pasto y Tunja' },
+  { icon: Building2, title: 'Trend Fashion Group', desc: 'Respaldados por la empresa líder en moda colombiana' },
+  { icon: Truck, title: 'Envíos a Todo Colombia', desc: 'Llegamos a cada rincón del país con seguimiento' },
+  { icon: RotateCcw, title: 'Cambios y Devoluciones', desc: '30 días para cambios sin complicaciones' },
+  { icon: Award, title: 'Garantía de Calidad', desc: 'Prendas diseñadas para durar y acompañar tu estilo' },
 ]
 
 export default function TrustSection() {
@@ -21,8 +21,8 @@ export default function TrustSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 id="trust-title" className="section-title mx-auto mb-4">COMPRA CON CONFIANZA</h2>
-          <p className="text-primary-600 max-w-2xl mx-auto">Más de 10.000 clientes confían en nosotros</p>
+          <h2 id="trust-title" className="section-title mx-auto mb-4">POR QUÉ ELEGIR SISLEY</h2>
+          <p className="text-primary-600 max-w-2xl mx-auto">Moda contemporánea colombiana en proceso de reinvención constante</p>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" role="list">

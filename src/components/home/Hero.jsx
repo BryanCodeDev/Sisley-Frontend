@@ -6,6 +6,8 @@ const MotionLink = motion.create(Link)
 
 const heroImages = [
   '/assets/images/herosection.webp',
+  '/assets/images/Hero-Nueva-Colección.webp',
+  '/assets/images/Hero-alterno.webp',
 ]
 
 export default function Hero() {
@@ -47,7 +49,7 @@ export default function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-charcoal-500 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-charcoal-500" />
             </span>
-            Nuevo: Envío gratis en compras &gt; $100.000
+            Nueva colección disponible - Envío gratis en compras > $200.000
           </motion.span>
 
           <motion.h1
@@ -58,10 +60,11 @@ export default function Hero() {
             className="font-display font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight text-white mb-6"
           >
             <span className="text-white">
-              TECNOLOGÍA QUE{' '}
+              SISLEY COLOMBIA
             </span>
+            <br />
             <span className="text-charcoal-600">
-              MARCA LA DIFERENCIA
+              MODA CONTEMPORÁNEA
             </span>
           </motion.h1>
 
@@ -71,7 +74,8 @@ export default function Hero() {
             transition={{ delay: 0.4, duration: 0.6 }}
             className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed"
           >
-            Productos seleccionados para quienes buscan calidad, rendimiento y estilo.
+            Colecciones Lifestyle para Hombre y Mujer. Diseñadas para adaptarse a tu estilo de vida y las tendencias actuales.
+            <br />Marca colombiana en reinvención constante. Trend Fashion Group.
           </motion.p>
 
           <motion.div
@@ -86,7 +90,7 @@ export default function Hero() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              VER PRODUCTOS
+              VER COLECCIONES
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </MotionLink>
             <MotionLink
@@ -111,15 +115,15 @@ export default function Hero() {
             </div>
             <div className="flex items-center gap-2">
               <svg className="w-5 h-5 text-charcoal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-              <span>Envíos a todo el país</span>
+              <span>Envíos a todo Colombia</span>
             </div>
             <div className="flex items-center gap-2">
               <svg className="w-5 h-5 text-charcoal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-              <span>Garantía oficial</span>
+              <span>Tiendas físicas: Bogotá, Ipiales, Pasto, Tunja</span>
             </div>
             <div className="flex items-center gap-2">
               <svg className="w-5 h-5 text-charcoal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-              <span>Soporte experto</span>
+              <span>Trend Fashion Group</span>
             </div>
           </motion.div>
         </motion.div>

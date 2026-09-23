@@ -2,10 +2,10 @@ import { Helmet } from 'react-helmet-async'
 import { useLocation } from 'react-router-dom'
 
 const siteUrl = 'https://sisleyy.netlify.app'
-const defaultTitle = 'Sisley - Moda Premium'
-const defaultDescription = 'Moda y accesorios seleccionados para quienes buscan calidad, estilo y elegancia.'
+const defaultTitle = 'Sisley Colombia - Moda Contemporánea | Ropa Hombre y Mujer'
+const defaultDescription = 'Sisley Colombia: Marca colombiana de ropa y moda contemporánea. Colecciones Lifestyle para Hombre y Mujer. Tiendas en Bogotá, Ipiales, Pasto y Tunja. Trend Fashion Group.'
 const defaultImage = '/og-image.jpg'
-const twitterHandle = '@sisley'
+const twitterHandle = '@sisleycolombia'
 
 export default function SEO({
   title = defaultTitle,
@@ -80,27 +80,40 @@ export default function SEO({
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Sisley',
+    name: 'Sisley Colombia',
     url: siteUrl,
     logo: `${siteUrl}/logo.svg`,
     sameAs: [
-      'https://facebook.com/sisley',
-      'https://instagram.com/sisley',
-      'https://twitter.com/sisley',
-      'https://youtube.com/sisley',
+      'https://facebook.com/sisleycolombia',
+      'https://instagram.com/sisleycolombia',
+      'https://twitter.com/sisleycolombia',
     ],
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+57-320-9088777',
+      telephone: '+57-1-6131808',
       contactType: 'customer service',
       availableLanguage: ['Spanish'],
+    },
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Calle 129 A # 54 - 75',
+      addressLocality: 'Bogotá',
+      addressCountry: 'CO',
+    },
+    brand: {
+      '@type': 'Brand',
+      name: 'Sisley',
+    },
+    parentOrganization: {
+      '@type': 'Organization',
+      name: 'Trend Fashion Group',
     },
   }
 
   const websiteSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Sisley',
+    name: 'Sisley Colombia',
     url: siteUrl,
     potentialAction: {
       '@type': 'SearchAction',
@@ -131,7 +144,7 @@ export default function SEO({
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:site_name" content="Sisley" />
-      <meta property="og:locale" content="es_AR" />
+      <meta property="og:locale" content="es_CO" />
 
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content={twitterHandle} />

@@ -49,8 +49,8 @@ export default function FeaturedProducts() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 id="featured-title" className="section-title">PRODUCTOS DESTACADOS</h2>
-            <p className="text-primary-600 mt-2">Nuestra selección premium de la semana</p>
+            <h2 id="featured-title" className="section-title">NUEVA COLECCIÓN</h2>
+            <p className="text-primary-600 mt-2">Lo último en moda Lifestyle para Hombre y Mujer</p>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, x: 20 }}
