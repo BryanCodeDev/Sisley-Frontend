@@ -148,7 +148,7 @@ export default function ProductDetail() {
     offers: {
       '@type': 'Offer',
       url: window.location.href,
-      priceCurrency: 'ARS',
+      priceCurrency: 'COP',
       price: product.price,
       availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       seller: { '@type': 'Organization', name: 'Sisley' },
@@ -174,7 +174,7 @@ export default function ProductDetail() {
           name: product.name,
           description: product.description,
           price: product.price,
-          currency: 'ARS',
+          currency: 'COP',
           availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
           brand: product.brand,
           sku: product.sku,

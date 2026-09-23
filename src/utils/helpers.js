@@ -1,4 +1,4 @@
-export function formatPrice(price, currency = 'ARS', locale = 'es-AR') {
+export function formatPrice(price, currency = 'COP', locale = 'es-CO') {
   if (price === null || price === undefined) return '$0'
   return new Intl.NumberFormat(locale, {
     style: 'currency',
