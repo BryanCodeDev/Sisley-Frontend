@@ -49,7 +49,7 @@ export default function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-charcoal-500 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-charcoal-500" />
             </span>
-            Nueva colección disponible - Envío gratis en compras > $200.000
+            Nueva colección disponible - Envío gratis en compras {'>'} $200.000
           </motion.span>
 
           <motion.h1
