@@ -1,11 +1,11 @@
 import { Helmet } from 'react-helmet-async'
 import { useLocation } from 'react-router-dom'
 
-const siteUrl = 'https://techstore.com'
-const defaultTitle = 'TechStore - Tecnología Premium'
-const defaultDescription = 'Productos tecnológicos seleccionados para quienes buscan calidad, rendimiento y estilo.'
+const siteUrl = 'https://sisleyy.netlify.app'
+const defaultTitle = 'Sisley - Moda Premium'
+const defaultDescription = 'Moda y accesorios seleccionados para quienes buscan calidad, estilo y elegancia.'
 const defaultImage = '/og-image.jpg'
-const twitterHandle = '@techstore'
+const twitterHandle = '@sisley'
 
 export default function SEO({
   title = defaultTitle,
@@ -46,7 +46,7 @@ export default function SEO({
         availability: product.availability,
         seller: {
           '@type': 'Organization',
-          name: 'TechStore',
+          name: 'Sisley',
         },
       },
       ...(product.rating && {
@@ -80,14 +80,14 @@ export default function SEO({
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'TechStore',
+    name: 'Sisley',
     url: siteUrl,
     logo: `${siteUrl}/logo.svg`,
     sameAs: [
-      'https://facebook.com/techstore',
-      'https://instagram.com/techstore',
-      'https://twitter.com/techstore',
-      'https://youtube.com/techstore',
+      'https://facebook.com/sisley',
+      'https://instagram.com/sisley',
+      'https://twitter.com/sisley',
+      'https://youtube.com/sisley',
     ],
     contactPoint: {
       '@type': 'ContactPoint',
@@ -100,7 +100,7 @@ export default function SEO({
   const websiteSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'TechStore',
+    name: 'Sisley',
     url: siteUrl,
     potentialAction: {
       '@type': 'SearchAction',
@@ -130,7 +130,7 @@ export default function SEO({
       <meta property="og:image" content={fullImage} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
-      <meta property="og:site_name" content="TechStore" />
+      <meta property="og:site_name" content="Sisley" />
       <meta property="og:locale" content="es_AR" />
 
       <meta name="twitter:card" content="summary_large_image" />

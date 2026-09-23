@@ -43,10 +43,10 @@ const footerLinks = {
 }
 
 const socialLinks = [
-  { icon: Facebook, href: 'https://facebook.com/techstore', label: 'Facebook' },
-  { icon: Instagram, href: 'https://instagram.com/techstore', label: 'Instagram' },
-  { icon: Twitter, href: 'https://twitter.com/techstore', label: 'Twitter' },
-  { icon: Youtube, href: 'https://youtube.com/techstore', label: 'YouTube' },
+  { icon: Facebook, href: 'https://facebook.com/sisley', label: 'Facebook' },
+  { icon: Instagram, href: 'https://instagram.com/sisley', label: 'Instagram' },
+  { icon: Twitter, href: 'https://twitter.com/sisley', label: 'Twitter' },
+  { icon: Youtube, href: 'https://youtube.com/sisley', label: 'YouTube' },
 ]
 
 const trustItems = [
@@ -61,7 +61,7 @@ const trustItems = [
 const contactInfo = [
   { icon: MapPin, text: 'Tienda Virtual - Bogotá, Mosquera, Funza, Ibagué y Madrid, Colombia' },
   { icon: Phone, text: '+57 320 9088777' },
-  { icon: Mail, text: 'hola@techstore.com' },
+  { icon: Mail, text: 'hola@sisley.com' },
 ]
 
 export default function Footer() {
@@ -78,10 +78,10 @@ export default function Footer() {
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                 </svg>
               </div>
-              <span className="font-display font-bold text-2xl text-white">TechStore</span>
+              <span className="font-display font-bold text-2xl text-white">Sisley</span>
             </Link>
             <p className="text-primary-300 text-base leading-relaxed mb-6 max-w-xs">
-              Tecnología premium seleccionada para quienes buscan calidad, rendimiento y estilo. Tu tienda de confianza en electrónica.
+              Moda y accesorios premium seleccionados para quienes buscan calidad, estilo y elegancia.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social, index) => (
@@ -211,7 +211,7 @@ export default function Footer() {
 
           <div className="pt-8 border-t border-dark-border flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-primary-400 text-sm">
-              © {currentYear} TechStore. Todos los derechos reservados.
+              © {currentYear} Sisley. Todos los derechos reservados.
             </p>
             <nav aria-label="Enlaces legales" className="flex flex-wrap items-center gap-4 md:gap-6">
               {footerLinks.legal.map(link => (

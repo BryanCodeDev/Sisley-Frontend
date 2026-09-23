@@ -148,8 +148,8 @@ export default function Account() {
   return (
     <>
       <SEO
-        title="Mi cuenta | TechStore"
-        description="Gestiona tu perfil, pedidos, direcciones y seguridad en TechStore."
+        title="Mi cuenta | Sisley"
+        description="Gestiona tu perfil, pedidos, direcciones y seguridad en Sisley."
         noindex
       />
 

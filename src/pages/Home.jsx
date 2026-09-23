@@ -10,8 +10,8 @@ export default function Home() {
   return (
     <>
       <SEO
-        title="TechStore - Tecnología Premium"
-        description="Productos tecnológicos seleccionados para quienes buscan calidad, rendimiento y estilo."
+        title="Sisley - Moda Premium"
+        description="Moda y accesorios seleccionados para quienes buscan calidad, estilo y elegancia."
         type="website"
       />
       <div className="min-h-screen">

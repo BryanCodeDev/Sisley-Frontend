@@ -146,7 +146,7 @@ export default function Checkout() {
   return (
     <>
       <SEO
-        title="Checkout | TechStore"
+        title="Checkout | Sisley"
         description="Finaliza tu compra de forma segura. Múltiples métodos de pago disponibles."
         noindex
       />

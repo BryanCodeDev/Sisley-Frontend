@@ -7,7 +7,7 @@ export default function NotFound() {
   return (
     <>
       <SEO
-        title="Página no encontrada | TechStore"
+        title="Página no encontrada | Sisley"
         description="La página que buscas no existe o fue movida."
         noindex
       />

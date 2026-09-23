@@ -3,7 +3,7 @@ import api from '../services/api'
 
 const WishlistContext = createContext(null)
 
-const STORAGE_KEY = 'techstore_wishlist'
+const STORAGE_KEY = 'sisley_wishlist'
 
 function getStoredWishlist() {
   try {

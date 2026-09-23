@@ -8,7 +8,7 @@ const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER
 
 const contactInfo = [
   { icon: Phone, title: 'Atención 24/7', value: '+57 320 9088777', desc: 'WhatsApp y llamadas las 24 horas' },
-  { icon: Mail, title: 'Email', value: 'hola@techstore.com', desc: 'Respuesta en menos de 2 horas' },
+  { icon: Mail, title: 'Email', value: 'hola@sisley.com', desc: 'Respuesta en menos de 2 horas' },
   { icon: MapPin, title: 'Zonas de Atención', value: 'Bogotá, Mosquera, Funza, Ibagué, Madrid', desc: 'Envíos a todo Colombia' },
 ]
 
@@ -64,8 +64,8 @@ export default function Contact() {
   return (
     <>
       <SEO
-        title="Contacto 24/7 | TechStore - Bogotá, Mosquera, Funza, Ibagué, Madrid"
-        description="TechStore atiende 24/7 por WhatsApp al +57 320 9088777. Tienda virtual en Bogotá, Mosquera, Funza, Ibagué y Madrid. Envíos a todo Colombia. Email, WhatsApp y asesoramiento personalizado."
+        title="Contacto 24/7 | Sisley - Bogotá, Mosquera, Funza, Ibagué, Madrid"
+        description="Sisley atiende 24/7 por WhatsApp al +57 320 9088777. Tienda virtual en Bogotá, Mosquera, Funza, Ibagué y Madrid. Envíos a todo Colombia. Email, WhatsApp y asesoramiento personalizado."
       />
 
       <div className="min-h-screen bg-white pt-20">

@@ -55,7 +55,7 @@ export default function AdminLayout() {
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-charcoal-600 to-charcoal-700 flex items-center justify-center">
               <Box className="w-6 h-6 text-white" />
             </div>
-            <span className="font-display font-bold text-xl text-primary-900">TechStore Admin</span>
+<span className="font-display font-bold text-xl text-primary-900">Sisley Admin</span>
           </Link>
         </div>
 
@@ -111,7 +111,7 @@ export default function AdminLayout() {
           >
             {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
-          <span className="font-display font-bold text-xl text-primary-900">TechStore Admin</span>
+          <span className="font-display font-bold text-xl text-primary-900">Sisley Admin</span>
           <div className="w-10" />
         </header>
 

@@ -24,7 +24,7 @@ export default function Cart() {
   return (
     <>
       <SEO
-        title="Carrito de compras | TechStore"
+        title="Carrito de compras | Sisley"
         description="Revisa tu carrito de compras y finaliza tu pedido de forma segura."
         noindex
       />

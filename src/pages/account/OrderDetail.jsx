@@ -71,7 +71,7 @@ export default function OrderDetail() {
   return (
     <>
       <SEO
-        title={`Pedido ${order.order_number} | TechStore`}
+        title={`Pedido ${order.order_number} | Sisley`}
         description={`Detalles del pedido ${order.order_number}`}
         noindex
       />

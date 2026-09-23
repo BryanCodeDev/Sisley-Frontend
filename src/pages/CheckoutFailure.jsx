@@ -13,7 +13,7 @@ export default function CheckoutFailure() {
   return (
     <>
       <SEO
-        title="Pago no completado | TechStore"
+        title="Pago no completado | Sisley"
         description="Hubo un problema con tu pago. Puedes reintentar o contactarnos por WhatsApp."
         noindex
       />

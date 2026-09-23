@@ -95,7 +95,7 @@ export default function Category() {
   return (
     <>
       <SEO
-        title={`${category.name} | TechStore`}
+        title={`${category.name} | Sisley`}
         description={category.seoDescription || category.description || `Explora nuestra selección de ${category.name.toLowerCase()}. ${category.productCount || 0} productos disponibles.`}
         image={category.imageUrl}
         type="website"

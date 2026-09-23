@@ -12,8 +12,8 @@ export default function CheckoutSuccess() {
   return (
     <>
       <SEO
-        title="Compra exitosa | TechStore"
-        description="Tu compra se ha realizado correctamente. Gracias por confiar en TechStore."
+        title="Compra exitosa | Sisley"
+        description="Tu compra se ha realizado correctamente. Gracias por confiar en Sisley."
         noindex
       />
 

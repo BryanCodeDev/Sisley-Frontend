@@ -12,7 +12,7 @@ export default function CartDrawer() {
 
   useEffect(() => {
     const handleStorageChange = (e) => {
-      if (e.key === 'techstore_cart_open') {
+      if (e.key === 'sisley_cart_open') {
         setOpen(e.newValue === 'true')
       }
     }
@@ -23,7 +23,7 @@ export default function CartDrawer() {
   const toggleCart = () => {
     const newState = !open
     setOpen(newState)
-    localStorage.setItem('techstore_cart_open', newState.toString())
+    localStorage.setItem('sisley_cart_open', newState.toString())
   }
 
   const handleCheckout = () => {

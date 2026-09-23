@@ -51,8 +51,8 @@ export default function Login() {
   return (
     <>
       <SEO
-        title="Iniciar sesión | TechStore"
-        description="Accede a tu cuenta de TechStore para gestionar pedidos, direcciones y preferencias."
+        title="Iniciar sesión | Sisley"
+        description="Accede a tu cuenta de Sisley para gestionar pedidos, direcciones y preferencias."
         noindex
       />
 

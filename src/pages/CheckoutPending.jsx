@@ -13,7 +13,7 @@ export default function CheckoutPending() {
   return (
     <>
       <SEO
-        title="Pago pendiente | TechStore"
+        title="Pago pendiente | Sisley"
         description="Tu pago está pendiente de confirmación. Te notificaremos cuando se procese."
         noindex
       />

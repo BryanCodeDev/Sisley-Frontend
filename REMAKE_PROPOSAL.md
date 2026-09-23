@@ -1,4 +1,4 @@
-# TechStore Frontend Redesign Proposal
+# Sisley Frontend Redesign Proposal
 ## Apple-Inspired Minimalist Rebrand
 
 ### 1. Design Direction

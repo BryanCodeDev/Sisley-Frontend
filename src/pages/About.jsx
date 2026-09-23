@@ -13,15 +13,15 @@ const features = [
 ]
 
 const team = [
-  { name: 'Equipo TechStore', role: 'Fundadores', desc: 'Apasionados por la tecnología con 15+ años de experiencia' },
+  { name: 'Equipo Sisley', role: 'Fundadores', desc: 'Apasionados por la moda con 15+ años de experiencia' },
 ]
 
 export default function About() {
   return (
     <>
       <SEO
-        title="Nosotros | TechStore"
-        description="Conoce a TechStore: tu tienda de tecnología premium. Selección curada, garantía oficial, envíos a todo el país y atención experta."
+        title="Nosotros | Sisley"
+        description="Conoce a Sisley: tu tienda de moda premium. Selección curada, calidad garantizada, envíos a todo el país y atención experta."
       />
 
       <div className="min-h-screen bg-white pt-20">
@@ -40,7 +40,7 @@ export default function About() {
                 </span>
               </h1>
               <p className="text-lg sm:text-xl text-primary-900 leading-relaxed">
-                TechStore nace de la pasión por la tecnología y el compromiso de ofrecer solo lo mejor.
+                Sisley nace de la pasión por la moda y el compromiso de ofrecer solo lo mejor.
                 No somos un marketplace más: somos curadores de experiencias tecnológicas premium.
               </p>
             </motion.div>
@@ -93,7 +93,7 @@ export default function About() {
               <h2 id="story-title" className="section-title mb-8 text-center">NUESTRA HISTORIA</h2>
               <div className="prose prose max-w-none text-primary-900 space-y-6">
                 <p>
-                  TechStore nació en 2020 con una misión clara: cambiar la forma en que las personas compran tecnología.
+                  Sisley nació en 2020 con una misión clara: cambiar la forma en que las personas compran moda.
                   Cansados de marketplaces saturados de productos de dudosa calidad, decidimos crear un espacio donde cada
                   artículo tuviera un propósito y una razón de ser.
                 </p>
@@ -103,7 +103,7 @@ Empezamos como un pequeño espacio en Bogotá, donde cada cliente recibía atenc
                   la curación experta— sigue siendo nuestro core aunque ahora operamos online en todo el país.
                 </p>
                 <p>
-                  Hoy, TechStore es referente en tecnología premium en Colombia. Trabajamos directamente con fabricantes
+                  Hoy, Sisley es referente en moda premium en Colombia. Trabajamos directamente con fabricantes
                   y distribuidores oficiales para garantizar autenticidad, garantía y el mejor precio. Cada producto en
                   nuestro catálogo ha pasado por nuestro filtro de calidad: si no lo recomendaríamos a un familiar, no lo vendemos.
                 </p>
@@ -161,7 +161,7 @@ Empezamos como un pequeño espacio en Bogotá, donde cada cliente recibía atenc
               className="max-w-2xl mx-auto text-center p-8 lg:p-12 bg-primary-50 backdrop-blur-sm border border-dark-border rounded-3xl"
             >
               <h2 id="cta-title" className="font-display font-bold text-3xl sm:text-4xl text-primary-900 mb-4">
-                ¿Listo para experimentar TechStore?
+                ¿Listo para experimentar Sisley?
               </h2>
               <p className="text-primary-900 mb-8">
                 Explora nuestro catálogo curado y descubre por qué miles de clientes confían en nosotros.

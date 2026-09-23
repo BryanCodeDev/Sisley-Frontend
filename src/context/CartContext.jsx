@@ -4,7 +4,7 @@ import { useAuth } from './AuthContext'
 
 const CartContext = createContext(null)
 
-const STORAGE_KEY = 'techstore_cart'
+const STORAGE_KEY = 'sisley_cart'
 
 function getStoredCart() {
   try {
